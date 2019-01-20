@@ -231,6 +231,7 @@
   line-height:34px;
   text-align: center;
 }
+.navbar>div.nav-bottom .nav-ul>li.active a,
 .navbar>div.nav-bottom .nav-ul>li:hover a{
   background-color:#9B0909;
 }

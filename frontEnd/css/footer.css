@@ -1,0 +1,104 @@
+/* 底部容器 */
+footer{
+  height:148px;
+  border-top:1px solid #d3d3d3;
+  background:#f2f2f2;
+  font-size:12px;
+}
+footer a{
+  text-decoration:none;
+}
+footer a:hover{
+  text-decoration:underline;
+}
+footer>div{
+  width:980px;
+  margin:0 auto;
+}
+footer>div:after{
+  content:'';
+  display: block;
+  clear:both;
+}
+footer .f-lf,
+footer .f-rt{
+  float:left;
+  margin-top:15px;
+}
+footer .f-rt{
+  float:right;
+}
+/* 底部左边 */
+footer .f-lf>ul:after{
+  content:'';
+  display: block;
+  clear: both;
+}
+footer .f-lf>ul>li{
+  float:left;
+}
+footer .f-lf>ul>li+li:before{
+  content:"|";
+  color: #c2c2c2;
+  padding:0 10px;
+  
+}
+footer .f-lf>ul>li>a{
+  color: #999;
+}
+footer .f-lf p,
+footer .f-lf a{
+  color: #666;
+}
+footer .f-lf>ul,
+footer .f-lf>p{
+  line-height: 24px;
+}
+/* 底部右边 */
+footer .f-rt{
+  margin-top:21px;
+}
+footer .f-rt>ul:after{
+  content: "";
+  display: block;
+  clear:both;
+}
+footer .f-rt>ul>li{
+  float:left;
+}
+footer .f-rt>ul>li+li{
+  margin-left:30px;
+}
+footer .f-rt>ul>li>a{
+  display: block;
+  width:50px;
+  height:45px;
+  margin:0 5px;
+  background:url("../img/foot_enter_new.png") no-repeat -63px -101px;
+  background-size: 110px 450px;
+}
+footer .f-rt>ul .musician>a,
+footer .f-rt>ul .musician>i{
+  background-position: 0 0;
+}
+footer .f-rt>ul .reward>a{
+  background-position: -60px -50px;
+}
+footer .f-rt>ul .cash>a{
+  background-position: 0 -101px;
+}
+footer .f-rt>ul>li>a+i{
+  display: block;
+  width:52px;
+  height:14px;
+  margin:0 auto;
+  margin-top:5px;
+  background:url("../img/foot_enter_tt.png") no-repeat -1px -91px;
+  background-size: 180px 100px;
+}    
+footer .f-rt>ul .reward>i{
+  background-position: 0 -54px;
+}
+footer .f-rt>ul .cash>i{
+  background-position: -1px -72px;
+}
