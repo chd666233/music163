@@ -16,7 +16,7 @@
   border-bottom-color:rgb(164, 0, 17);
 }
 
-/* 第一行导航栏 */
+/* 第一行导航栏 logo nav-list*/
 .n-top>div:first-child>div:after{
   content:'';
   display:block;
@@ -43,6 +43,7 @@
   float:left;
 }
 .n-top>div:first-child>div>ul>li>a{
+  position: relative;
   float:left;
   height:69px;
   padding:0 19px;
@@ -50,9 +51,160 @@
   color:rgb(204, 204, 204);
   font-size:14px;
   text-decoration: none;
-  
 }
+.n-top>div:first-child>div>ul>li.active a,
 .n-top>div:first-child>div>ul>li:hover a{
   background:rgb(0,0,0);
-  color:rgb(255, 255, 255);
+  color:#fff;
 }
+.n-top>div:first-child>div>ul>li>a>i{
+  display:none;
+  width:12px;
+  height:7px;
+  position: absolute;
+  bottom:-1px;
+  left:50%;
+  transform:translate(-50%);
+  background:url("../img/topbar.png") no-repeat -226px 0;
+}
+.n-top>div:first-child>div>ul>li.active i{
+  display:block;
+}
+/* 第一行导航栏 搜索 创作者中心 登陆 外层*/
+.n-top .login,
+.n-top .creator-center,
+.n-top .search-box{
+  margin-top:19px;
+  float:right;
+}
+.n-top .login{
+  position: relative;
+  padding-right:22px;
+  height:45px;
+  margin-left:20px;
+  background:url("../img/topbar.png") no-repeat right -47px;
+}
+.n-top .creator-center{
+  width:88px;
+  height:30px;
+  margin-left:12px;
+  line-height: 30px;
+  text-align: center;
+  border:1px solid #4F4F4F;
+  border-radius:15px;
+  color:#ccc;
+  font-size:12px;
+  text-decoration:none;
+}
+.n-top .creator-center:hover{
+  color:#fff;
+  border:1px solid #ccc;
+}
+.n-top .search-box{
+  position:relative;
+  background:#fff url("../img/topbar.png") no-repeat 0 -99px;
+  width:158px;
+  height:32px;
+  border-radius:16px;
+}
+/* 第一行导航栏 搜索 创作者中心 登陆 内层*/
+.n-top .login>a{
+  position: relative;
+  display:block;
+  width:28px;
+  margin-top:7px;
+  color:#787878;
+  text-decoration:none;
+  font-size:12px;
+  
+}
+.n-top .login>a:hover{
+  color:#999;
+  text-decoration:underline;
+}
+.n-top .login:hover .drawdown{
+  display: block;
+}
+.n-top .login .drawdown{
+  display: none;
+  position: absolute;
+  left:-66px;top:40px;
+}
+.n-top .login .drawdown>i{
+  display: block;
+  width:14px;
+  height:8px;
+  position: absolute;
+  top:-8px;left:50%;
+  transform: translate(-50%);
+  background: url("../img/toplist.png") no-repeat -20px 0;
+}
+.n-top .login .drawdown ul{
+  background:#2b2b2b;
+  border: 1px solid #202020;
+  box-shadow: 0 8px 24px 0 rgba(0,0,0,0.50);
+}
+.n-top .login .drawdown ul>li+li{
+  border-top:1px solid #232323;
+}
+.n-top .login .drawdown ul>li{
+  height:38px;
+  line-height: 38px;
+}
+.n-top .login .drawdown ul>li>a{
+  display: inline-block;
+  width:134px;
+  padding-left:24px;
+  text-decoration: none;
+  font-size: 12px; 
+  color:#ccc; 
+}
+.n-top .login .drawdown ul>li>a:hover{
+  background:#353535;
+  color:#fff;
+}
+.n-top .login .drawdown ul>li>a>i{
+  float:left;
+  width:18px;
+  height:18px;
+  margin:10px 10px 0 -7px;
+  background:url("../img/toplist.png") no-repeat 0 0;
+}
+.n-top .login .drawdown ul .icn-mb{
+  background-position: 0 0;
+}
+.n-top .login .drawdown ul .icn-wx{
+  background-position: -20px -20px;
+}
+.n-top .login .drawdown ul .icn-qq{
+  background-position: -20px -40px;
+}
+.n-top .login .drawdown ul .icn-sn{
+  background-position: 0 -20px;
+}
+.n-top .login .drawdown ul .icn-wy{
+  background-position: 0 -40px;
+}
+.n-top .login .drawdown ul>li>a>em{
+  float:left;
+}
+
+.n-top .search-box>input,
+.n-top .search-box>label{
+  position: absolute;
+  top:50%; left:29px;
+  transform: translateY(-50%);
+}
+.n-top .search-box>input{
+  width:80%;
+  background:transparent;
+  border:0;
+  outline:0;
+}
+.n-top .search-box>label{
+  font-size:12px;
+  color:#9b9b9b;
+}
+
+
+
