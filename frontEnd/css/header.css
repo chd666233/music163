@@ -4,17 +4,54 @@
   height:105px;
 }
 .n-top>div:first-child{
+  display: flex;
+  justify-content:center;
   background:#242424;
-  border-bottom: 1px solid #000;  
+  border-bottom: 1px solid #000;
+
 }
 .n-top>div:last-child{
   background-color:rgb(194, 12, 12);
   border-bottom-color:rgb(164, 0, 17);
 }
+
 /* 第一行导航栏 */
-.n-top>div:first-child a{
+.n-top>div:after{
+  content:'';
+  display:block;
+  clear:both;
+}
+.n-top>div:first-child>h1,
+.n-top>div:first-child>ul{
+  float:left;
+}
+.n-top>div:first-child>h1:after{
+  content:'';
+  display:block;
+  clear:both;
+}
+.n-top>div:first-child>h1>a{
+  float:left;
   width:157px;
   padding-right:20px;
   height:69px;
-  background:url("../img/topbar.png") no-repeat 0;
+  text-indent: -9999px;
+  background:url("../img/topbar.png") no-repeat 0 0;
+}
+.n-top>div:first-child>ul>li{
+  float:left;
+}
+.n-top>div:first-child>ul>li>a{
+  float:left;
+  height:69px;
+  padding:0 19px;
+  line-height:69px;
+  color:rgb(204, 204, 204);
+  font-size:14px;
+  text-decoration: none;
+  
+}
+.n-top>div:first-child>ul>li:hover a{
+  background:rgb(0,0,0);
+  color:rgb(255, 255, 255);
 }
