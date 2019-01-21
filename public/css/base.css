@@ -2,3 +2,6 @@
 ul{list-style: none;}
 em{font-style:normal}
 a{outline:0}
+iframe{width:100%}
+/* header>iframe{height:105px} */
+footer>iframe{height:149px}
