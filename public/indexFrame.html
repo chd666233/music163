@@ -8,46 +8,81 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/index.css">
   <style>
-    .carousel .box{
-      position:relative;
+    .floor-container{
+      
     }
-    /* 轮播图前进后退 */
-    .carousel .prev,
-    .carousel .next{
-      position: absolute;
-      left:-50px;top:50%;
-      transform:translateY(-50%);
-      width:37px;
-      height:63px;
-      background:url("img/banner.png") no-repeat 0 -360px;
+    /* 第一楼 */
+    .floor1{
+      width:980px;
+      margin:0 auto;
+      background:#fff;
+      border:1px solid #d3d3d3;
+      border-width:0 1px;
     }
-    .carousel .prev:hover{
-      background-position: 0 -430px;
+    .floor1 .lf{
+      width:729px;
+      padding:20px 20px 40px;
+      box-sizing: border-box;
     }
-    .carousel .next:hover{
-      background-position: 0 -578px;
+    .floor1 .lf .floor-head{
+      width:100%;
+      height:33px;
+      padding-left:34px;
+      padding-right:10px;
+      border-bottom:2px solid #C10D0C;
+      background:url("img/index.png") no-repeat -225px -156px;
+      box-sizing: border-box;
     }
-    .carousel .next{
-      left:auto;right:-50px;
-      background-position: 0 -508px;
+    /* 公共样式 */
+    .floor1 .lf .floor-head a{
+      text-decoration: none;
+      font-size:12px;
+      color:#666;
     }
-    /* 轮播图进度 */
-    .carousel ul.indicator{
-      position: absolute;
-      left:50%;bottom:12px;
-      transform: translate(-50%);
+
+    .floor1 .lf .floor-head a:hover:not(.hot) {
+      text-decoration:underline;
+    }
+
+    /*  */
+    .floor1 .lf .floor-head .hot{
+      font-size:20px;
+      vertical-align: top;
+    }
+    .floor1 .lf .floor-head ul{
+      display: inline-block;
+      margin-left:20px;
       list-style:none;
+      
     }
-    .carousel .indicator li{
+    .floor1 .lf .floor-head ul>li{
       float:left;
-      width:20px;
-      height: 20px;
-      background:url("img/banner.png") no-repeat 3px -343px;
     }
-    .carousel .indicator li:hover,
-    .carousel .indicator li.active{
-      background-position: -16px -343px;
+    .floor1 .lf .floor-head ul>li+li:before{
+      content:'|';
+      font-size:12px;
+      color:#ccc;
+      padding:0 10px;
     }
+    .floor1 .lf .floor-head ul>li>a{
+      vertical-align: bottom;
+    }
+    .floor1 .lf .floor-head span{
+      float:right;
+      margin-top:4px;
+    }
+    .floor1 .lf .floor-head i{
+      display: inline-block;
+      width:12px;
+      height:12px;
+      vertical-align: middle;
+      background:url("img/index.png") no-repeat 0 -240px;
+    }
+    .floor1 .lf .floor-head .more{
+      vertical-align: bottom;
+    }
+    
+    
   </style>
 </head>
 <body id="ifr">
@@ -103,16 +138,30 @@
         
       </div>
     </div>
-    <div class="floor1">
-      <div class="floor-head">
-        <i></i>
-        <a href="#"></a>
-        <ul></ul>
-        <i></i>
-        <a href="#">更多</a>
-      </div>
-      <div class="floor-body"></div>
+    <div class="floor-container">
+        <div class="floor1">
+          <div class="lf">
+            <div class="floor-head">
+              <a href="#" class="hot">热门推荐</a>
+              <ul>
+                <li><a href="#">华语</a></li>
+                <li><a href="#">流行</a></li>
+                <li><a href="#">摇滚</a></li>
+                <li><a href="#">民谣</a></li>
+                <li><a href="#">电子</a></li>
+              </ul>
+              <span>
+                <a class="more" href="#">更多</a>
+                <i></i>
+              </span>
+             
+            </div>
+            <div class="floor-body"></div>
+          </div>
+          <div class="rt"></div>
+        </div>
     </div>
+    
   </section>
 </body>
 </html>

@@ -3,12 +3,13 @@
   background:url("../img/bg1.jpg") repeat-x;
 }
 .carousel .box{
+  position:relative;
   width:982px;
   height:336px;
   margin:0 auto;
 }
 
-/*  */
+/* 轮播图内部 */
 .carousel .carousel-inner{
   position: relative;
   width:730px;
@@ -25,7 +26,7 @@
 .carousel .carousel-item img{
   height:336px;
 }
-/*  */
+/* 轮播图下载 */
 .carousel .download{
   width:254px;
   height:336px;
@@ -51,4 +52,43 @@
   color: #8d8d8d;
   /* font-family: Arial, Helvetica, sans-serif;
    */
+}
+
+
+/* 轮播图前进后退 */
+.carousel .prev,
+.carousel .next{
+  position: absolute;
+  left:-50px;top:50%;
+  transform:translateY(-50%);
+  width:37px;
+  height:63px;
+  background:url("../img/banner.png") no-repeat 0 -360px;
+}
+.carousel .prev:hover{
+  background-position: 0 -430px;
+}
+.carousel .next:hover{
+  background-position: 0 -578px;
+}
+.carousel .next{
+  left:auto;right:-50px;
+  background-position: 0 -508px;
+}
+/* 轮播图进度 */
+.carousel ul.indicator{
+  position: absolute;
+  left:50%;bottom:12px;
+  transform: translate(-50%);
+  list-style:none;
+}
+.carousel .indicator li{
+  float:left;
+  width:20px;
+  height: 20px;
+  background:url("../img/banner.png") no-repeat 3px -343px;
+}
+.carousel .indicator li:hover,
+.carousel .indicator li.active{
+  background-position: -16px -343px;
 }
