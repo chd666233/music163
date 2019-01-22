@@ -1,0 +1,53 @@
+/* 容器 */
+.carousel{
+  background:url("../img/bg1.jpg") repeat-x;
+}
+.carousel .box{
+  width:982px;
+  height:336px;
+  margin:0 auto;
+}
+
+/*  */
+.carousel .carousel-inner{
+  width:730px;
+  height:336px;
+  display: inline-block;
+}
+.carousel .carousel-item{
+  height:336px;
+  display:none;
+}
+.carousel .carousel-item.active{
+  display: block;
+}
+.carousel .carousel-item img{
+  height:336px;
+}
+/*  */
+.carousel .download{
+  width:254px;
+  height:336px;
+  float:right;
+  margin-top:-340px;
+  background:url("../img/download.png") no-repeat 0 0;
+}
+.carousel .download a{
+  display: block;
+  width:215px;
+  height:56px;
+  margin-left:19px;
+  margin-top:212px;
+  background:url("../img/download.png") no-repeat 0 9999px;
+}
+.carousel .download a:hover{
+  background-position: 0 -340px;
+}
+.carousel .download p{
+  margin-top:10px;
+  font-size:12px;
+  text-align: center;
+  color: #8d8d8d;
+  /* font-family: Arial, Helvetica, sans-serif;
+   */
+}
