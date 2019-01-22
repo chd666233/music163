@@ -64,11 +64,11 @@
   </footer>
  <script>
    window.onload=function(){
-    console.log(window.frames["contentFrame"])
+    console.log(window.frames["contentFrame"].document)
     var ifr=window.frames["contentFrame"].document.getElementById("ifr");
     console.log(getComputedStyle(ifr).height)
     var ifrH=getComputedStyle(ifr).height;
-    // window.frames["contentFrame"].setAttribute("height",ifrH)
+    
     document.getElementsByName("contentFrame")[0].style.height=ifrH;
    }
    

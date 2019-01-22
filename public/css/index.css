@@ -10,6 +10,7 @@
 
 /*  */
 .carousel .carousel-inner{
+  position: relative;
   width:730px;
   height:336px;
   display: inline-block;
