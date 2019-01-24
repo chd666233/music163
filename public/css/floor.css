@@ -1,234 +1,287 @@
-    .floor-container{
-      width:980px;
-      margin:0 auto;
-      background:#fff;
-      border:1px solid #d3d3d3;
-      border-width:0 1px;
-    }
-    .lf{
-      padding:20px 20px 40px;
-      width:729px;
-      box-sizing: border-box;
-    }
-    /* 楼层容器样式 */
-    .lf .floor1{
-      /* width:689px; */
-    }
-    .lf .floor1 .floor-head,
-    .lf .floor2 .floor-head{
-      width:100%;
-      height:33px;
-      padding-left:34px;
-      padding-right:10px;
-      border-bottom:2px solid #C10D0C;
-      background:url("../img/index.png") no-repeat -225px -156px;
-      box-sizing: border-box;
-    }
-    /* 头部 公共样式 */
-    .lf .floor1 .floor-head a,
-    .lf .floor2 .floor-head a{
-      text-decoration: none;
-      font-size:12px;
-      color:#666;
-    }
+.floor-container{
+  width:980px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid #d3d3d3;
+  border-width:0 1px;
+}
+.lf{
+  padding:20px 20px 40px;
+  width:729px;
+  box-sizing: border-box;
+}
+/* 楼层容器样式 */
+.lf .floor1{
+  /* width:689px; */
+}
+.lf .floor1 .floor-head,
+.lf .floor2 .floor-head,
+.lf .floor3 .floor-head{
+  width:100%;
+  height:33px;
+  padding-left:34px;
+  padding-right:10px;
+  border-bottom:2px solid #C10D0C;
+  background:url("../img/index.png") no-repeat -225px -156px;
+  box-sizing: border-box;
+}
+/* 头部 公共样式 */
+.lf .floor1 .floor-head a,
+.lf .floor2 .floor-head a,
+.lf .floor3 .floor-head a{
+  text-decoration: none;
+  font-size:12px;
+  color:#666;
+}
 
-    .lf .floor1 .floor-head a:hover:not(.hot) ,
-    .lf .floor2 .floor-head a:hover:not(.hot) {
-      text-decoration:underline;
-    }
+.lf .floor1 .floor-head a:hover:not(.hot),
+.lf .floor2 .floor-head a:hover:not(.hot),
+.lf .floor3 .floor-head a:hover:not(.hot) {
+  text-decoration:underline;
+}
 
-    /* 头部 */
-    .lf .floor1 .floor-head .hot,
-    .lf .floor2 .floor-head .hot{
-      font-size:20px;
-      vertical-align: top;
-    }
-    .lf .floor1 .floor-head ul,
-    .lf .floor2 .floor-head ul{
-      display: inline-block;
-      margin-left:20px;
-      list-style:none;
-      
-    }
-    .lf .floor1 .floor-head ul>li,
-    .lf .floor2 .floor-head ul>li{
-      float:left;
-    }
-    .lf .floor1 .floor-head ul>li+li:before,
-    .lf .floor2 .floor-head ul>li+li:before{
-      content:'|';
-      font-size:12px;
-      color:#ccc;
-      padding:0 10px;
-    }
-    .lf .floor1 .floor-head ul>li>a,
-    .lf .floor2 .floor-head ul>li>a{
-      vertical-align: bottom;
-    }
-    .lf .floor1 .floor-head span,
-    .lf .floor2 .floor-head span{
-      float:right;
-      margin-top:4px;
-    }
-    .lf .floor1 .floor-head i,
-    .lf .floor2 .floor-head i{
-      display: inline-block;
-      width:12px;
-      height:12px;
-      vertical-align: middle;
-      background:url("../img/index.png") no-repeat 0 -240px;
-    }
-    .lf .floor1 .floor-head .more,
-    .lf .floor2 .floor-head .more{
-      vertical-align: bottom;
-    }
+/* 头部 */
+.lf .floor1 .floor-head .hot,
+.lf .floor2 .floor-head .hot,
+.lf .floor3 .floor-head .hot{
+  font-size:20px;
+  vertical-align: top;
+}
+.lf .floor1 .floor-head ul,
+.lf .floor2 .floor-head ul,
+.lf .floor3 .floor-head ul,{
+  display: inline-block;
+  margin-left:20px;
+  list-style:none;
+  
+}
+.lf .floor1 .floor-head ul>li,
+.lf .floor2 .floor-head ul>li,
+.lf .floor3 .floor-head ul>li{
+  float:left;
+}
+.lf .floor1 .floor-head ul>li+li:before,
+.lf .floor2 .floor-head ul>li+li:before,
+.lf .floor3 .floor-head ul>li+li:before{
+  content:'|';
+  font-size:12px;
+  color:#ccc;
+  padding:0 10px;
+}
+.lf .floor1 .floor-head ul>li>a,
+.lf .floor2 .floor-head ul>li>a,
+.lf .floor3 .floor-head ul>li>a{
+  vertical-align: bottom;
+}
+.lf .floor1 .floor-head span,
+.lf .floor2 .floor-head span,
+.lf .floor3 .floor-head span{
+  float:right;
+  margin-top:4px;
+}
+.lf .floor1 .floor-head i,
+.lf .floor2 .floor-head i,
+.lf .floor3 .floor-head i{
+  display: inline-block;
+  width:12px;
+  height:12px;
+  vertical-align: middle;
+  background:url("../img/index.png") no-repeat 0 -240px;
+}
+.lf .floor1 .floor-head .more,
+.lf .floor2 .floor-head .more,
+.lf .floor3 .floor-head .more{
+  vertical-align: bottom;
+}
 
-    /* 主体的封面及标题 */
-    .lf .floor1 .floor-body .mg-l{
-      margin-left:-42px;
-      margin-top:20px;
-    }
-    .lf .floor1 .floor-body .mg-l:after{
-      content: "";
-      display: block;
-      clear:both;
-    }
-    .lf .floor1 .floor-body .box{
-      width:140px;
-      height:204px;
-      float:left;
-      padding-bottom:30px;
-      padding-left:42px;
-      /* margin-left:-42px; */
-    }
-    .lf .floor1 .floor-body .cover{
-      position: relative;
-      width:140px;
-      height:140px;
-    }
-    .lf .floor1 .floor-body .cover>img{
-      position: absolute;
-      left:0;top:0;right:0;bottom:0;
-    }
-    .lf .floor1 .floor-body .cover>a{
-      display: block;
-      position: absolute;
-      left:0;top:0;right:0;bottom:0;
-      background:url("../img/coverall.png") no-repeat 0 0;
-    }
-    /* 封面底部 */
-    .lf .floor1 .floor-body .cover div.info{
-      position: absolute;
-      left:0;bottom:0;right:0;
-      height:27px;
-      background:url("../img/coverall.png") no-repeat 0 -537px;
-    }
-    /* 封面底部 耳机图标 */
-    .lf .floor1 .floor-body .cover div.info>i{
-      float:left;
-      width:14px;
-      height:11px;
-      margin:9px 5px 9px 10px;
-      background:url("../img/iconall.png") no-repeat 0 -24px;
-    }
-    /* 封面底部 收听人数 */
-    .lf .floor1 .floor-body .cover div.info>span{
-      color:#ccc;
-      font-size:12px;
-      line-height: 27px;
-    }
-     /* 封面底部 播放标签 */
-    .lf .floor1 .floor-body .cover div.info>a{
-      float:right;
-      width:16px;
-      height:17px;
-      margin-top:5px;
-      margin-right:10px;
-      background:url("../img/iconall.png") no-repeat 0 0;
-    }
-    .lf .floor1 .floor-body .cover div.info>a:hover{
-      background-position: 0 -60px;
-    }
-    /* 封面下面的标题 */
-    .lf .floor1 .floor-body .box .title{
-      display:inline-block;
-      margin:8px 0 3px;
-    }
-    .lf .floor1 .floor-body .box .title{
-      color:#333;
-      font-size:14px;
-      line-height: 1.4;
-      text-decoration:none;
-    }
-    .lf .floor1 .floor-body .box .title:hover{
-      text-decoration:underline;
-    }
-    /* 电台节目图片 */
-    .lf .floor1 .floor-body .box .station-icon{
-      display:inline-block;
-      width:35px;height:15px;
-      margin-right:3px;
-      margin-top: -3px;
-      vertical-align: middle;
-      background:url("../img/icon.png") no-repeat -31px -658px;
-    }
-    /* 楼层之间的广告 */
-    .floor-container .n-clmnad{
-      margin:0 0 35px;
-    }
+/* 主体的封面及标题 */
+.lf .floor1 .floor-body .mg-l{
+  margin-left:-42px;
+  margin-top:20px;
+}
+.lf .floor1 .floor-body .mg-l:after{
+  content: "";
+  display: block;
+  clear:both;
+}
+.lf .floor1 .floor-body .box{
+  width:140px;
+  height:204px;
+  float:left;
+  padding-bottom:30px;
+  padding-left:42px;
+  /* margin-left:-42px; */
+}
+.lf .floor1 .floor-body .cover{
+  position: relative;
+  width:140px;
+  height:140px;
+}
+.lf .floor1 .floor-body .cover>img{
+  position: absolute;
+  left:0;top:0;right:0;bottom:0;
+}
+.lf .floor1 .floor-body .cover>a{
+  display: block;
+  position: absolute;
+  left:0;top:0;right:0;bottom:0;
+  background:url("../img/coverall.png") no-repeat 0 0;
+}
+/* 封面底部 */
+.lf .floor1 .floor-body .cover div.info{
+  position: absolute;
+  left:0;bottom:0;right:0;
+  height:27px;
+  background:url("../img/coverall.png") no-repeat 0 -537px;
+}
+/* 封面底部 耳机图标 */
+.lf .floor1 .floor-body .cover div.info>i{
+  float:left;
+  width:14px;
+  height:11px;
+  margin:9px 5px 9px 10px;
+  background:url("../img/iconall.png") no-repeat 0 -24px;
+}
+/* 封面底部 收听人数 */
+.lf .floor1 .floor-body .cover div.info>span{
+  color:#ccc;
+  font-size:12px;
+  line-height: 27px;
+}
+  /* 封面底部 播放标签 */
+.lf .floor1 .floor-body .cover div.info>a{
+  float:right;
+  width:16px;
+  height:17px;
+  margin-top:5px;
+  margin-right:10px;
+  background:url("../img/iconall.png") no-repeat 0 0;
+}
+.lf .floor1 .floor-body .cover div.info>a:hover{
+  background-position: 0 -60px;
+}
+/* 封面下面的标题 */
+.lf .floor1 .floor-body .box .title{
+  display:inline-block;
+  margin:8px 0 3px;
+}
+.lf .floor1 .floor-body .box .title{
+  color:#333;
+  font-size:14px;
+  line-height: 1.4;
+  text-decoration:none;
+}
+.lf .floor1 .floor-body .box .title:hover{
+  text-decoration:underline;
+}
+/* 电台节目图片 */
+.lf .floor1 .floor-body .box .station-icon{
+  display:inline-block;
+  width:35px;height:15px;
+  margin-right:3px;
+  margin-top: -3px;
+  vertical-align: middle;
+  background:url("../img/icon.png") no-repeat -31px -658px;
+}
+/* 楼层之间的广告 */
+.floor-container .n-clmnad{
+  margin:0 0 35px;
+}
 
-    /* 2l */
-    .floor2 .floor-body .box{
-      position: relative;
-      width:100%;
-      height:186px;
-      margin-top:20px;
-      margin-bottom:37px;
-      border:1px solid #d3d3d3;
-      background:#f5f5f5;
-      box-sizing: border-box;
-    }
-    .floor2 .floor-body .box>div{
-      width:645px;
-      height:100%;
-      padding-top:28px;
-      margin:0 auto;
-    }
-   
-    .floor2 .floor-body .box ul:after{
-      content: "";
-      display: block;
-      clear:both;
-    }
-    .floor2 .floor-body .box li{
-      float:left;
-    }
-    .floor2 .floor-body .box .cover{
-      width:100px;
-      height:100px;
-      position: relative;
-    }
-    .floor2 .floor-body .box .cover>img,
-    .floor2 .floor-body .box .cover>a:first-of-type{
-      display: block;
-      position: absolute;
-      top:0;right:0;bottom:0;left:0;
-    }
-    .floor2 .floor-body .box .cover>a:first-of-type{
-      right:-18px;
-      background: url("../img/coverall.png") no-repeat 0 -570px;
-    }
-    .floor2 .floor-body .box .cover a:last-of-type{
-      display: none;
-      width:22px;
-      height:22px;
-      position: absolute;
-      top:73px;left:72px;
-      background: url("../img/iconall.png") no-repeat 0 -85px;
-    }
-    .floor2 .floor-body .box .cover:hover a:last-of-type{
-      display: block;
-    }
-    .floor2 .floor-body .box .cover a:last-of-type:hover{
-      background-position: 0 -110px;
-    }
+/* 2l */
+.floor2 .floor-body .box{
+  position: relative;
+  width:100%;
+  height:186px;
+  margin-top:20px;
+  margin-bottom:37px;
+  border:1px solid #d3d3d3;
+  background:#f5f5f5;
+  box-sizing: border-box;
+}
+.floor2 .floor-body .box>div{
+  width:645px;
+  height:100%;
+  padding-top:28px;
+  margin:0 auto;
+  /* overflow:hidden; */
+  position: relative;
+}
+.floor2 .floor-body .box ul{
+  /* width:9999px; */
+  position: absolute;
+  left:0;
+  margin-left:-7px;
+}
+.floor2 .floor-body .box ul:after{
+  content: "";
+  display: block;
+  clear:both;
+  
+}
+.floor2 .floor-body .box li{
+  float:left;
+  margin-left:11px;
+  margin-right:18px;
+}
+.floor2 .floor-body .box .cover{
+  width:100px;
+  height:100px;
+  position: relative;
+}
+.floor2 .floor-body .box .cover>img,
+.floor2 .floor-body .box .cover>a:first-of-type{
+  display: block;
+  position: absolute;
+  top:0;right:0;bottom:0;left:0;
+}
+.floor2 .floor-body .box .cover>a:first-of-type{
+  right:-18px;
+  background: url("../img/coverall.png") no-repeat 0 -570px;
+}
+.floor2 .floor-body .box .cover a:last-of-type{
+  display: none;
+  width:22px;
+  height:22px;
+  position: absolute;
+  top:73px;left:72px;
+  background: url("../img/iconall.png") no-repeat 0 -85px;
+}
+.floor2 .floor-body .box .cover:hover a:last-of-type{
+  display: block;
+}
+.floor2 .floor-body .box .cover a:last-of-type:hover{
+  background-position: 0 -110px;
+}
+.floor2 .floor-body .box .s-title a,
+.floor2 .floor-body .box .author a{
+  text-decoration: none;
+  color: #333;
+  font-size:12px;
+}
+.floor2 .floor-body .box .author a{
+  color: #666;
+}
+.floor2 .floor-body .box .s-title a:hover,
+.floor2 .floor-body .box .author a:hover{
+  text-decoration:underline;
+}
+.floor2 .floor-body .box .prev,
+.floor2 .floor-body .box .next{
+  position: absolute;
+  left:-18px; top:73px;
+  display: block;
+  width:17px;
+  height:17px;
+  background:url("../img/index.png") no-repeat -260px -75px;
+}
+.floor2 .floor-body .box .next{
+  left:auto;right:-12px;
+  background-position: -300px -75px;
+}
+.floor2 .floor-body .box .prev:hover{
+  background-position: -280px -75px;
+}
+.floor2 .floor-body .box .next:hover{
+  background-position: -320px -75px;
+}
