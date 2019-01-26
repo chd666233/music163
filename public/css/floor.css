@@ -285,3 +285,57 @@
 .floor2 .floor-body .box .next:hover{
   background-position: -320px -75px;
 }
+
+/* 3L */
+.floor3 .header{
+  width:230px;
+  height:120px;
+  padding:20px;
+  box-sizing: border-box;
+}
+.floor3 .header:after{
+  content:'';
+  display: block;
+  clear: both;
+}
+.floor3 .cover{
+  position: relative;
+  width:80px;
+  height:80px;
+  float:left;
+}
+.floor3 .cover img{
+  width:100%;
+  height:100%;
+}
+.floor3 .cover a{
+  display:block;
+  position: absolute;
+  top:0;right:0;bottom:0;left:0;
+  background:url("../img/coverall.png") no-repeat -145px -57px;
+}
+.floor3 .cover+div{
+  float:left;
+  margin-left:10px;
+  margin-top:6px;
+}
+.floor3 .cover+div .title{
+  text-decoration:none;
+  color:#333;
+  font-size:14px;
+}
+.floor3 .cover+div .title:hover{
+  text-decoration:underline;
+}
+.floor3 .cover+div .play,
+.floor3 .cover+div .keep{
+  display:inline-block;
+  width:22px;
+  height:22px;
+  background:url("../img/index.png") no-repeat -267px -205px;
+  margin-top:10px;
+}
+.floor3 .cover+div .keep{
+  background-position: -300px -205px; 
+  margin-left:10px;
+}
