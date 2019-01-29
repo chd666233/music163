@@ -3,32 +3,118 @@ a{
   color:#aaa;
   font-size:16px;
 }
-li{float:left;}
+
+/* *********头部 容器 */
 .nmusician header{
-  display:fixed;
+  position: fixed;
   left:0;top:0;
   width:100%;
   height:60px;
   background: rgba(36,36,36,0);
   z-index:999;
 }
+.nmusician header nav{
+  width:1200px;
+  height:60px;
+  margin:0 auto;
+}
+.nmusician header .page,
 .nmusician header .logo{
-  display: inline-block;
+  float:left;
+  height:100%;
+}
+.nmusician header .page{
+  margin-left:35px;
+}
+.nmusician header .logo{
   width:200px;
-  height:160px;
   text-indent: -9999px;
   background:url("../img/nmusician_logo.png") no-repeat;
 }
-.nmusician section {
-  
+/* *************page */
+.nmusician header .page li{
+  float:left;
+  width:88px;
+  height:100%;
+  margin-right:62px;
+  text-align:center;
+  line-height:60px;
+}
+
+.nmusician header .page li.active{
+  border-bottom:3px solid #c62f2f;
+  border-top:3px solid transparent;
+  box-sizing: border-box;
+  line-height:54px;
+}
+.nmusician header .page li:hover a,
+.nmusician header .page li.active a{
+  color:#fff;
+}
+
+.nmusician header .page li a{
+  display:block;
+  width:100%;
+  height:100%;
+}
+.nmusician header .page li a.z-stone-plan-online{
   position: relative;
-  
-  z-index:9;
+}
+.nmusician header .page li a.z-stone-plan-online:after{
+  content:"投稿中";
+  display:block;
+  width:50px;
+  height:18px;
+  position: absolute;
+  top:50%;left:93%;
+  transform: translateY(-50%);
+  color: #ea524e;
+  border: 1px solid #ea524e;
+  border-radius:9px;
+  font-size:12px;
+  line-height:18px;
+}
+/* **************login */
+.nmusician header .user{
+  float:right;
+  height:60px;
+}
+.nmusician header .user li{
+  float:left;
+  line-height: 60px;
+  text-align:center;
+  color:#aaa;
+  font-size:12px;
+}
+.nmusician header .user .joinUs{
+  display: inline-block;
+  width:81px;
+  height:23px;
+  margin-right:20px;
+  line-height: 23px;
+  color: #ea524e;
+  border: 1px solid #8e413e;
+  font-size:12px;
+}
+.nmusician header .user .login{
+  margin-left:7px;
+  font-size:12px;
+  text-decoration: underline;
+  color:#fff;
+}
+
+
+
+
+
+.nmusician section {
+  position: relative;
+  top:-60px;
 }
 .nmusician section .floor1{
   width:100%;
   position: absolute;
-  top:-60px;left:0;
+  top:0;left:0;
   background:url("../img/nmusician_bg1.jpg") no-repeat;
   background-size:100%;
 }
