@@ -1,0 +1,34 @@
+a{
+  text-decoration:none;
+  color:#aaa;
+  font-size:16px;
+}
+li{float:left;}
+.nmusician header{
+  display:fixed;
+  left:0;top:0;
+  width:100%;
+  height:60px;
+  background: rgba(36,36,36,0);
+  z-index:999;
+}
+.nmusician header .logo{
+  display: inline-block;
+  width:200px;
+  height:160px;
+  text-indent: -9999px;
+  background:url("../img/nmusician_logo.png") no-repeat;
+}
+.nmusician section {
+  
+  position: relative;
+  
+  z-index:9;
+}
+.nmusician section .floor1{
+  width:100%;
+  position: absolute;
+  top:-60px;left:0;
+  background:url("../img/nmusician_bg1.jpg") no-repeat;
+  background-size:100%;
+}
