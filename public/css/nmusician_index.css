@@ -1,0 +1,27 @@
+
+     
+html,body{
+  height: 100%;
+}         
+        
+
+
+.nmusician section {
+  position: relative;
+  /* top:-60px; */
+  height:100%;
+  overflow: hidden;
+  /* background-color: #282828; */
+}
+.nmusician section ul{
+  width:100%;
+  height:100%;
+  position: absolute;
+  top:0;left:0;
+}
+.nmusician section .floor1{
+  width:100%;
+  height:100%;
+  background:url("../img/nmusician_bg1.jpg") no-repeat 50%;
+  background-size:auto 100%;
+}

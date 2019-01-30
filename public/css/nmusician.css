@@ -1,3 +1,5 @@
+
+
 a{
   text-decoration:none;
   color:#aaa;
@@ -107,14 +109,3 @@ a{
 
 
 
-.nmusician section {
-  position: relative;
-  top:-60px;
-}
-.nmusician section .floor1{
-  width:100%;
-  position: absolute;
-  top:0;left:0;
-  background:url("../img/nmusician_bg1.jpg") no-repeat;
-  background-size:100%;
-}
