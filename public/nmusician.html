@@ -62,12 +62,12 @@
     var isMacWebkit=(navigator.userAgent.indexOf("Macintosh")!==-1&&navigator.userAgent.indexOf("WebKit")!==-1);
     var isFirefox=(navigator.userAgent.indexOf("Gecko")!==-1);
     //获取需要的节点
-    var viewH=innerHeight;
     var header=document.getElementById("header");
     var floor=document.getElementById("floor");
     var indicator=document.getElementById("indicator");
     var fragment=document.createDocumentFragment();
     var length=floor.getElementsByTagName("LI").length;
+    var viewH=innerHeight;
 
     //动态添加指示器
     for(var i=0;i<length;i++){
@@ -87,30 +87,57 @@
 
 
     //初始化事件处理函数参数
-    var targetT=0,scrolling,index=0;
-    //li发生mouseover事件时改变index的值
-    indicator.onmouseover=function(event){
+    var targetT=0,scrolling,isScroll=true,overing,isOver=false,overing2,index=0;
+    indicator.onmouseover=mOverHandler;
+    indicator.onmouseout=function(event){
+      clearTimeout(overing2);
+    }
+    function mOverHandler(event){
       var e=event || window.event;//标准或IE事件对象
       if(e.target.nodeName!=='LI') return;
 
+      
+      // console.log("++++++++",index,targetT,ulT)
+      // if(isScroll) return;
+  
+      var time=0;
+      //如果上一轮还没有滚动到目标位置，延迟滚动
       var ulT=parseFloat(getComputedStyle(floor).top);
-      if(targetT!=ulT)return;
-
-      index=[].indexOf.call(lis,e.target);
-      currentIndex=[].indexOf(lis,)
-      //滚动ul到对应位置
-      scrollUl(index,ulT);
+      if(targetT!=ulT){
+        time=700;
+      }
+      if(overing2) clearTimeout(overing2);
+      overing2=setTimeout(()=>{
+        // isOver=true;
+        var currenteInde=index;
+        index=[].indexOf.call(lis,e.target);
+        lis[currenteInde].className="";
+        lis[index].className="active";
+        targetT=ulT=-index*viewH;
+        floor.style.cssText=`transition:top 1s ease-in-out;top:${ulT}px`;
+        //如果移动间隔1ms结束锁定，可以滚动，避免数据错乱
+        if(overing) clearTimeout(overing);
+        overing=setTimeout(()=>{
+          floor.style.cssText=`transition:none;top:${ulT}px`;
+          // isOver=false;
+          indicator.onmouseover=mOverHandler;
+        },1000)
+      },time);
     }
+
     //事件处理函数
     function wheelHandler(event){
+      // console.log("-------------",index)
       var ulT=parseFloat(getComputedStyle(floor).top);
       var ulH=parseFloat(getComputedStyle(floor).height)*length;
+      isScroll=true;
       //如果上一轮还没有滚动到目标位置，不执行这轮滚动
       if(targetT!=ulT)return;
+      // if(isOver)return;
+
       
       //计算跨浏览器的deltaY
       var e=event || window.event;//标准或IE事件对象
-
       var deltaY=(e.deltaY!==null&&e.deltaY*-30)||//3级
                 (e.wheelDelta!==null&&e.wheelDelta/4)||//大部份浏览器
                 e.detail*-10||//FF
@@ -123,24 +150,7 @@
       if(isFirefox && e.type!=="DOMMouseScroll")
         floor.removeEventListener("DOMMouseScroll",wheelHandler,false);
 
-      //滚动ul到对应位置
-      scrollUl(deltaY,ulT);
       
-
-      //鼠标停止滚动，取消渐变
-      if(scrolling) clearTimeout(scrolling);
-      scrolling=setTimeout(()=>{
-        floor.style.cssText=`transition:none;top:${ulT}px`;
-      },3000)
-
-      //调用wheel事件上的preventDefault(),也能阻止mousewheel事件的产生
-      if(e.preventDefault)e.preventDefault();
-      if(e.stopPropagation)e.stopPropagation();
-      e.cancelBubble=true;//IE事件  阻止冒泡
-      e.returnValue=false;//IE事件
-      return false;
-    }
-    function scrollUl(deltaY,ulT){  
       if(deltaY>0){
         if(index==0)return;
         if(index==1)header.style.cssText="transition:background 1s;background:rgba(36, 36, 36, 0)";
@@ -159,7 +169,22 @@
       }
       targetT=ulT=-viewH*index;
       floor.style.cssText=`transition:top 1s ease-in-out;top:${ulT}px`;
+
+      //鼠标停止滚动，取消渐变
+      if(scrolling) clearTimeout(scrolling);
+      scrolling=setTimeout(()=>{
+        floor.style.cssText=`transition:none;top:${ulT}px`;
+        // isScroll=false;
+      },1000)
+
+      //调用wheel事件上的preventDefault(),也能阻止mousewheel事件的产生
+      if(e.preventDefault)e.preventDefault();
+      if(e.stopPropagation)e.stopPropagation();
+      e.cancelBubble=true;//IE事件  阻止冒泡
+      e.returnValue=false;//IE事件
+      return false;
     }
+ 
   })()
   
  
