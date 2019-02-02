@@ -11,8 +11,8 @@
 
 </head>
 <body class="nmusician">
-  <header>
-    <nav >
+  <header id="header">
+    <nav>
       <a href="#" class="logo">网易音乐人</a>
       <ul class="page">
         <li class="active"><a href="#">首页</a></li>
@@ -30,14 +30,139 @@
   <!-- <iframe name="contentFrame" src="nmusician_index.html" frameborder="0" scrolling="no"></iframe> -->
 
   <section>
-      <ul>
-        <li class="floor1">
-          <img src="img/nmusician_1.png" alt="">
-        </li>
-        <li class="floor1">
-          <img src="img/nmusician_1.png" alt="">
-        </li>
-      </ul>
-    </section>
+    <ul id="floor">
+      <li class="floor1">
+        <img src="img/nmusician_1.png" alt="">
+        <p class="joinUs">
+          <a href="#">现在加入</a>
+          <a href="#">I'm Not Chinese Artist ></a>
+        </p>
+        <div class="btn">
+          <a href="#"></a>
+          <a href="#"></a>
+          <a href="#"></a>
+        </div>
+      </li>
+      <li class="floor2">
+        <img src="img/nmusician_1.png" alt="">
+      </li>
+      <li class="floor3">
+        <img src="img/nmusician_1.png" alt="">
+      </li>
+      <li class="floor4">
+        <img src="img/nmusician_1.png" alt="">
+      </li>
+    </ul>
+    <ul id="indicator" class="indicator"></ul>
+  </section>
+  <script>
+  "use strict";
+  (function(){
+    // 判断浏览器类型
+    var isMacWebkit=(navigator.userAgent.indexOf("Macintosh")!==-1&&navigator.userAgent.indexOf("WebKit")!==-1);
+    var isFirefox=(navigator.userAgent.indexOf("Gecko")!==-1);
+    //获取需要的节点
+    var viewH=innerHeight;
+    var header=document.getElementById("header");
+    var floor=document.getElementById("floor");
+    var indicator=document.getElementById("indicator");
+    var fragment=document.createDocumentFragment();
+    var length=floor.getElementsByTagName("LI").length;
+
+    //动态添加指示器
+    for(var i=0;i<length;i++){
+      var li=document.createElement("LI");
+      if(i==0) li.className="active";
+      li.setAttribute("data-index",i);
+      fragment.appendChild(li);
+    }
+    indicator.appendChild(fragment);
+    var lis=indicator.getElementsByTagName("LI");
+    
+    //注册事件处理函数
+    floor.onwheel=wheelHandler;//FF未来浏览器
+    floor.onmousewheel=wheelHandler//大多数当前浏览器
+    if(isFirefox)//仅FireFox，包括FF未来
+      floor.addEventListener("DOMMouseScroll",wheelHandler,false);
+
+
+    //初始化事件处理函数参数
+    var targetT=0,scrolling,index=0;
+    //li发生mouseover事件时改变index的值
+    indicator.onmouseover=function(event){
+      var e=event || window.event;//标准或IE事件对象
+      if(e.target.nodeName!=='LI') return;
+
+      var ulT=parseFloat(getComputedStyle(floor).top);
+      if(targetT!=ulT)return;
+
+      index=[].indexOf.call(lis,e.target);
+      currentIndex=[].indexOf(lis,)
+      //滚动ul到对应位置
+      scrollUl(index,ulT);
+    }
+    //事件处理函数
+    function wheelHandler(event){
+      var ulT=parseFloat(getComputedStyle(floor).top);
+      var ulH=parseFloat(getComputedStyle(floor).height)*length;
+      //如果上一轮还没有滚动到目标位置，不执行这轮滚动
+      if(targetT!=ulT)return;
+      
+      //计算跨浏览器的deltaY
+      var e=event || window.event;//标准或IE事件对象
+
+      var deltaY=(e.deltaY!==null&&e.deltaY*-30)||//3级
+                (e.wheelDelta!==null&&e.wheelDelta/4)||//大部份浏览器
+                e.detail*-10||//FF
+                0;//未定义
+      if(isMacWebkit){//如果是Mac,delta的值大120倍
+        deltaY/=30;
+      }
+
+      //如果事件类型不是DOMMouseScroll就不再需要,因为如果FF未来版支持wheel或mousewheel会重复添加事件，需要去掉重复事件
+      if(isFirefox && e.type!=="DOMMouseScroll")
+        floor.removeEventListener("DOMMouseScroll",wheelHandler,false);
+
+      //滚动ul到对应位置
+      scrollUl(deltaY,ulT);
+      
+
+      //鼠标停止滚动，取消渐变
+      if(scrolling) clearTimeout(scrolling);
+      scrolling=setTimeout(()=>{
+        floor.style.cssText=`transition:none;top:${ulT}px`;
+      },3000)
+
+      //调用wheel事件上的preventDefault(),也能阻止mousewheel事件的产生
+      if(e.preventDefault)e.preventDefault();
+      if(e.stopPropagation)e.stopPropagation();
+      e.cancelBubble=true;//IE事件  阻止冒泡
+      e.returnValue=false;//IE事件
+      return false;
+    }
+    function scrollUl(deltaY,ulT){  
+      if(deltaY>0){
+        if(index==0)return;
+        if(index==1)header.style.cssText="transition:background 1s;background:rgba(36, 36, 36, 0)";
+        //滚动
+        index--;
+        lis[index].className="active";
+        lis[index+1].className="";
+        
+      }else{
+        if(index==length-1) return;
+        header.style.cssText="transition:background 1s;background:rgb(36, 36, 36)";
+        //滚动
+        index++;
+        lis[index].className="active";
+        lis[index-1].className="";
+      }
+      targetT=ulT=-viewH*index;
+      floor.style.cssText=`transition:top 1s ease-in-out;top:${ulT}px`;
+    }
+  })()
+  
+ 
+  </script>
 </body>
 </html>

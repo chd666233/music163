@@ -3,25 +3,112 @@
 html,body{
   height: 100%;
 }         
-        
-
-
+      
 .nmusician section {
   position: relative;
   /* top:-60px; */
   height:100%;
   overflow: hidden;
-  /* background-color: #282828; */
+  background-color: #282828;
 }
 .nmusician section ul{
   width:100%;
   height:100%;
   position: absolute;
   top:0;left:0;
+  text-align: center;
 }
-.nmusician section .floor1{
+.nmusician section ul li{
+  height:100%;
+}
+.nmusician section ul img{
+  height:73%;
+  margin-top: 57px;
+  margin-left:-10;
+}
+.nmusician section .floor1,
+.nmusician section .floor2,
+.nmusician section .floor3,
+.nmusician section .floor4,
+.nmusician section .floor5,
+.nmusician section .floor6{
   width:100%;
   height:100%;
   background:url("../img/nmusician_bg1.jpg") no-repeat 50%;
   background-size:auto 100%;
+}
+.nmusician section .floor1 .joinUs{
+  margin-top:-210px;
+}
+.nmusician section .floor1 .joinUs a{
+  color:#ea524e;
+  font-size:17px;
+}
+
+.nmusician section .floor1 .joinUs a:first-child{
+  display:block;
+  width:154px;
+  height:49px;
+  margin:0px auto 5px;
+  border:2px solid #ea524e;
+  line-height: 49px;
+}
+.nmusician section .floor1 .joinUs a:last-child{
+  font-size:12px;
+}
+.nmusician section .floor1 .joinUs a:last-child:hover{
+  text-decoration:underline;
+}
+.nmusician section .floor1 .btn{
+  width:100%;
+  position: absolute;
+  bottom: 8%;
+}
+.nmusician section .floor1 .btn a{
+  display:inline-block;
+  width:111px;
+  height:76px;
+  margin:0 77px 0;
+  background:url("../img/nmusician_1_1.png");
+}
+.nmusician section .floor1 .btn a+a{
+  background:url("../img/nmusician_1_2.png");
+}
+.nmusician section .floor1 .btn a+a+a{
+  background:url("../img/nmusician_1_3.png");
+}
+.nmusician section .floor1 .btn a:hover{
+  background:url("../img/nmusician_1_1h.png");
+}
+.nmusician section .floor1 .btn a+a:hover{
+  background:url("../img/nmusician_1_2h.png");
+}
+.nmusician section .floor1 .btn a+a+a:hover{
+  background:url("../img/nmusician_1_3h.png");
+}
+.nmusician section .floor2{
+  background:url("../img/nmusician_bg2.jpg") no-repeat 50%;
+}
+.nmusician section .floor3{
+  background:url("../img/nmusician_bg3.jpg") no-repeat 50%;
+}
+
+.nmusician section .indicator{
+  position: absolute;
+  width:10px;
+  height:auto;
+  left:auto;
+  right:3%;
+  top:50%;
+  transform:translateY(-50%);
+}
+.nmusician section .indicator li{
+  width:16px;
+  height:16px;
+  margin:2px 0 2px;
+  background:rgba(0,0,0,0) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QzE4MTU3MjU4OTY2MTFFNkE3OUVEOTBCM0QxQ0QyN0QiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzE4MTU3MjY4OTY2MTFFNkE3OUVEOTBCM0QxQ0QyN0QiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGNThDNTU2ODg5NEUxMUU2QTc5RUQ5MEIzRDFDRDI3RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDMTgxNTcyNDg5NjYxMUU2QTc5RUQ5MEIzRDFDRDI3RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pl2MbHAAAACVSURBVHjaYvz//z8DJYAFRHR2dpKssby8HEwzMVAIWHCIiwOxEhALQPkfgPgeEL8kxgANIFZFExOB4ttAfANZggmLzap4XKwKVYPTACUivK2EzwABIgwQwGcAyQDdgA9E6PmAz4B7RBhwD58BL6FRhQvcRk8L2NLBDagzFYFYECr2npSEBAIvoJggYKQ0N1IcjQABBgChCRzLz68nBQAAAABJRU5ErkJggg==);
+  border-radius:50%;
+}
+.nmusician section .indicator li.active{
+  background:rgba(0,0,0,0) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RjU4QzU1NjI4OTRFMTFFNkE3OUVEOTBCM0QxQ0QyN0QiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RjU4QzU1NjM4OTRFMTFFNkE3OUVEOTBCM0QxQ0QyN0QiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGNThDNTU2MDg5NEUxMUU2QTc5RUQ5MEIzRDFDRDI3RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGNThDNTU2MTg5NEUxMUU2QTc5RUQ5MEIzRDFDRDI3RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PvXjK28AAACZSURBVHjaYvz//z8DJYARZMBPa1OSNbIfPQ2mmRgoBLgM8AXifUD8GYpBbB9iDWgB4k1A7AjEPFAMYm+GyuE1AGRLNR4XV0Ndh9OAIiK8XYjPABMiDDAhJhDxRj0+A84QYcBpfAb0E2FAPz4DQFHVikdzK1QN3jCoAWJ/IN4PxF+hGMT2g8qhABYcNm2CYuIyE8W5kRIAEGAA3bwkdvlRq0cAAAAASUVORK5CYII=);
 }
