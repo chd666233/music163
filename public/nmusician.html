@@ -56,6 +56,23 @@
     <ul id="indicator" class="indicator"></ul>
   </section>
   <script>
+    /*  1.为了能够在鼠标在ul或li上依然滚动，把滚动事件绑定在了document上
+        2.为了能够在滚动后鼠标如果还在li上能滚动回去，用了 
+        if(isOver){
+              mOverHandler.call(cLi,eV)
+        }
+        3.为了当鼠标移到li上即使还没有到达目标也能在到达目标后滚动到li位置，用了setTimeout 700ms
+          同时700ms到达前从li上移开了，用了mouseouter clearTimeout
+        4.ulT和targetT不同步，因为ulT在其他地方重新赋值了，所以下面重新给ulT赋值
+        if(overing) clearTimeout(overing);
+        overing=setTimeout(()=>{
+          ulT=parseFloat(getComputedStyle(floor).top);//为什么要重新获取？因为在wheelHandler中重新给ulT赋值了，ulT和targetT并不完全同步，但是targetT代表的是目标位置
+          console.log("##################",ulT,targetT,viewH)
+          if(ulT-targetT<2&&ulT-targetT>-2){//移动到目标位置后
+            floor.style.cssText=`transition:none;top:${targetT}px`;
+          }
+        },1000)
+    */
   "use strict";
   (function(){
     // 判断浏览器类型
@@ -98,10 +115,10 @@
       var e=event || window.event;//标准或IE事件对象
       if(e.target.nodeName!=='LI') return;
       isOver=false;
+      if(overing2) clearTimeout(overing2);
       // floor.style.cssText=`transition:none;top:${targetT}px`;
       // clearTimeout(overing)
     }
-    var temp;
     function mOverHandler(event){
      
       var e=event || window.event;//标准或IE事件对象
@@ -124,7 +141,6 @@
         overing=setTimeout(()=>{
           // console.log('--------------->',floor.offsetParent,floor.offsetTop)
           ulT=parseFloat(getComputedStyle(floor).top);//为什么要重新获取？因为在wheelHandler中重新给ulT赋值了，ulT和targetT并不完全同步，但是targetT代表的是目标位置
-          // var temp=ulT;
           console.log("##################",ulT,targetT,viewH)
           if(ulT-targetT<2&&ulT-targetT>-2){//移动到目标位置后
             // console.log("##################",ulT,targetT,index)
@@ -136,8 +152,12 @@
         index=[].indexOf.call(lis,e.target);
         lis[currenteInde].className="";
         lis[index].className="active";
-        temp=targetT=ulT=-index*viewH;
-        floor.style.cssText=`transition:top 1s ease-in-out;top:${temp}px`;
+        targetT=ulT=-index*viewH;
+        floor.style.cssText=`transition:top 1s ease-in-out;top:${targetT}px`;
+        if(index==0)
+          header.style.cssText="transition:background 1s;background:rgba(36, 36, 36, 0)";
+        else
+          header.style.cssText="transition:background 1s;background:rgb(36, 36, 36)";
       },time);
  
       
@@ -158,7 +178,7 @@
         ulT=parseFloat(getComputedStyle(floor).top);
         if(ulT==targetT){//移动到目标位置后
           console.log("&&&&&&&&&&&&&&",ulT,targetT)
-          // floor.style.cssText=`transition:none;top:${targetT}px`;
+          floor.style.cssText=`transition:none;top:${targetT}px`;
         }
         isScroll=false;
         if(isOver){
