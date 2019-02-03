@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/nmusician.css">
   <link rel="stylesheet" href="css/nmusician_index.css">
-
+  <script src="js/jquery-1.11.3.js"></script>
 </head>
 <body class="nmusician">
   <header id="header">
@@ -79,65 +79,101 @@
     indicator.appendChild(fragment);
     var lis=indicator.getElementsByTagName("LI");
     
+    
+     //初始化事件处理函数参数
+    var targetT=0,index=0,ulT,scrolling,isScroll=false,overing,isOver=false,overing2;
+    var cLi=null,eV=null;
+  
+    
+
     //注册事件处理函数
-    floor.onwheel=wheelHandler;//FF未来浏览器
-    floor.onmousewheel=wheelHandler//大多数当前浏览器
+    document.onwheel=wheelHandler;//FF未来浏览器
+    document.onmousewheel=wheelHandler//大多数当前浏览器
+    // document.addEventListener("mousewheel",wheelHandler);
     if(isFirefox)//仅FireFox，包括FF未来
-      floor.addEventListener("DOMMouseScroll",wheelHandler,false);
-
-
-    //初始化事件处理函数参数
-    var targetT=0,scrolling,isScroll=true,overing,isOver=false,overing2,index=0;
+      document.addEventListener("DOMMouseScroll",wheelHandler,false);
+    //注册事件处理函数
     indicator.onmouseover=mOverHandler;
-    indicator.onmouseout=function(event){
-      clearTimeout(overing2);
-    }
-    function mOverHandler(event){
+    indicator.onmouseout=function(){
       var e=event || window.event;//标准或IE事件对象
       if(e.target.nodeName!=='LI') return;
-
+      isOver=false;
+      // floor.style.cssText=`transition:none;top:${targetT}px`;
+      // clearTimeout(overing)
+    }
+    var temp;
+    function mOverHandler(event){
+     
+      var e=event || window.event;//标准或IE事件对象
+      if(e.target.nodeName!=='LI') return;
+      cLi=e.target,eV=e;
+      isOver=true;
       
-      // console.log("++++++++",index,targetT,ulT)
-      // if(isScroll) return;
-  
-      var time=0;
+      // if(isScroll)return;
+      
       //如果上一轮还没有滚动到目标位置，延迟滚动
-      var ulT=parseFloat(getComputedStyle(floor).top);
-      if(targetT!=ulT){
+      ulT=parseFloat(getComputedStyle(floor).top);
+      console.log("++++++++",index,targetT,ulT,[].indexOf.call(lis,e.target));
+      var time=0;
+      if(targetT!=ulT) {
         time=700;
       }
       if(overing2) clearTimeout(overing2);
       overing2=setTimeout(()=>{
-        // isOver=true;
+        if(overing) clearTimeout(overing);
+        overing=setTimeout(()=>{
+          // console.log('--------------->',floor.offsetParent,floor.offsetTop)
+          ulT=parseFloat(getComputedStyle(floor).top);//为什么要重新获取？因为在wheelHandler中重新给ulT赋值了，ulT和targetT并不完全同步，但是targetT代表的是目标位置
+          // var temp=ulT;
+          console.log("##################",ulT,targetT,viewH)
+          if(ulT-targetT<2&&ulT-targetT>-2){//移动到目标位置后
+            // console.log("##################",ulT,targetT,index)
+            console.log('--------------->',ulT,targetT,floor.offsetTop)
+            floor.style.cssText=`transition:none;top:${targetT}px`;
+          }
+        },1000)
         var currenteInde=index;
         index=[].indexOf.call(lis,e.target);
         lis[currenteInde].className="";
         lis[index].className="active";
-        targetT=ulT=-index*viewH;
-        floor.style.cssText=`transition:top 1s ease-in-out;top:${ulT}px`;
-        //如果移动间隔1ms结束锁定，可以滚动，避免数据错乱
-        if(overing) clearTimeout(overing);
-        overing=setTimeout(()=>{
-          floor.style.cssText=`transition:none;top:${ulT}px`;
-          // isOver=false;
-          indicator.onmouseover=mOverHandler;
-        },1000)
+        temp=targetT=ulT=-index*viewH;
+        floor.style.cssText=`transition:top 1s ease-in-out;top:${temp}px`;
       },time);
+ 
+      
     }
 
     //事件处理函数
     function wheelHandler(event){
-      // console.log("-------------",index)
-      var ulT=parseFloat(getComputedStyle(floor).top);
-      var ulH=parseFloat(getComputedStyle(floor).height)*length;
-      isScroll=true;
-      //如果上一轮还没有滚动到目标位置，不执行这轮滚动
-      if(targetT!=ulT)return;
-      // if(isOver)return;
-
-      
       //计算跨浏览器的deltaY
       var e=event || window.event;//标准或IE事件对象
+     
+      if(isOver&&e.target.className!='active') return;
+       //鼠标停止滚动，取消渐变,这个放前面，否则被ruturn回去不执行
+      
+      if(scrolling) clearTimeout(scrolling);
+      scrolling=setTimeout(function(){
+        console.log("&&&&&&&&&&&&&&--",ulT,targetT)
+        // console.log('--------------->',floor.offsetParent,floor.offsetTop)
+        ulT=parseFloat(getComputedStyle(floor).top);
+        if(ulT==targetT){//移动到目标位置后
+          console.log("&&&&&&&&&&&&&&",ulT,targetT)
+          // floor.style.cssText=`transition:none;top:${targetT}px`;
+        }
+        isScroll=false;
+        if(isOver){
+          mOverHandler.call(cLi,eV)
+        }
+      },1000)
+
+      ulT=parseFloat(getComputedStyle(floor).top);//重新赋值，当前的ulT
+      // var ulH=parseFloat(getComputedStyle(floor).height)*length;
+      console.log("-------------",index,targetT,ulT)//0 -425
+      //如果上一轮还没有滚动到目标位置，不执行这轮滚动
+      if(targetT!=ulT)return;
+      isScroll=true;
+ 
+      
       var deltaY=(e.deltaY!==null&&e.deltaY*-30)||//3级
                 (e.wheelDelta!==null&&e.wheelDelta/4)||//大部份浏览器
                 e.detail*-10||//FF
@@ -145,39 +181,32 @@
       if(isMacWebkit){//如果是Mac,delta的值大120倍
         deltaY/=30;
       }
-
       //如果事件类型不是DOMMouseScroll就不再需要,因为如果FF未来版支持wheel或mousewheel会重复添加事件，需要去掉重复事件
       if(isFirefox && e.type!=="DOMMouseScroll")
         floor.removeEventListener("DOMMouseScroll",wheelHandler,false);
 
       
-      
       if(deltaY>0){
         if(index==0)return;
-        if(index==1)header.style.cssText="transition:background 1s;background:rgba(36, 36, 36, 0)";
         //滚动
         index--;
-        lis[index].className="active";
         lis[index+1].className="";
-        
       }else{
         if(index==length-1) return;
-        header.style.cssText="transition:background 1s;background:rgb(36, 36, 36)";
         //滚动
         index++;
-        lis[index].className="active";
         lis[index-1].className="";
       }
-      targetT=ulT=-viewH*index;
-      floor.style.cssText=`transition:top 1s ease-in-out;top:${ulT}px`;
+      lis[index].className="active";
+      if(index==0)
+        header.style.cssText="transition:background 1s;background:rgba(36, 36, 36, 0)";
+      else
+        header.style.cssText="transition:background 1s;background:rgb(36, 36, 36)";
 
-      //鼠标停止滚动，取消渐变
-      if(scrolling) clearTimeout(scrolling);
-      scrolling=setTimeout(()=>{
-        floor.style.cssText=`transition:none;top:${ulT}px`;
-        // isScroll=false;
-      },1000)
-
+        targetT=ulT=-viewH*index;
+      /* transition:top 1s ease-in-out; */
+      floor.style.cssText=`transition:top 1s ease-in-out;top:${ulT}px`;    
+      
       //调用wheel事件上的preventDefault(),也能阻止mousewheel事件的产生
       if(e.preventDefault)e.preventDefault();
       if(e.stopPropagation)e.stopPropagation();
@@ -185,7 +214,6 @@
       e.returnValue=false;//IE事件
       return false;
     }
- 
   })()
   
  
