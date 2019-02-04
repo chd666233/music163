@@ -30,7 +30,7 @@
   <!-- <iframe name="contentFrame" src="nmusician_index.html" frameborder="0" scrolling="no"></iframe> -->
 
   <section>
-    <ul id="floor">
+    <ul id="floor" class="floor">
       <li class="floor1">
         <img src="img/nmusician_1.png" alt="">
         <p class="joinUs">
@@ -44,20 +44,79 @@
         </div>
       </li>
       <li class="floor2">
-        <h1>自助式作品管理</h1>
-        
-        <div>
-          <img src="img/nmusician_2.png" alt="">
-          <img src="img/nmusician_2.png" alt="">
-          <img src="img/nmusician_2.png" alt="">
+        <div class="box">
+          <h1>自助式作品管理</h1>
+          <div>
+            <div class="content">
+              <img src="img/nmusician_2_1.png" alt="">
+              <h3>绿色通道，快速发布</h3>
+              <p>专属上传通道，发布即上线，<br>
+                  让您的作品第一时间和粉丝见面</p>
+            </div>
+            <div class="content">
+              <img src="img/nmusician_2_2.png" alt="">
+              <h3>透明、直观的数据报表</h3>
+              <p>每日更新作品数据、粉丝数据，<br>
+                  帮助您更好的运营自己</p>
+            </div>
+            <div class="content">
+              <img src="img/nmusician_2_3.png" alt="">
+              <h3>简单易用的作品管理</h3>
+              <p>从封面、曲风到歌词编辑，<br>
+                  强大又好用的作品管理</p>
+            </div>
+          </div>
         </div>
       </li>
       <li class="floor3">
-        <img src="img/nmusician_1.png" alt="">
+        <div class="box">
+          <h1 class="dark">多维度曝光</h1>
+          <p class="desc dark">您安心做好音乐，剩下的交给我们</p>
+          <div class="content">
+            <div class="box_ul">
+              <ul id="floor3_ul" class="floor3_ul">
+                <li>
+                  <img src="img/zhaolei.jpg" alt="">
+                </li>
+                <li>
+                  <img src="img/luodi.jpg" alt="">
+                </li>
+                <li>
+                  <img src="img/duli.jpg" alt="">
+                </li>
+                <li>
+                  <img src="img/lizhi.jpg" alt="">
+                </li>
+                <li>
+                  <img src="img/shitoujihua.jpg" alt="">
+                </li>
+              </ul>
+            </div>
+            
+            <span class="prev"></span>
+            <span class="next"></span>
+          </div>
+        </div>
       </li>
       <li class="floor4">
-        <img src="img/nmusician_1.png" alt="">
+        <div class="box">
+          <h1>丰富的变现模式</h1>
+          <p class="desc">除了加入会员项目、售卖数字专辑外，您还可以通过开通赞赏、售卖周边获取额外收入</p>
+          <div class="content">
+            <div class="cover">陈粒</div>
+            <p>专辑累计销量227785张</p>
+          </div>
+          <div class="content">
+            <div class="cover">李志</div>
+            <p>专辑累计销量303196张</p>
+          </div>
+          <div class="content">
+            <div class="cover">好妹妹</div>
+            <p>专辑累计销量127765张</p>
+          </div>
+        </div>
       </li>
+     
     </ul>
     <ul id="indicator" class="indicator"></ul>
   </section>
@@ -91,7 +150,7 @@
     var floor=document.getElementById("floor");
     var indicator=document.getElementById("indicator");
     var fragment=document.createDocumentFragment();
-    var length=floor.getElementsByTagName("LI").length;
+    var length=floor.querySelectorAll(".floor>li").length;
     var viewH=innerHeight;
 
     //动态添加指示器

@@ -65,8 +65,8 @@ a{
 .nmusician header .page li a.z-stone-plan-online:after{
   content:"投稿中";
   display:block;
-  width:50px;
-  height:18px;
+  width:48px;
+  height:16px;
   position: absolute;
   top:50%;left:93%;
   transform: translateY(-50%);
@@ -74,7 +74,7 @@ a{
   border: 1px solid #ea524e;
   border-radius:9px;
   font-size:12px;
-  line-height:18px;
+  line-height:16px;
 }
 /* **************login */
 .nmusician header .user{

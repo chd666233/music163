@@ -3,7 +3,7 @@
 html,body{
   height: 100%;
 }         
-      
+/* ************************容器 */   
 .nmusician section {
   position: relative;
   /* top:-60px; */
@@ -11,21 +11,14 @@ html,body{
   overflow: hidden;
   background-color: #282828;
 }
-.nmusician section ul{
+.nmusician section ul.floor{
   width:100%;
   height:100%;
   position: absolute;
   top:0;left:0;
   text-align: center;
 }
-.nmusician section ul li{
-  height:100%;
-}
-.nmusician section ul img{
-  height:73%;
-  margin-top: 57px;
-  margin-left:-10;
-}
+/* 公共样式 */
 .nmusician section .floor1,
 .nmusician section .floor2,
 .nmusician section .floor3,
@@ -34,8 +27,62 @@ html,body{
 .nmusician section .floor6{
   width:100%;
   height:100%;
-  background:url("../img/nmusician_bg1.jpg") no-repeat 50%;
-  background-size:auto 100%;
+  background:url("../img/nmusician_bg1.jpg") no-repeat 50%/auto 100%;
+}
+.nmusician section .floor2 h1,
+.nmusician section .floor3 h1,
+.nmusician section .floor4 h1{
+  margin-bottom:88px;
+  font-size:28px;
+  font-weight:400;
+  color:#333;
+}
+.nmusician section .floor h1.dark{
+  color:#fff;
+}
+.nmusician section .floor2 h1:after,
+.nmusician section .floor3 h1:after,
+.nmusician section .floor4 h1:after{
+  content:'';
+  display: block;
+  height: 2px;
+  width: 100px;
+  margin:15px auto;
+  background: #f83934
+}
+.nmusician section .floor2,
+.nmusician section .floor3,
+.nmusician section .floor4{
+  position: relative;
+}
+.nmusician section .floor2 .box,
+.nmusician section .floor3 .box,
+.nmusician section .floor4 .box{
+  position: absolute;
+  top:0;right:0;bottom:0;left:0;
+  width:1025px;
+  height:500px;
+  margin:auto;
+}
+
+.nmusician section .floor3 .desc, 
+.nmusician section .floor4 .desc{
+  margin-top:-60px;
+  margin-bottom:70px;
+  color:#888;
+  font-size:18px;
+}
+.nmusician section .floor .desc.dark{
+  color:#aaa;
+}
+/* *************************1L */
+.nmusician section ul li.floor1{
+  height:100%;
+}
+.nmusician section ul li.floor1 img{
+  height:73%;
+  margin-top: 57px;
+  margin-left:-10;
 }
 .nmusician section .floor1 .joinUs{
   margin-top:-210px;
@@ -86,20 +133,124 @@ html,body{
 .nmusician section .floor1 .btn a+a+a:hover{
   background:url("../img/nmusician_1_3h.png");
 }
+
+
+/* *********************2L */
 .nmusician section .floor2{
-  background:url("../img/nmusician_bg2.jpg") no-repeat 50%;
+  background:#fff url("../img/nmusician_bg2.jpg") no-repeat 50%/auto 100%;
 }
-.nmusician section .floor2 img{
+.nmusician section .floor2 .content{
   width:311px;
   height:367px;
+  float:left;
+  position: relative;
+  background: url("../img/nmusician_2.png") no-repeat;
 }
-.nmusician section .floor2 img+img{
+.nmusician section .floor2 .content+.content{
   margin-left:46px;
 }
-.nmusician section .floor3{
-  background:url("../img/nmusician_bg3.jpg") no-repeat 50%;
+.nmusician section .floor2 .content img{
+  margin-top:80px;
+}
+.nmusician section .floor2 .content h3{
+  font-weight:400;
+  color:#333;
+}
+.nmusician section .floor2 .content p{
+  font-size: 16px;
+  line-height: 24px;
+  color: #999;
 }
 
+/* ****************************3L */
+.nmusician section .floor3 .box{
+  width:100%;
+}
+.nmusician section .floor3{
+  background:#2c2c2c url("../img/nmusician_bg3.jpg") no-repeat top/auto;
+}
+.nmusician section .floor3 .content{
+  position: relative;
+  width:1206px;
+  margin:0 auto;
+}
+.nmusician section .floor3 .content .box_ul{
+  position: relative;
+  width:1100px;
+  margin:0 auto;
+  /* overflow: hidden; */
+
+}
+.nmusician section .floor3 .floor3_ul{
+  position: absolute;
+  left:0;top:0;
+}
+
+.nmusician section .floor3 .floor3_ul>li{
+  float:left;
+  position: relative;
+}
+.nmusician section .floor3 .floor3_ul>li+li{
+  margin-left:20px;
+}
+.nmusician section .floor3 .floor3_ul>li img{
+  width:260px;
+}
+.nmusician section .floor3 .content .prev,
+.nmusician section .floor3 .content .next{
+  position: absolute;
+  top:0;
+  display: block;
+  width:36px;
+  height:160px;
+}
+.nmusician section .floor3 .content .prev{
+  left:0;
+  background:url("../img/nmusician_3_prev.png") no-repeat;
+}
+.nmusician section .floor3 .content .next{
+  right:0;
+  background:url("../img/nmusician_3_next.png") no-repeat;
+}
+.nmusician section .floor3 .content .prev:hover{
+  background-image:url("../img/nmusician_3_prevH.png");
+}
+.nmusician section .floor3 .content .next:hover{
+  background-image:url("../img/nmusician_3_nextH.png");
+}
+
+
+/* ****************************4L */
+.nmusician section .floor4{
+  background:#fff url("../img/nmusician_bg4.png") no-repeat 50%/auto 100%;
+}
+
+.nmusician section .floor4 .content{
+  float:left;
+  margin:0 34px;
+}
+.nmusician section .floor4 .cover{
+  width:270px;
+  height:315px;
+  text-indent: -9999px;
+  background:url("../img/nmusician_4_chenli.png") no-repeat 0 0;
+}
+.nmusician section .floor4 div.content:nth-of-type(2) .cover{
+  background:url("../img/nmusician_4_lizhi.png") no-repeat 0 0;
+}
+.nmusician section .floor4 div.content:nth-of-type(3) .cover{
+  background:url("../img/nmusician_4_haomeimei.png") no-repeat 0 0;
+}
+.nmusician section .floor4 div.content .cover:hover{
+  background-position: -270px 0;
+}
+.nmusician section .floor4 .cover+p{
+  margin-top:25px;
+  font-size:16px;
+  font-weight:400;
+  color:#333;
+}
+/* **************************指示器 */
 .nmusician section .indicator{
   position: absolute;
   width:10px;
