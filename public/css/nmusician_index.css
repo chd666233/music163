@@ -89,6 +89,13 @@ html,body{
 .nmusician section .floor2{
   background:url("../img/nmusician_bg2.jpg") no-repeat 50%;
 }
+.nmusician section .floor2 img{
+  width:311px;
+  height:367px;
+}
+.nmusician section .floor2 img+img{
+  margin-left:46px;
+}
 .nmusician section .floor3{
   background:url("../img/nmusician_bg3.jpg") no-repeat 50%;
 }
