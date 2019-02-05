@@ -7,39 +7,38 @@
   <title>Document</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/floor.css">
 </head>
 <body id="ifr">
   <section>
-    <div class="carousel">
+    <div class="carousel" id="carousel">
       <div class="box">
-        <div class="carousel-inner">
+        <div class="carousel-inner" id="carousel-inner">
           <a href="#" class="carousel-item active">
-            <img src="img/1.jpg" data-src="img/1.jpg" alt="0">
+            <img src="img/loading.gif" data-src="img/1.jpg" bg-src="img/bg1.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/2.jpg" alt="1">
+            <img src="img/loading.gif" data-src="img/2.jpg" bg-src="img/bg2.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/3.jpg" alt="2">
+            <img src="img/loading.gif" data-src="img/3.jpg" bg-src="img/bg3.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/4.jpg" alt="3">
+            <img src="img/loading.gif" data-src="img/4.jpg" bg-src="img/bg4.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/5.jpg" alt="4">
+            <img src="img/loading.gif" data-src="img/5.jpg" bg-src="img/bg5.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/6.jpg" alt="5">
+            <img src="img/loading.gif" data-src="img/6.jpg" bg-src="img/bg6.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/7.jpg" alt="6">
+            <img src="img/loading.gif" data-src="img/7.jpg" bg-src="img/bg7.jpg">
           </a>
           <a href="#" class="carousel-item">
-            <img src="img/1.jpg" data-src="img/8.jpg" alt="7">
+            <img src="img/loading.gif" data-src="img/8.jpg" bg-src="img/bg8.jpg">
           </a>
 
-          <ul class="indicator">
+          <ul class="indicator" id="indicator">
               <li class="active" data-index="0"></li>
               <li data-index="1"></li>
               <li data-index="2"></li>
@@ -56,8 +55,8 @@
           <a href="#"></a>
           <p>PC 安卓 iPhone WP iPad Mac 六大客户端</p>
         </div>
-        <div class="prev"></div>
-        <div class="next"></div>
+        <div class="prev" id="prev"></div>
+        <div class="next" id="next"></div>
 
         
       </div>
@@ -87,10 +86,9 @@
               <!-- 1 -->
               <div class="box">
                 <div class="cover">
-                    <img src="img/f1-1.jpg" alt="1">
+                    <img src="img/f1-1.jpg" data-src="" alt="1">
                     <a href="#"></a>
-                    <div class="info">
-                      
+                    <div class="info">      
                       <i></i>
                       <span>233万</span>
                       <a href="#"></a>
@@ -751,5 +749,95 @@
     </div>
     
   </section>
+  <script>
+  (function(){
+    var carousel = document.getElementById("carousel"); 
+    var carouselInner = document.getElementById("carousel-inner"); 
+    var as=carouselInner.getElementsByTagName("a");
+    var imgs=carouselInner.getElementsByTagName("img");
+    var indicator=document.getElementById("indicator");
+    var lis=indicator.getElementsByTagName("li");
+    var length=indicator.childElementCount;
+    var index=0;
+    var timeOut_as=null;
+    var timeOut_click=null;
+    var prev =document.getElementById("prev");
+    var next =document.getElementById("next");
+
+    imgs[index].src=imgs[index].getAttribute("data-src");
+    if(timeOut_as) clearInterval(timeOut_as);
+    timeOut_as=setInterval(fn_carousel,3999);
+    
+    next.onclick=function(){
+      cli(+1)
+    }
+    prev.onclick=function(){
+      cli(-1);
+    }
+
+    indicator.onclick=function(event){
+      var e= event || window.event;//标准或IE事件对象
+      if(e.target.nodeName!=='LI') return;
+      var target_i=[].indexOf.call(lis,e.target);
+      cli(target_i-index);
+
+    }
+
+    function fn_carousel(){
+      //去掉上一轮的样式
+      as[index].className="carousel-item";
+      lis[index].className="";
+      carousel.className="carousel";
+      index++;
+      index%=8;
+      // as[index].className="carousel-item activing";
+      // carousel.className="carousel activing";
+      // if(/load/.test(imgs[index].src)){
+        //加载图片
+        imgs[index].src=imgs[index].getAttribute("data-src");
+        imgs[index].onload=function(){
+        // setTimeout(()=>{
+          as[index].className="carousel-item active";
+          carousel.className="carousel active";
+          carousel.style.backgroundImage=`url(${imgs[index].getAttribute("bg-src")}`;
+          lis[index].className="active";
+          // carousel.style.cssText=`background:url(${imgs[index].getAttribute("bg-src")}) repeat-x;transition:background 1s ease-out;`;
+        // },500)
+        }
+      // }else{
+      //   as[index].className="carousel-item active";
+      //   carousel.className="carousel active";
+      //   carousel.style.backgroundImage=`url(${imgs[index].getAttribute("bg-src")}`;
+      //   lis[index].className="active";
+      // }
+    }
+  
+    function cli(i){
+      if(timeOut_as) clearInterval(timeOut_as);
+      //i>0表示加 ，i<0表示减， 下面两个判断表示不能再加了，不能再减了
+      if(i>0&&index>=length-1)return;
+      if(i<0&&index<=0) return;
+      as[index].className="carousel-item";
+      lis[index].className="";
+      carousel.className="carousel";
+
+      index+=i;
+      
+      imgs[index].src=imgs[index].getAttribute("data-src");
+      imgs[index].onload=function(){
+        as[index].className="carousel-item click";
+        // carousel.className="carousel click";
+        carousel.style.backgroundImage=`url(${imgs[index].getAttribute("bg-src")}`;
+        lis[index].className="active";
+      }
+
+      if(timeOut_click) clearTimeout(timeOut_click);
+      timeOut_click=setTimeout(()=>{
+        timeOut_as=setInterval(fn_carousel,3999);
+      },1000);
+    }
+
+   })()
+  </script>
 </body>
 </html>
