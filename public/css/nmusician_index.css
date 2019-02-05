@@ -175,26 +175,57 @@ html,body{
   margin:0 auto;
 }
 .nmusician section .floor3 .content .box_ul{
-  position: relative;
+
   width:1100px;
-  margin:0 auto;
-  /* overflow: hidden; */
+  margin:97px auto 0;
+  overflow: hidden;
 
 }
 .nmusician section .floor3 .floor3_ul{
-  position: absolute;
+  position: relative;
   left:0;top:0;
+  width:9999px;
+  transition: left .5s;
 }
+
 
 .nmusician section .floor3 .floor3_ul>li{
   float:left;
   position: relative;
 }
-.nmusician section .floor3 .floor3_ul>li+li{
-  margin-left:20px;
+.nmusician section .floor3 .floor3_ul>li{
+  margin-right:20px;
 }
 .nmusician section .floor3 .floor3_ul>li img{
   width:260px;
+}
+.nmusician section .floor3 .floor3_ul>li div{
+  position: absolute;
+  left:0;top:0;bottom:0;right:0;
+  background:rgb(0,0,0,.6);
+  /* opacity: .6; */
+}
+.nmusician section .floor3 .floor3_ul>li div .title{
+  position: absolute;
+  top:40%;left:50%;
+  transform: translate(-50%,-50%);
+  width:180px;
+  margin:0 auto;
+  font-size:16px;
+  font-weight: 400;
+  color:#fff;
+  /* margin-top:15%; */
+  /* transform:translateY(50%) */
+  
+}
+.nmusician section .floor3 .floor3_ul>li div .time{
+  position: absolute;
+  bottom:20px;left:50%;
+  transform: translate(-50%);
+  color: #bbb;
+  font-size:12px;
+  display: inline-block;
+  
 }
 .nmusician section .floor3 .content .prev,
 .nmusician section .floor3 .content .next{
@@ -203,6 +234,7 @@ html,body{
   display: block;
   width:36px;
   height:160px;
+  display:none;
 }
 .nmusician section .floor3 .content .prev{
   left:0;
@@ -217,6 +249,13 @@ html,body{
 }
 .nmusician section .floor3 .content .next:hover{
   background-image:url("../img/nmusician_3_nextH.png");
+}
+
+.nmusician section .floor3 .detail{
+  margin-top:47px;
+  font-size:16px;
+  font-weight:400;
+  color:#ccc;
 }
 
 

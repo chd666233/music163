@@ -77,26 +77,132 @@
               <ul id="floor3_ul" class="floor3_ul">
                 <li>
                   <img src="img/zhaolei.jpg" alt="">
+                  <div>
+                    <p class="title">赵雷《无法长大》销量破20万，创独立音乐全网新标杆</p>
+                    <span class="time">2017-02</span>
+                  </div>
                 </li>
                 <li>
+                  <div>
+                    <p class="title">石头计划落地，向所有音乐人开通赞赏</p>
+                    <span class="time">2017-02</span>
+                  </div>
                   <img src="img/luodi.jpg" alt="">
                 </li>
                 <li>
+                  <div>
+                    <p class="title">发布《中国独立音乐人生存现状报告》</p>
+                    <span class="time">2016-12</span>
+                  </div>
                   <img src="img/duli.jpg" alt="">
                 </li>
                 <li>
+                  <div>
+                    <p class="title">李志《在每一条伤心的应天大街上》两天销售额破百万创纪录</p>
+                    <span class="time">2016-11</span>
+                  </div>
                   <img src="img/lizhi.jpg" alt="">
                 </li>
                 <li>
+                  <div>
+                    <p class="title">启动“石头计划” 拟一年2亿扶持独立音乐人</p>
+                    <span class="time">2016-11</span>
+                  </div>
                   <img src="img/shitoujihua.jpg" alt="">
+                </li>
+                <li>
+                  <div>
+                    <p class="title">陈粒《小梦大半》销售额破百万</p>
+                    <span class="time">2016-08</span>
+                  </div>
+                  <img src="img/01.jpg" alt="">
                 </li>
               </ul>
             </div>
             
-            <span class="prev"></span>
-            <span class="next"></span>
+            <span class="prev" id="prev"></span>
+            <span class="next" id="next"></span>
+          </div>
+          <p class="detail">从线上的专属主页、原创榜单、歌曲推荐，到线下的Live巡演，专辑制作、资金支持，<br>
+              我们倾尽全力为有实力的原创音乐人提供一系列推广扶持计划，只希望您可以更专注于做好音乐。</p>
+        </div>
+      </li>
+      <li class="floor4">
+        <div class="box">
+          <h1>丰富的变现模式</h1>
+          <p class="desc">除了加入会员项目、售卖数字专辑外，您还可以通过开通赞赏、售卖周边获取额外收入</p>
+          <div class="content">
+            <div class="cover">陈粒</div>
+            <p>专辑累计销量227785张</p>
+          </div>
+          <div class="content">
+            <div class="cover">李志</div>
+            <p>专辑累计销量303196张</p>
+          </div>
+          <div class="content">
+            <div class="cover">好妹妹</div>
+            <p>专辑累计销量127765张</p>
           </div>
         </div>
+      </li>
+      <li class="floor3">
+          <div class="box">
+            <h1 class="dark">多维度曝光</h1>
+            <p class="desc dark">您安心做好音乐，剩下的交给我们</p>
+            <div class="content">
+              <div class="box_ul">
+                <ul id="floor3_ul" class="floor3_ul">
+                  <li>
+                    <img src="img/zhaolei.jpg" alt="">
+                    <div>
+                      <p class="title">赵雷《无法长大》销量破20万，创独立音乐全网新标杆</p>
+                      <span class="time">2017-02</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <p class="title">石头计划落地，向所有音乐人开通赞赏</p>
+                      <span class="time">2017-02</span>
+                    </div>
+                    <img src="img/luodi.jpg" alt="">
+                  </li>
+                  <li>
+                    <div>
+                      <p class="title">发布《中国独立音乐人生存现状报告》</p>
+                      <span class="time">2016-12</span>
+                    </div>
+                    <img src="img/duli.jpg" alt="">
+                  </li>
+                  <li>
+                    <div>
+                      <p class="title">李志《在每一条伤心的应天大街上》两天销售额破百万创纪录</p>
+                      <span class="time">2016-11</span>
+                    </div>
+                    <img src="img/lizhi.jpg" alt="">
+                  </li>
+                  <li>
+                    <div>
+                      <p class="title">启动“石头计划” 拟一年2亿扶持独立音乐人</p>
+                      <span class="time">2016-11</span>
+                    </div>
+                    <img src="img/shitoujihua.jpg" alt="">
+                  </li>
+                  <li>
+                    <div>
+                      <p class="title">陈粒《小梦大半》销售额破百万</p>
+                      <span class="time">2016-08</span>
+                    </div>
+                    <img src="img/01.jpg" alt="">
+                  </li>
+                </ul>
+              </div>
+              
+              <span class="prev" id="prev"></span>
+              <span class="next" id="next"></span>
+            </div>
+            <p class="detail">从线上的专属主页、原创榜单、歌曲推荐，到线下的Live巡演，专辑制作、资金支持，<br>
+                我们倾尽全力为有实力的原创音乐人提供一系列推广扶持计划，只希望您可以更专注于做好音乐。</p>
+          </div>
       </li>
       <li class="floor4">
         <div class="box">
@@ -142,6 +248,7 @@
     */
   "use strict";
   (function(){
+    /* ***************************************翻屏 */
     // 判断浏览器类型
     var isMacWebkit=(navigator.userAgent.indexOf("Macintosh")!==-1&&navigator.userAgent.indexOf("WebKit")!==-1);
     var isFirefox=(navigator.userAgent.indexOf("Gecko")!==-1);
@@ -334,8 +441,50 @@
         e.returnValue=false;//IE事件
         return false;
       // },time);
-      
+    } 
+    
+    /* **********************************************3L轮播图 */
+    var floor3_ul= document.getElementById("floor3_ul");
+    var floor3_li= floor3_ul.querySelector("li");
+    var prev=document.getElementById("prev");
+    var next=document.getElementById("next");
+    var li_mR=parseFloat(getComputedStyle(floor3_li).marginRight);
+    var li_w=floor3_li.offsetWidth;
+    var mW=li_mR+li_w;
+    var move=0;
+    var length=floor3_ul.childElementCount;
+     // console.log(floor3_ul.children,getComputedStyle(floor3_li).marginRight);
+    //4是显示出来的li的数量  
+    // console.log(Math.ceil(parseFloat(getComputedStyle(floor3_ul.parentNode).width)/mW))
+    if(length>4){
+      next.style.display="block";
     }
+    //不可以放这里，因为事件外面的代码只执行一次
+   /*  if(move>0){
+      prev.style.display="block";
+    } */
+    next.onclick=function(){
+      //之所以取等于，是因为move++在这行判断的后面
+      if(move>=length-4) return;
+      move++;
+      if(move>0) prev.style.display="block";
+      if(move==length-4) next.style.display="none";
+      var target=mW*move;
+      floor3_ul.style.left=-target+"px";
+    }
+    prev.onclick=function(){
+      console.log(move)
+      if(move<0) return;
+      move--;
+      if(move==0) prev.style.display="none";
+      if(move<length-4) next.style.display="block";
+      var target=mW*move;
+      floor3_ul.style.left=-target+"px";
+    }
+
+   
+
+
   })()
   
  
