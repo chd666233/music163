@@ -63,7 +63,7 @@
          
     
      //注册事件处理函数
-     document.onwheel=wheelHandler;//FF未来浏览器
+     document.onwheel=wheelHandler;//未来浏览器
      document.onmousewheel=wheelHandler//大多数当前浏览器
      // document.addEventListener("mousewheel",wheelHandler);
      if(isFirefox)//仅FireFox，包括FF未来
