@@ -3,16 +3,15 @@
   background:url("../img/bg1.jpg") repeat-x;
   transition:background 1s;
 }
-.carousel .carousel-item.activing{
+/* .carousel.activing{
   transition:background 1s ease-in;
-  opacity:.2;
 }
-.carousel .carousel-item.active{
+.carousel.active{
   transition:background 1s ease-out;
 }
-.carousel .carousel-item.click{
+.carousel.click{
   transition:none;
-}
+} */
 .carousel .box{
   position:relative;
   width:982px;
@@ -31,20 +30,24 @@
   position: absolute;
   left:0;top:0;bottom:0;right:0;
   height:336px;
-  transition:opacity 1s;
+  transition:opacity 1s ease-out;
   opacity:0;
   z-index:0;
   text-align: center;
   line-height: 336px;
   /* display:none; */
 }
-.carousel .carousel-item.activing{
+/* .carousel .carousel-item.activing{
   transition:opacity 1s ease-in;
   opacity:.2;
   z-index:1;
+} */
+.carousel .carousel-item.zIndex{
+  z-index:1;
+  opacity: 1;
 }
 .carousel .carousel-item.active{
-  transition:opacity 1s ease-out;
+  /* transition:opacity 1s ease-out; */
   opacity:1;
   z-index:1;
 }
@@ -53,19 +56,14 @@
   z-index:1;
   opacity:1;
 }
-.carousel .carousel-item:first-child{
-  z-index:1;
-}
-.carousel .carousel-item.active{
-  display: block;
-}
+
 .carousel .carousel-item img{
   height:336px;
 }
-/* .carousel .carousel-item.loading img{
+.carousel .carousel-item img.loading{
   width:50px;
   height:50px;
-} */
+}
 /* 轮播图下载 */
 .carousel .download{
   width:254px;
@@ -265,10 +263,17 @@
   position: relative;
   width:140px;
   height:140px;
+  /* line-height:140px; */
+  text-align:center;
+}
+.lf .floor1 .floor-body .cover:after{
+  content: '';
+  line-height:110px;
 }
 .lf .floor1 .floor-body .cover>img{
-  position: absolute;
-  left:0;top:0;right:0;bottom:0;
+  /* position: absolute;
+  left:0;top:0;right:0;bottom:0; */
+  vertical-align: middle;
 }
 .lf .floor1 .floor-body .cover>a{
   display: block;
@@ -281,6 +286,7 @@
   position: absolute;
   left:0;bottom:0;right:0;
   height:27px;
+  text-align: left;
   background:url("../img/coverall.png") no-repeat 0 -537px;
 }
 /* 封面底部 耳机图标 */

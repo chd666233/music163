@@ -79,9 +79,12 @@
        // clearTimeout(timeOut_overing)
      }
  
- 
+     //mouseover处理函数
      function mOverHandler(event){
        var e=event || window.event;//标准或IE事件对象
+
+       
+
        if(e.target.nodeName!=='LI') return;
        cLi=e.target,eV=e;
        isOver=true;
@@ -100,18 +103,19 @@
        timeOut_overing2=setTimeout(()=>{
          
          //1000ms没有over视为停止over,移动到目标位置后将渐变去掉，问题：有可能1000ms后还没有到达目标位置，
-         //导致一次性定时器没有将渐变去掉，所以1000ms要根据渐变的时间（这里1s)来设置，确保到时间后已经到达目标位置
-         if(timeOut_overing) clearTimeout(timeOut_overing);
-         timeOut_overing=setTimeout(()=>{
-           // console.log('--------------->',floor.offsetParent,floor.offsetTop)
-           ulT=parseFloat(getComputedStyle(floor).top);//为什么要重新获取？因为在wheelHandler中重新给ulT赋值了，ulT和targetT并不完全同步，但是targetT代表的是目标位置
-           // console.log("##################",ulT,targetT,viewH)
-           if(ulT-targetT<2&&ulT-targetT>-2){//移动到目标位置后
-             // console.log("##################",ulT,targetT,index)
-             // console.log('--------------->',ulT,targetT,floor.offsetTop)
-             floor.style.cssText=`transition:none;top:${targetT}px`;
-           }
-         },1000)
+        //导致一次性定时器没有将渐变去掉，所以1000ms要根据渐变的时间（这里1s)来设置，确保到时间后已经到达目标位置
+        if(timeOut_overing) clearTimeout(timeOut_overing);
+        timeOut_overing=setTimeout(()=>{
+          // console.log('--------------->',floor.offsetParent,floor.offsetTop)
+          ulT=parseFloat(getComputedStyle(floor).top);//为什么要重新获取？因为在wheelHandler中重新给ulT赋值了，ulT和targetT并不完全同步，但是targetT代表的是目标位置
+          // console.log("##################",ulT,targetT,viewH)
+          if(ulT-targetT<2&&ulT-targetT>-2){//移动到目标位置后
+            // console.log("##################",ulT,targetT,index)
+            // console.log('--------------->',ulT,targetT,floor.offsetTop)
+            floor.style.cssText=`transition:none;top:${targetT}px`;
+          }
+        },1000)
+
          //获得上一轮的下标
          var currenteInde=index;
          //获得当前触发事件的下标
@@ -170,9 +174,9 @@
        // console.log("-------------",index,targetT,ulT)
  
        //如果上一轮还没有滚动到目标位置，不执行这轮滚动
-       var time=0;
+      //  var time=0;
        if(targetT!=ulT){
-         time=700;
+        //  time=700;
          return;
        };
        //不需要用定时器，没有意义
