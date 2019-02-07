@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/player.css">
   <!-- <style>
     .main{
       position: relative;
@@ -72,7 +73,60 @@
     问题：由于被覆盖了一层，无法点击后面一层的事件，轮播图，指示器无法点击 -->
     <!-- <div class="cover_iframe" id="cover_iframe"></div> -->
   </section>
- 
+  
+  <div class="player" id="player">
+    <div class="bg"></div>
+    <div class="container">
+      <div class="control1">
+        <a href="javascript:;" class="prev" title="上一首"></a>
+        <a href="javascript:;" class="play" title="播放/暂停"></a>
+        <a href="javascript:;" class="next" title="下一首"></a>
+      </div>
+      <div class="control2">
+        <a href="#" class="cover">
+          <img src="img/player_cover_1.jpg" alt="">
+        </a>
+        <div class="info">
+          <div class="song_info">
+            <a href="#" class="song">Rolling star</a>
+            <a href="#" class="mv"></a>
+            <a href="#" class="artist">YUI</a>
+            <a href="#" class="src" title="来自榜单"></a>
+          </div>
+          <div class="play_box">
+            <div class="playbar">
+              <div class="rdy"></div>
+              <div class="cur">
+                <span class="circle"></span>
+              </div>
+            </div>
+            <span class="time"><em>00:00</em> / 00:00</span>
+          </div>
+        </div>
+      </div>
+      <div class="control3">
+        <span class="" title="收藏"></span>
+        <span class="" title="分享"></span>
+      </div>
+      <div class="control4">
+        <div title="音量" class="vol">
+          <div class="bg">
+            <div>
+              <span class="circle"></span>
+            </div>
+          </div>
+        </div>
+        <span title="循环" class="loop"></span>
+        <span class="add_box">
+          <span class="tip">已添加到播放列表</span>
+          <span title="播放列表" class="add">0</span>
+        </span>
+      </div>
+    </div>
+    <div class="lock">
+      <a href="javascript:;"></a>
+    </div>
+  </div>
   <footer>
     <div>
       <div class="f-lf">
@@ -102,6 +156,8 @@
       </div>
     </div>
   </footer>
+
+  
   <script src="js/index.js"></script>
 </body>
 </html>

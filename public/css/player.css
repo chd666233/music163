@@ -1,0 +1,302 @@
+a{
+  text-decoration: none;
+}
+a:hover{
+  text-decoration:underline;
+}
+/* *********容器 */
+.player{
+  position:fixed;
+  bottom:0;left:0;
+  width:100%;
+  height:53px;
+}
+/* ***********背景 */
+.player .bg{
+  position: absolute;
+  left:0;top:0;bottom:0;right:0;
+  height:53px;
+  margin-right:67px;
+  background:url("../img/playbar.png") repeat-x 0 0;
+}
+/* ************容器 */
+.player .container{
+  position: relative;
+  top:6px;
+  width:980px;
+  height:47px;
+  margin:0 auto;
+}
+/* **************控制 */
+.player .control1,
+.player .control2,
+.player .control3,
+.player .control4{
+  float:left;
+}
+.player .control1{
+  width:137px;
+}
+.player .control1 a{
+  /* display:inline-block; */
+  float:left;
+  width:28px;
+  height:28px;
+  margin-top:10px;
+  margin-right:8px;
+  background:url("../img/playbar.png") no-repeat 0 -130px;
+}
+
+.player .control1 a.prev:hover{
+  background-position:-30px -130px;
+}
+.player .control1 a.play{
+  width:36px;
+  height:36px;
+  margin-top:6px;
+  background-position:0 -204px;
+}
+.player .control1 a.play:hover{
+  background-position:-40px -204px;
+}
+.player .control1 a.next{
+  background-position:-80px -130px;
+}
+.player .control1 a.next:hover{
+  background-position:-110px -130px;
+}
+
+/* ******************cover */
+.player .control2 .cover{
+  float:left;
+  width:34px;
+  height:35px;
+  margin-top:6px;
+  margin-right:15px;
+}
+/* *********************info */
+.player .control2 .info{
+  float:left;
+}
+.player .control2 .info .song_info{
+  height:28px;
+  line-height: 28px;
+}
+.player .control2 .info .song_info:after{
+  content:"";
+  display: block;
+  clear: both;
+}
+.player .control2 .info .song,
+.player .control2 .info .artist,
+.player .control2 .info .mv,
+.player .control2 .info .src{
+  /* display:inline-block; */
+  float:left;
+}
+
+.player .control2 .info .song,
+.player .control2 .info .artist{
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  font-size:12px;
+}
+.player .control2 .info .song{
+  max-width: 300px;
+  color:#e8e8e8;
+}
+.player .control2 .info .artist{
+  margin-left:15px;
+  max-width: 220px;
+  color:#9b9b9b;
+}
+.player .control2 .info .mv{
+  width:19px;
+  height:17px;
+  margin-top:6px;
+  margin-left:3px;
+  background:url("../img/playbar.png") no-repeat -20px -57px;
+}
+.player .control2 .info .src{
+  width:14px;
+  height:15px;
+  margin-top:7px;
+  margin-left:13px;
+  background:url("../img/playbar.png") no-repeat -130px -103px;
+}
+/* *************playbar */
+.player .control2 {
+  width:657px;
+}
+.player .control2 .play_box{
+  position: relative;
+  width:493px;
+}
+.player .control2 .playbar{
+  width:493px;
+  height:9px;
+  background:url("../img/statbar.png") no-repeat right 0;
+}
+.player .control2 .playbar .rdy{
+  width:80%;
+  height:100%;
+  background:url("../img/statbar.png") no-repeat right -30px;
+}
+.player .control2 .playbar .cur{
+  position: absolute;
+  left:0;top:0;
+  width:50%;
+  height:9px;
+  background:url("../img/statbar.png") no-repeat left -66px;
+}
+.player .control2 .playbar .cur .circle{
+  float:right;
+  width:22px;
+  height:24px;
+  margin-right:-3px;
+  margin-top:-8px;
+  background: url("../img/iconall.png") no-repeat 0 -250px;
+}
+.player .control2 .playbar .cur .circle:hover{
+  background-position:0 -280px;
+}
+.player .control2 .play_box .time {
+  position: absolute;
+  top:-6px;
+  right:-84px;
+  color:#797979;
+  font-size:12px;
+}
+.player .control2 .play_box .time em{
+  color:#a1a1a1;
+  font-style:normal;
+}
+/* ****************收藏 分享 */
+.player .control3 {
+  width:60px;
+  height:36px;
+}
+.player .control3 span{
+  /* display: inline-block; */
+  float:left;
+  margin-top:11px;
+  margin-left:2px;
+  width:25px;
+  height:25px;
+  background:url("../img/playbar.png") no-repeat -88px -163px;
+}
+.player .control3 span:first-child:hover{
+  background-position:-88px -189px;
+} 
+.player .control3 span:last-child{
+  background-position:-114px -163px;
+}
+.player .control3 span:last-child:hover{
+  background-position:-114px -189px;
+}
+/* *****************音量 等 */
+.player .control4{
+  width:113px;
+  height:36px;
+  padding-left:13px;
+}
+.player .control4>span,
+.player .control4>div{
+  float:left;
+  width:25px;
+  height:25px;
+}
+.player .control4 .vol,
+.player .control4 .loop,
+.player .control4 .add{
+  margin-top:11px;
+  margin-right:2px;
+  background:url("../img/playbar.png") no-repeat -88px -163px;
+}
+.player .control4 .vol{
+  position: relative;
+  background-position:-2px -248px
+}
+.player .control4 .vol:hover{
+  background-position:-31px -248px;
+}
+.player .control4 .vol>.bg{
+  position: absolute;
+  top:-124px;
+  width:32px;
+  height:113px;
+  background:url("../img/playbar.png") no-repeat 0 -503px;
+}
+.player .control4 .vol>.bg>div{
+  position: absolute;
+  bottom:9px;left:14.9px;
+  width:4px;
+  height:50%;
+  max-height:82%;
+  min-height:1%;
+  background:url("../img/playbar.png") no-repeat -40px bottom;
+}
+.player .control4 .vol>.bg .circle{
+  display: block;
+  width:18px;
+  height:20px;
+  margin-left:-7px;
+  margin-top:-6px;
+  background:url("../img/iconall.png") no-repeat -40px -280px;
+}
+.player .control4 .loop{
+  background-position:-3px -344px;
+}
+.player .control4 .loop:hover{
+  background-position:-33px -344px;
+}
+.player .control4 .add{
+  display: inline-block;
+  width:38px;
+  height:25px;
+  padding-left:21px;
+  background-position:-42px -68px;
+  color: #666;
+  text-align:center;
+  font-size:12px;
+  line-height:27px;
+}
+.player .control4 .add:hover{
+  background-position:-42px -98px;
+}
+.player .control4 .add_box{
+  position: relative;
+  width:59px;
+  height:36px;
+}
+.player .control4 .add_box .tip{
+  display: none;
+  /* display: block; */
+  position: absolute;
+  top:-51px;left:-65px;
+  width:152px;
+  height:49px;
+  background:url("../img/playbar.png") no-repeat 0 -287px;
+  text-align: center;
+  color: #fff;
+  font-size:12px;
+  line-height:37px;
+}
+/* **************************锁 */
+.player .lock{
+  position: absolute;
+  right:0;top:-14px;
+  width:67px;
+  height:67px;
+  background:url("../img/playbar.png") no-repeat 0 -380px;
+}
+.player .lock a{
+  display:block;
+  width:18px;
+  height:18px;
+  background:url("../img/playbar.png") no-repeat -100px -400px;
+  /* background:url("../img/playbar.png") no-repeat -80px -380px; */
+  margin-left:17px;
+  margin-top:6px;
+}
