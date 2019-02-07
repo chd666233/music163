@@ -359,20 +359,23 @@
   height:100%;
   padding-top:28px;
   margin:0 auto;
-  /* overflow:hidden; */
+  overflow:hidden;
   position: relative;
 }
 .floor2 .floor-body .box ul{
-  /* width:9999px; */
+  width:654px;
   position: absolute;
   left:0;
   margin-left:-7px;
+  /* transition:left .5s; */
 }
 .floor2 .floor-body .box ul:after{
   content: "";
   display: block;
   clear:both;
-  
+}
+.floor2 .floor-body .box ul.carousel_ul_2{
+  left:654px;
 }
 .floor2 .floor-body .box li{
   float:left;
@@ -431,14 +434,14 @@
 .floor2 .floor-body .box .prev,
 .floor2 .floor-body .box .next{
   position: absolute;
-  left:-18px; top:73px;
+  left:2px; top:73px;
   display: block;
   width:17px;
   height:17px;
   background:url("../img/index.png") no-repeat -260px -75px;
 }
 .floor2 .floor-body .box .next{
-  left:auto;right:-12px;
+  left:auto;right:7px;
   background-position: -300px -75px;
 }
 .floor2 .floor-body .box .prev:hover{
@@ -647,6 +650,7 @@
   float:left;
 }
 .rt .box .singer li div{
+  width:133px;
   margin-left:14px;
   margin-top:8px;
 }
@@ -657,6 +661,9 @@
   
 }
 .rt .box .singer li .desc{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
   color:#666;
   font-size:12px;
 }
@@ -695,6 +702,7 @@
 }
 /* **********主播 */
 .rt .box .broadcaster li{
+  width:210px;
   height:50px;
   font-size:12px;
   color:#666;
@@ -709,10 +717,25 @@
   float:left;
 }
 .rt .box .broadcaster li div{
+  width:160px;
+  
+  
+  
   margin-left:10px;
   line-height: 21px;
 }
+.rt .box .broadcaster li div p{
+  width:160px;
+  text-overflow: ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+}
 .rt .box .broadcaster li div a{
+  float:left;
+  max-width:88%;
+  text-overflow: ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
   margin-right:5px;
   color:#000;
   text-decoration: none;
@@ -720,12 +743,12 @@
 .rt .box .broadcaster li div a:hover{
   text-decoration:underline;
 }
-
 .rt .box .broadcaster li .v{
-  display: inline-block;
+  float:left;
   width:11px;
   height:13px;
   background:url("../img/icon.png") no-repeat 0 1px;
   vertical-align: middle;
+  margin-top:3px;
 }
 
