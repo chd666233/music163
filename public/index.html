@@ -513,8 +513,10 @@
     var pBoxH=0;
     var bline=document.getElementById("bline");
     var bar1=bline.querySelector("div");
+    var bar1H=0;
     var bline2=document.getElementById("bline2");
     var bar2=bline2.querySelector("div");
+    var bar2H=0;
     var _this=null;
     var times=[];
     var wheelDis=0;
@@ -524,7 +526,7 @@
     
     bar1.style.height=blineH(listH,ulH)+"px";
     //获取bar1的高度
-    var bar1H=blineH(listH,ulH);
+    bar1H=blineH(listH,ulH);
     if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
       bline.className="bline active";
     
@@ -618,6 +620,7 @@
           //设置滚动条高度
           pBoxH=pbox.offsetHeight;
           bar2.style.height=blineH(lyricH,pBoxH)+"px";
+          bar2H=blineH(lyricH,pBoxH);
           if(lyricH<pBoxH)//如果歌词高度大于盒子高度，显示滚动条
             bline2.className="bline bline-2 active";
           //获取最高的p的高度，作为每次滚动的距离
@@ -775,7 +778,9 @@
       var e= event || window.event;
       //当前的位置加上移动的距离
       barDis=curPy+e.clientY-downY;
-      mv(barDis)
+      mv(barDis);
+      //阻止默认行为，能防止鼠标移动的时候选中文字
+      e.preventDefault();
     }
     //移动列表和滚动条
     function mv(barDis){
@@ -784,7 +789,7 @@
       if(barDis+bar1H>=listH)
         barDis=listH-bar1H;
       //移动距离超过顶部则等于0
-      if(barDis<=0)
+      if(barDis<0)
         barDis=0;
       //通过bar的移动距离计算歌曲列表的移动距离
       wheelDis=-barDis*ulH/listH;
@@ -803,14 +808,60 @@
       e.preventDefault();
       // e.stopPropagation();
     }
+  
+  
+  
+  /* *******************************给歌词的bline2添加mousedown事件，一旦点击歌词和滚动条滚动到响应位置 */
+    bline2.onmousedown=function(event){
+      var e= event || window.event;
+      bar2H=bar2.offsetHeight;
+      
+      lyricBarDis=e.clientY-bline2.getBoundingClientRect().top-bar2H/2;
+      mv2(lyricBarDis);
+      curPy_bar2=bar2.offsetTop;
+    }
+    
+    /* **************************给bar2添加mousemove事件，该事件通过mousedown触发，mouseup取消 */
+    var curPy_bar2=0;//当前bar2的位置
+    var downPy_bar2=0;//按压下去的位置
+    bar2.onmousedown=function(event){
+      var e= event || window.event;
+      downPy_bar2=e.clientY;
+      document.onmousemove=fn_bar2Mv;
+
+    }
+    function fn_bar2Mv(event){
+      var e= event || window.event;
+
+      lyricBarDis=curPy_bar2+e.clientY-downPy_bar2;
+      mv2(lyricBarDis);
+
+      //阻止默认行为，能防止鼠标移动的时候选中文字
+      e.preventDefault();
+    }
+    function mv2(bar2Dis){
+      if(lyricBarDis+bar2H>=listH)
+        lyricBarDis=listH-bar2H-1;//减1是因为值小数计算出现一定偏差，这里微调下
+      
+      if(lyricBarDis<0)
+        lyricBarDis=0;
+      
+      //通过bar2的移动距离计算歌词的移动距离
+      lyricWheelDis=-pBoxH*lyricBarDis/listH;
+      bar2.style.top=lyricBarDis+"px";
+      pbox.style.top=lyricWheelDis+"px";
+    }
+    bar2.ondragstart=function(event){
+      var e= event || window.event;
+      e.preventDefault();
+    }
+  
+  
+  
+  
   })();
 
-  /* *******************************给歌词的bline2添加mousedown事件，一旦点击歌词和滚动条滚动到响应位置 */
-  bline2.onmousedown=function(event){
-    var e= event || window.event;
-
-    
-  }
+  
   </script>
 </body>
 </html>
