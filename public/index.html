@@ -425,7 +425,7 @@
   <script src="js/index.js"></script>
   <script>
   (function(){
-      /* ****************播放列表 */
+    //歌曲对象
     class song{
       constructor(sid,sname,sart,stime,ssrc,smv,slyric,s_sm_cover,s_bg_cover){
         this.sid=sid;
@@ -467,7 +467,8 @@
       new song(4,"그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),
       
     ];
-    /* ***************从服务器获得歌曲列表，插入列表。通过列表请求歌词 歌曲 */
+    
+    /*************************************将歌曲列表插入页面*/
     var song_list=document.getElementById("song_list");
     var html="<ul class='song_ul' id='song_ul'>";
     for(var s of songs){
@@ -522,10 +523,12 @@
     var lyricBarDis=0;
     
     bar1.style.height=blineH(listH,ulH)+"px";
+    //获取bar1的高度
     var bar1H=blineH(listH,ulH);
-    if(ulH>listH)
+    if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
       bline.className="bline active";
-    /* ********** */
+    
+    /********************************点击歌曲列表中的一条歌曲，在播放器中插入歌曲信息，添加样式，插入歌词，播放音乐*/
     song_ul.onclick=function(event){
       var e=event || window.event;
       var nName=e.target.nodeName;
@@ -611,11 +614,11 @@
           } 
           //插入歌词
           pbox.innerHTML=html;
-          //设置滚动条高度
           
+          //设置滚动条高度
           pBoxH=pbox.offsetHeight;
           bar2.style.height=blineH(lyricH,pBoxH)+"px";
-          if(lyricH<pBoxH)
+          if(lyricH<pBoxH)//如果歌词高度大于盒子高度，显示滚动条
             bline2.className="bline bline-2 active";
           //获取最高的p的高度，作为每次滚动的距离
           ps=pbox.querySelectorAll("p");
@@ -634,7 +637,9 @@
       if (h_doc>h_box)
         return h_box*h_box/h_doc;
     }
-    //添加滚动事件
+   
+
+    /*************************************给歌曲列表添加滚动事件*/
     var isMacWebkit = (navigator.userAgent.indexOf("Macintosh")!==-1&&
                       navigator.userAgent.indexOf("WebKit") !== -1);
     var isFirefox=(navigator.userAgent.indexOf("Gecko")!==-1);
@@ -642,25 +647,24 @@
     song_list.onwheel=fnsong_listWheel;//大多数当前浏览器
     if(isFirefox)//仅火狐
       song_list.addEventListener('DOMMouseScroll',fnsong_listWheel,false);
-    
+    //事件处理函数
     function fnsong_listWheel(event){
       var e= event || window.event;//标准 || IE
-
       var deltaY=e.deltaY*-30||e.wheelDelta/4||e.detail*-10;
       if(isMacWebkit)
         deltaY/=30;
-
       if(isFirefox && e.type!=="DOMMouseScroll")
         song_list.removeEventListener('DOMMouseScroll',fnsong_listWheel,false);
       
+
       if(deltaY<=-30){//向下滚
-        wheelDis-=liH;
-        barDis=-wheelDis*listH/ulH;  
+        wheelDis-=liH;//计算移动的激励
+        barDis=-wheelDis*listH/ulH; //计算滚动条移动的距离 
         if(Math.abs(wheelDis)>=ulH-listH){
           wheelDis=-(ulH-listH)
           barDis=listH-bar1.offsetHeight;
         }
-      }else{
+      }else{//向上滚动
         wheelDis+=liH;
         barDis=-wheelDis*listH/ulH; 
         if(wheelDis>=0){
@@ -670,7 +674,6 @@
       }
       song_ul.style.top=wheelDis+'px';
       bar1.style.top=barDis+'px';
-      
 
 
       
@@ -682,25 +685,25 @@
     }
     
 
+
+    /*************************************给歌词添加滚动事件*/
     lyric_box.onwheel=fnlyric_wheel;//未来浏览器
     lyric_box.onwheel=fnlyric_wheel;//大多数当前浏览器
     if(isFirefox)//仅火狐
       lyric_box.addEventListener('DOMMouseScroll',fnlyric_wheel,false);
-    
+    //事件处理函数
     function fnlyric_wheel(event){
       var e= event || window.event;//标准 || IE
-
       var deltaY=e.deltaY*-30||e.wheelDelta/4||e.detail*-10;
       if(isMacWebkit)
         deltaY/=30;
-
       if(isFirefox && e.type!=="DOMMouseScroll")
         lyric_box.removeEventListener('DOMMouseScroll',fnlyric_wheel,false);
 
 
       if(deltaY<=-30){//向下滚
-        lyricWheelDis-=maxPh;
-        lyricBarDis=-lyricWheelDis*listH/pBoxH;
+        lyricWheelDis-=maxPh;//计算歌词滚动距离
+        lyricBarDis=-lyricWheelDis*listH/pBoxH;//计算滚动条滚动距离
         if(Math.abs(lyricWheelDis)>=pBoxH-lyricH){
           lyricWheelDis=-(pBoxH-lyricH);
           lyricBarDis=listH-bar2.offsetHeight;
@@ -712,9 +715,8 @@
           lyricWheelDis=0;
           lyricBarDis=0;
         }
-        
       }
-      
+      //计算完毕执行滚动
       pbox.style.top=lyricWheelDis+"px";
       bar2.style.top=lyricBarDis+"px";
 
@@ -724,17 +726,24 @@
       e.returnValue=false;//IE
       return false;
     }
-    /* ***********获取DOM，设置声音 进度条 */
-
+   
+    /************************************每次点击一条歌曲都要重置歌词和歌词滚动体的位置到顶部*/
     function init(){
       lyricWheelDis=0;
       lyricBarDis=0;
       pbox.style.top=lyricWheelDis+"px";
       bar2.style.top=lyricBarDis+"px";
     }
-  
-    bline.onclick=function(event){
-      if(isMove)return;
+
+
+    /*************************************歌曲列表的滚动条的bline添加mousedown事件，一旦mousedown滚动条和歌曲列表滚动到相应位置*/
+    //问题：一开始使用onclik,但是bar1的mousedown 和 mouseup老是会触发一次click
+    //阻止默认行为，阻止冒泡，取消click事件都没有用。解决：改成mousedown事件
+    //问题:这样改后会同时触发bline的mousedown和bar1的mousedown,先触发子再触发父
+    //解决：阻止bar1冒泡，但是该功能不想这样，解决2：将curPy=parseFloat(bar1.style.top)||0;放到
+    //bind1的mousedown上，计算的值就是对的，不要放到bar1的mousedown上
+    bline.onmousedown=mousdown;
+    function mousdown(event){
       var e= event || window.event;
       var _this=e.target;
       //因为bar的位置老是变得，获得的相对于视口的位置值老是变动，导致滚动出错，所以bar上点击直接返回不执行
@@ -747,10 +756,31 @@
       //计算bar的移动距离
       barDis=offsetY-bar1H/2;
       mv(barDis);
+
+      //获取当前bar1的位置
+      curPy=parseFloat(bar1.style.top)||0;
     }
 
+    /* *******************************给bar1添加mousemove事件，改事件有mousedown添加，mouseup取消 */
+    //鼠标压下去的位置
+    var downY=0;
+    var curPy=0;//当前的位置
+    bar1.onmousedown=function(event){
+      var e= event || window.event;
+      downY=e.clientY;
+      document.onmousemove=barMv;
+      // e.stopPropagation()
+    }
+    function barMv(event){
+      var e= event || window.event;
+      //当前的位置加上移动的距离
+      barDis=curPy+e.clientY-downY;
+      mv(barDis)
+    }
+    //移动列表和滚动条
     function mv(barDis){
       //移动距离超过底部，则等于底部
+      bar1H=bar1.offsetHeight;
       if(barDis+bar1H>=listH)
         barDis=listH-bar1H;
       //移动距离超过顶部则等于0
@@ -758,32 +788,15 @@
         barDis=0;
       //通过bar的移动距离计算歌曲列表的移动距离
       wheelDis=-barDis*ulH/listH;
+      
       bar1.style.top=barDis+"px";
       song_ul.style.top=wheelDis+'px';
-    }
-    //鼠标压下去的位置
-    var downY=0;
-    var preBardis=0;//原先的位置
-    bar1.onmousedown=function(event){
-      var e= event || window.event;
-      downY=e.clientY;
-      preBardis=barDis;
-      document.onmousemove=barMv;
-    }
-    var isMove=false;
-    function barMv(event){
-      var e= event || window.event;
-      // var bar1H=bar1.offsetHeight;
-      //院校的位置加上移动的距离
-      isMove=true;
-      barDis=preBardis+e.clientY-downY;
-      mv(barDis)
     }
     document.onmouseup=function(event){
       var e= event || window.event;
       document.onmousemove=null;
-      isMove=false;
     }
+    //mousemv老是触发html5推拽默认行为，阻止它
     //阻止html5拖拽默认行为（显示禁手）
     bar1.ondragstart=function(event){
       var e= event || window.event;
@@ -791,6 +804,13 @@
       // e.stopPropagation();
     }
   })();
+
+  /* *******************************给歌词的bline2添加mousedown事件，一旦点击歌词和滚动条滚动到响应位置 */
+  bline2.onmousedown=function(event){
+    var e= event || window.event;
+
+    
+  }
   </script>
 </body>
 </html>
