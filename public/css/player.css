@@ -59,6 +59,12 @@ a:hover{
 .player .control1 a.play:hover{
   background-position:-40px -204px;
 }
+.player .control1 a.play.suspend{
+  background-position:0 -165px;
+}
+.player .control1 a.play.suspend:hover{
+  background-position:-40px -165px;
+}
 .player .control1 a.next{
   background-position:-80px -130px;
 }
@@ -644,8 +650,16 @@ a:hover{
 .player .body .lyric .pBox{
   position: relative;
 }
+.player .body .lyric .pBox.active{
+  transition:top .6s;
+}
 .player .body .lyric p{
   min-height:32px;
+  transition:transform .3s;
+}
+.player .body .lyric p.active{
+  transform:scale(1.1);
+  color:#fff;
 }
 .player .body .lyric p a{
   color:#c2c2c2
@@ -653,6 +667,9 @@ a:hover{
 .player .body .bline-2{
   left:auto;
   right:2px;
+}
+.player .body .bline-2 div.active{
+  transition: top .6s;
 }
 .player .body .bline-2.active div{
   display: block;
