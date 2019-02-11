@@ -649,16 +649,17 @@ a:hover{
 }
 .player .body .lyric .pBox{
   position: relative;
+  /* transition:top .8s; */
 }
 .player .body .lyric .pBox.active{
-  transition:top .6s;
+  transition:top .8s;
 }
 .player .body .lyric p{
   min-height:32px;
-  transition:transform .3s;
+  transition:color .7s;
 }
 .player .body .lyric p.active{
-  transform:scale(1.1);
+  /* transform:scale(1.1); */
   color:#fff;
 }
 .player .body .lyric p a{
@@ -668,8 +669,11 @@ a:hover{
   left:auto;
   right:2px;
 }
+/* .player .body .bline-2 div{
+  transition: top .8s;
+} */
 .player .body .bline-2 div.active{
-  transition: top .6s;
+  transition: top .8s;
 }
 .player .body .bline-2.active div{
   display: block;

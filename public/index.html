@@ -527,7 +527,7 @@
     var barDis=0;
     var lyricWheelDis=0;
     var lyricBarDis=0;
-    
+    var p10=0;//歌词到 p 边框的距离
     
     bar1.style.height=blineH(listH,ulH)+"px";
     //获取bar1的高度
@@ -563,6 +563,7 @@
         
         audio.src=`${songs[list_index].smusic_src}`;
         audio.play();
+        play_time();
         autoScorlllyric();
         play.className="play suspend";
       }
@@ -639,6 +640,9 @@
           bar2H=blineH(lyricH,pBoxH);
           if(lyricH<pBoxH)//如果歌词高度大于盒子高度，显示滚动条
             bline2.className="bline bline-2 active";
+          
+
+
           //获取最高的p的高度，作为每次滚动的距离
           ps=pbox.querySelectorAll("p");
           var psH=[];
@@ -646,6 +650,10 @@
             psH.push(p.offsetHeight);
           }
           maxPh=Math.max(...psH);
+
+          //获取文字到 p 边框的距离
+          var p20=parseInt(getComputedStyle(ps[0]).minHeight)-parseInt(getComputedStyle(ps[0]).fontSize);
+          p10=p20/2;//文字距离顶部边框的距离
         }
       }
       xhr.open("get",`${songs[i].slyric}`,true);
@@ -888,6 +896,7 @@
           e.target.className="play suspend";
           audio.src=`${songs[list_index].smusic_src}`;
           audio.play();
+          play_time();
           autoScorlllyric();
         }else{//播放状态
           e.target.className="play";
@@ -898,8 +907,32 @@
     }
     var index = 0;
     var t=0;
+    
+    /*****************************歌词自动滚动  */
     function autoScorlllyric(){
-      //时间进度
+    
+      if(interval_lyric) clearInterval(interval_lyric);
+      pbox.className="pBox active";
+      bar2.className="active"
+      var sumPh=0;
+      
+      interval_lyric=setInterval(()=>{
+        if((t+=300)>=times[index]){
+          sumPh+=ps[index].offsetHeight;
+          var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离顶部边框的距离
+          if(sumPh-h_offset>=listH/2){
+            lyricBarDis+=ps[index].offsetHeight*listH/pBoxH;
+            mv2(lyricBarDis);
+          }
+          
+          if(index>0)ps[index-1].className="";
+          ps[index].className="active";
+          index++;
+        }
+      },300)
+    }
+    /* ***********************歌曲总时长和当前播放时间，每秒更新一次，播放结束后清除定时器 */
+    function play_time(){
       if(interval_time) clearInterval(interval_time);
       interval_time=setInterval(()=>{
         var minute=Math.floor(audio.duration/60)+"";
@@ -919,26 +952,6 @@
           play.className="play";
         }
       },1000);
-      
-
-
-      if(interval_lyric) clearInterval(interval_lyric);
-      pbox.className="pBox active";
-      bar2.className="active"
-      var sumPh=0;
-      interval_lyric=setInterval(()=>{
-        if((t+=300)>=times[index]){
-          sumPh+=ps[index].offsetHeight;
-          if(sumPh>=listH/2){
-            lyricBarDis+=ps[index].offsetHeight*listH/pBoxH;
-            mv2(lyricBarDis);
-          }
-          
-          if(index>0)ps[index-1].className="";
-          ps[index].className="active";
-          index++;
-        }
-      },300)
     }
   })();
 
