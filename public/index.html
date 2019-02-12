@@ -96,9 +96,9 @@
             <!-- <a href="#" class="src" title="来自榜单"></a> -->
           </div>
           <div class="play_box">
-            <div class="playbar">
-              <div class="rdy"></div>
-              <div class="cur">
+            <div class="playbar" id="playbar">
+              <div class="rdy" id="rdy"></div>
+              <div class="cur" id="cur">
                 <span class="circle">
                   <img class="loading" src="img/loading1.gif" alt="">
                 </span>
@@ -421,7 +421,7 @@
     </div>
   </footer>
 
-  <audio id="audio" style="display:none" controls></audio>
+  <audio id="audio" style="" controls></audio>
 
   <script src="js/index.js"></script>
   <script>
@@ -548,7 +548,7 @@
       }else{
         //取消上一轮的active样式
         if(_this)_this.className="song_li";
-        init();
+        
         _this=e.target
         while(_this.nodeName!=='LI'){
           _this=_this.parentNode;
@@ -562,11 +562,13 @@
 
 
         //播放
-        
+        init();
         audio.src=`${songs[list_index].smusic_src}`;
         audio.play();
         play_time();
         autoScorlllyric();
+        //缓存进度条
+        pre_progress();
         play.className="play suspend";
       }
     }
@@ -622,7 +624,7 @@
             //获取歌词
             var curLrc=ps[i].replace(/\[\d{2}\:\d{2}\.?\d{0,3}\]/,'');
             var nextLrc=ps[i+1].replace(/\[\d{2}\:\d{2}\.?\d{0,3}\]/,'');
-            html+=`<p>${curLrc}`;
+            html+=`<p data-time="${curTime||0}">${curLrc}`;
             //当前时间插入数组，获得时间数组，强调if里面的i和for的i是同一个i,所以具备去重复的能力
             times.push(curTime||0);
             //如果相同，添加一个br,把nextLrc插入同一个p
@@ -659,7 +661,7 @@
           //获取文字到 p 边框的距离
           var p20=parseInt(getComputedStyle(ps[0]).minHeight)-parseInt(getComputedStyle(ps[0]).fontSize);
           p10=p20/2;//文字距离顶部边框的距离
-          console.log(p10,p20,getComputedStyle(ps[0]).minHeight,getComputedStyle(ps[0]).fontSize)
+          // console.log(p10,p20,getComputedStyle(ps[0]).minHeight,getComputedStyle(ps[0]).fontSize)
 
         }
       }
@@ -772,6 +774,8 @@
       firstPlay=true;
       pbox.style.top=lyricWheelDis+"px";
       bar2.style.top=lyricBarDis+"px";
+      rdy.style.width=0;
+      cur.style.width=0;
     }
 
 
@@ -908,9 +912,13 @@
       if(e.target.getAttribute("data-action")==="play/suspend"){
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
+          // console.log("---------")
             audio.src=`${songs[list_index].smusic_src}`;
             init(); //初次播放要初始化
+            //缓存进度条
+            pre_progress();
           }
+          // console.log(sumPh,sum2);
           play_time();
           autoScorlllyric();
           e.target.className="play suspend";
@@ -939,11 +947,14 @@
       pbox.className="pBox active";
       bar2.className="active"
       interval_lyric=setInterval(()=>{
-        if((t+=300)>=times[index]){
+        //每300毫秒判断一次，当前时间比p的时间大，则滚动
+        //ps[index]&&不能少在3gslow模式下会报undefined的错误
+        var dataTime=ps[index]&&ps[index].getAttribute("data-time");
+        if(audio.currentTime*1000>=dataTime){
           sumPh+=ps[index].offsetHeight;
           var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
           // console.log(p10,h_offset)
-          if(sumPh-h_offset>=listH/2){
+          if(sumPh-h_offset>=109.5){
             lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
             sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
             mv2(lyricBarDis);
@@ -960,12 +971,13 @@
       if(interval_time) clearInterval(interval_time);
       interval_time=setInterval(()=>{
         //转换时间格式
-        var minute=Math.floor(audio.duration/60)+"";
-        var second=Math.floor(audio.duration%60)+"";
+        console.log(Math.floor(audio.duration/60),Math.floor(audio.duration/60||0))
+        var minute=Math.floor(audio.duration/60||0)+"";
+        var second=Math.floor(audio.duration%60||0)+"";
         minute=minute.length==1?"0"+minute:minute;
         second=second.length==1?"0"+second:second;
-        var currMinute=Math.floor(audio.currentTime/60)+"";
-        var currSecond=Math.floor(audio.currentTime%60)+"";
+        var currMinute=Math.floor(audio.currentTime/60||0)+"";
+        var currSecond=Math.floor(audio.currentTime%60||0)+"";
         currMinute=currMinute.length==1?"0"+currMinute:currMinute;
         currSecond=currSecond.length==1?"0"+currSecond:currSecond;
         time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
@@ -973,8 +985,34 @@
           clearInterval(interval_lyric);
           clearInterval(interval_time);
           play.className="play";
+          firstPlay=true;
         }
       },1000);
+    }
+    /*************************************进度条  */
+    var playbar = document.getElementById("playbar");
+    var rdy = document.getElementById("rdy");
+    var cur = document.getElementById("cur");
+    var interval_pre_progress=null;
+    function pre_progress(){
+      if(interval_pre_progress) clearInterval(interval_pre_progress);
+      interval_pre_progress=setInterval(()=>{
+        var timeRanges = audio.buffered;
+        // 获取以缓存的时间
+        //等于0报错Uncaught DOMException: Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0).
+    //at setInterval
+        if(timeRanges.length!=0){
+          var timeBuffered = timeRanges.end(timeRanges.length - 1);
+          // 获取缓存进度，值为0到1
+          var bufferPercent = timeBuffered / audio.duration; 
+          var currentTime = audio.currentTime / audio.duration;
+          rdy.style.width=bufferPercent*100+"%";
+          cur.style.width=currentTime*100+"%";
+        }
+        
+      },1000);
+      
+      
     }
    
   })();

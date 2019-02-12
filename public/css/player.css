@@ -660,6 +660,7 @@ a:hover{
 }
 .player .body .lyric p.active{
   /* transform:scale(1.1); */
+  font-size:14px;
   color:#fff;
 }
 .player .body .lyric p a{
