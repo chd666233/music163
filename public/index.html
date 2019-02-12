@@ -763,10 +763,13 @@
    
     /************************************每次点击一条歌曲都要重置歌词和歌词滚动体的位置到顶部*/
     function init(){
-      lyricWheelDis=0;
-      lyricBarDis=0;
-      index=0;
-      t=0;
+      lyricWheelDis=0;//歌词滚动的距离
+      lyricBarDis=0;//歌词滚动条滚动的距离
+      index=0;//自动滚动累加的下标
+      t=0;//自动滚动歌词里面的时间累加
+      sumPh=0;//累加的p的高度
+      sum2=109.5;//累加的容器的中间位置，初始109.5虽则滚动不懂累加滚动的距离，使之相对于一滚动的距离位置相对静止
+      firstPlay=true;
       pbox.style.top=lyricWheelDis+"px";
       bar2.style.top=lyricBarDis+"px";
     }
@@ -878,8 +881,8 @@
     function mv2(bar2Dis){
       // bar2H=bar2.offsetHeight;
       if(bar2Dis+bar2H>=listH)
-        lyricBarDis=bar2Dis=listH-bar2H;//减1是因为值小数计算出现一定偏差，这里微调下
-      console.log(listH,bar2H,listH-bar2H.toFixed(3))
+        lyricBarDis=bar2Dis=listH-bar2H;
+      // console.log(listH,bar2H,listH-bar2H.toFixed(3))
       if(bar2Dis<0)
         lyricBarDis=bar2Dis=0;
       
@@ -899,32 +902,39 @@
     var play=control1.querySelector("[data-action='play/suspend']");
     var interval_lyric=null;
     var interval_time=null;
+    var firstPlay=true;
     control1.onclick=function(event){
       var e= event || window.event;
       if(e.target.getAttribute("data-action")==="play/suspend"){
-        if(audio.paused){//暂停状态
-        //初次播放
-          e.target.className="play suspend";
-          audio.src=`${songs[list_index].smusic_src}`;
-          audio.play();
+        if(audio.paused){//暂停状态，点击播放
+          if(firstPlay){ //初次播放
+            audio.src=`${songs[list_index].smusic_src}`;
+            init(); //初次播放要初始化
+          }
           play_time();
           autoScorlllyric();
-        //播放中
-        
-        }else{//播放状态
+          e.target.className="play suspend";
+          audio.play();
+        }else{//播放状态，点击暂停
           e.target.className="play";
           audio.pause();
+          pausePlay();
+          firstPlay=false;
         }
-        
       }
     }
+
+    function pausePlay(){
+      if(interval_lyric) clearInterval(interval_lyric);
+      if(interval_time) clearInterval(interval_time);
+    }
+
     var index = 0;
     var t=0;
     var sumPh=0;
     var sum2=109.5;
     /*****************************歌词自动滚动  */
     function autoScorlllyric(){
-    
       if(interval_lyric) clearInterval(interval_lyric);
       pbox.className="pBox active";
       bar2.className="active"
@@ -932,24 +942,24 @@
         if((t+=300)>=times[index]){
           sumPh+=ps[index].offsetHeight;
           var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
-          console.log(p10,h_offset)
+          // console.log(p10,h_offset)
           if(sumPh-h_offset>=listH/2){
-          
-            lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;
-            sum2+=sumPh-h_offset-sum2;
+            lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
+            sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
             mv2(lyricBarDis);
           }
-          
           if(index>0)ps[index-1].className="";
           ps[index].className="active";
           index++;
         }
       },300)
     }
+ 
     /* ***********************歌曲总时长和当前播放时间，每秒更新一次，播放结束后清除定时器 */
     function play_time(){
       if(interval_time) clearInterval(interval_time);
       interval_time=setInterval(()=>{
+        //转换时间格式
         var minute=Math.floor(audio.duration/60)+"";
         var second=Math.floor(audio.duration%60)+"";
         minute=minute.length==1?"0"+minute:minute;
@@ -959,8 +969,6 @@
         currMinute=currMinute.length==1?"0"+currMinute:currMinute;
         currSecond=currSecond.length==1?"0"+currSecond:currSecond;
         time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
-
-     
         if(audio.ended){
           clearInterval(interval_lyric);
           clearInterval(interval_time);
@@ -968,6 +976,7 @@
         }
       },1000);
     }
+   
   })();
 
   
