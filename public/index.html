@@ -518,6 +518,7 @@
     var bline=document.getElementById("bline");
     var bar1=bline.querySelector("div");
     var bar1H=0;
+    
     var bline2=document.getElementById("bline2");
     var bar2=bline2.querySelector("div");
     var bar2H=0;
@@ -528,10 +529,11 @@
     var lyricWheelDis=0;
     var lyricBarDis=0;
     var p10=0;//歌词到 p 边框的距离
-    
+    //计算bar1的高度
     bar1.style.height=blineH(listH,ulH)+"px";
-    //获取bar1的高度
-    bar1H=blineH(listH,ulH);
+    //获取bar1加边框的高度
+    bar1H=parseFloat(getComputedStyle(bar1).height)+parseFloat(getComputedStyle(bar1).borderTopWidth)*2;
+    // console.log(bar1H)
     if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
       bline.className="bline active";
     
@@ -636,8 +638,11 @@
           
           //设置滚动条高度
           pBoxH=pbox.offsetHeight;
+          //计算bar2的高度
           bar2.style.height=blineH(lyricH,pBoxH)+"px";
-          bar2H=blineH(lyricH,pBoxH);
+          //获取bar2加边框的高度
+          bar2H=parseFloat(getComputedStyle(bar2).height)+parseFloat(getComputedStyle(bar2).borderTopWidth)*2;
+          // console.log(bar2H)
           if(lyricH<pBoxH)//如果歌词高度大于盒子高度，显示滚动条
             bline2.className="bline bline-2 active";
           
@@ -654,6 +659,8 @@
           //获取文字到 p 边框的距离
           var p20=parseInt(getComputedStyle(ps[0]).minHeight)-parseInt(getComputedStyle(ps[0]).fontSize);
           p10=p20/2;//文字距离顶部边框的距离
+          console.log(p10,p20,getComputedStyle(ps[0]).minHeight,getComputedStyle(ps[0]).fontSize)
+
         }
       }
       xhr.open("get",`${songs[i].slyric}`,true);
@@ -685,7 +692,7 @@
       
 
       if(deltaY<=-30){//向下滚
-        wheelDis-=liH;//计算移动的激励
+        wheelDis-=liH;//计算移动的距离
         barDis=-wheelDis*listH/ulH; //计算滚动条移动的距离 
         if(Math.abs(wheelDis)>=ulH-listH){
           wheelDis=-(ulH-listH)
@@ -781,8 +788,10 @@
       };
       //点击事件相对于bline左上角的坐标
       var offsetY=e.clientY-_this.getBoundingClientRect().top;
-      // var bar1H=bar1.offsetHeight;
+      var bar1H=bar1.offsetHeight;
       //计算bar的移动距离
+      // bar1H=bar1.offsetHeight;
+     
       barDis=offsetY-bar1H/2;
       mv(barDis);
 
@@ -811,9 +820,10 @@
     //移动列表和滚动条
     function mv(barDis1){
       //移动距离超过底部，则等于底部
-      bar1H=bar1.offsetHeight;
+      // bar1H=bar1.offsetHeight;
       if(barDis1+bar1H>=listH)
         barDis=barDis1=listH-bar1H;
+      // console.log(listH,bar1H)
       //移动距离超过顶部则等于0
       if(barDis1<0)
         barDis=barDis1=0;
@@ -840,8 +850,7 @@
   /* *******************************给歌词的bline2添加mousedown事件，一旦点击歌词和滚动条滚动到响应位置 */
     bline2.onmousedown=function(event){
       var e= event || window.event;
-      bar2H=bar2.offsetHeight;
-      
+      // bar2H=bar2.offsetHeight;
       lyricBarDis=e.clientY-bline2.getBoundingClientRect().top-bar2H/2;
       mv2(lyricBarDis);
       curPy_bar2=bar2.offsetTop;
@@ -867,9 +876,10 @@
       e.preventDefault();
     }
     function mv2(bar2Dis){
+      // bar2H=bar2.offsetHeight;
       if(bar2Dis+bar2H>=listH)
-        lyricBarDis=bar2Dis=listH-bar2H-1;//减1是因为值小数计算出现一定偏差，这里微调下
-      
+        lyricBarDis=bar2Dis=listH-bar2H;//减1是因为值小数计算出现一定偏差，这里微调下
+      console.log(listH,bar2H,listH-bar2H.toFixed(3))
       if(bar2Dis<0)
         lyricBarDis=bar2Dis=0;
       
@@ -893,11 +903,14 @@
       var e= event || window.event;
       if(e.target.getAttribute("data-action")==="play/suspend"){
         if(audio.paused){//暂停状态
+        //初次播放
           e.target.className="play suspend";
           audio.src=`${songs[list_index].smusic_src}`;
           audio.play();
           play_time();
           autoScorlllyric();
+        //播放中
+        
         }else{//播放状态
           e.target.className="play";
           audio.pause();
@@ -907,21 +920,23 @@
     }
     var index = 0;
     var t=0;
-    
+    var sumPh=0;
+    var sum2=109.5;
     /*****************************歌词自动滚动  */
     function autoScorlllyric(){
     
       if(interval_lyric) clearInterval(interval_lyric);
       pbox.className="pBox active";
       bar2.className="active"
-      var sumPh=0;
-      
       interval_lyric=setInterval(()=>{
         if((t+=300)>=times[index]){
           sumPh+=ps[index].offsetHeight;
-          var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离顶部边框的距离
+          var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
+          console.log(p10,h_offset)
           if(sumPh-h_offset>=listH/2){
-            lyricBarDis+=ps[index].offsetHeight*listH/pBoxH;
+          
+            lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;
+            sum2+=sumPh-h_offset-sum2;
             mv2(lyricBarDis);
           }
           
