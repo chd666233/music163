@@ -100,7 +100,7 @@
               <div class="rdy" id="rdy"></div>
               <div class="cur" id="cur">
                 <span class="circle">
-                  <img id="muic_loading" class="loading" src="img/loading1.gif" alt="">
+                  <img class="loading" src="img/loading1.gif" alt="">
                 </span>
               </div>
             </div>
@@ -546,7 +546,7 @@
       }else if(nName==="I"){
 
       }else{
-        //取消上一轮li的active样式
+        //取消上一轮的active样式
         if(_this)_this.className="song_li";
         
         _this=e.target
@@ -565,7 +565,10 @@
         init();
         audio.src=`${songs[list_index].smusic_src}`;
         audio.play();
-        defaultLoding();
+        play_time();
+        autoScorlllyric();
+        //缓存进度条
+        pre_progress();
         play.className="play suspend";
       }
     }
@@ -733,8 +736,6 @@
       if(isFirefox && e.type!=="DOMMouseScroll")
         lyric_box.removeEventListener('DOMMouseScroll',fnlyric_wheel,false);
 
-      cancelAuto();
-      getRightAuto();
 
       if(deltaY<=-30){//向下滚
         lyricWheelDis-=maxPh;//计算歌词滚动距离
@@ -761,36 +762,16 @@
       e.returnValue=false;//IE
       return false;
     }
-
-    /* ****************************如果在bar2 blin2按压，在歌词手动滚动下取消滚动直到松开，停止滚动1秒后恢滚动 */
-    function cancelAuto(){
-      isWheel=true;
-      pbox.className="pBox";
-      bar2.className=""
-      // console.log("------")
-    }
-    function getRightAuto(){
-       //超过800ms没有滚动视为停止点击恢复isWheel
-       if(timeout_isWheel) clearTimeout(timeout_isWheel);
-       timeout_isWheel=setTimeout(function(){
-        isWheel=false;
-        pbox.className="pBox active";
-        bar2.className="active"
-        // console.log('++++++++')
-        mv2(temp_lyricBarDis);
-      },1000);
-    }
+   
     /************************************每次点击一条歌曲都要重置歌词和歌词滚动体的位置到顶部*/
     function init(){
       lyricWheelDis=0;//歌词滚动的距离
       lyricBarDis=0;//歌词滚动条滚动的距离
       index=0;//自动滚动累加的下标
+      t=0;//自动滚动歌词里面的时间累加
       sumPh=0;//累加的p的高度
       sum2=109.5;//累加的容器的中间位置，初始109.5虽则滚动不懂累加滚动的距离，使之相对于一滚动的距离位置相对静止
       firstPlay=true;
-      bufferPercent=0;//缓存时间
-      currentTime=0;//当前播放时间
-      temp_lyricBarDis=0;
       pbox.style.top=lyricWheelDis+"px";
       bar2.style.top=lyricBarDis+"px";
       rdy.style.width=0;
@@ -823,8 +804,6 @@
 
       //获取当前bar1的位置
       curPy=parseFloat(bar1.style.top)||0;
-
-      
     }
 
     /* *******************************给bar1添加mousemove事件，改事件有mousedown添加，mouseup取消 */
@@ -863,9 +842,6 @@
     }
     document.onmouseup=function(event){
       var e= event || window.event;
-      
-      //松开鼠标表示结束手动滚动，允许歌词自动滚动
-      getRightAuto();
       document.onmousemove=null;
     }
     //mousemv老是触发html5推拽默认行为，阻止它
@@ -885,22 +861,16 @@
       lyricBarDis=e.clientY-bline2.getBoundingClientRect().top-bar2H/2;
       mv2(lyricBarDis);
       curPy_bar2=bar2.offsetTop;
-
-       //按住鼠标表示正在滚动状态，暂停自动滚动，取消过渡样式
-       cancelAuto();
     }
-    var timeout_isWheel=null;
+    
     /* **************************给bar2添加mousemove事件，该事件通过mousedown触发，mouseup取消 */
     var curPy_bar2=0;//当前bar2的位置
     var downPy_bar2=0;//按压下去的位置
     bar2.onmousedown=function(event){
       var e= event || window.event;
       downPy_bar2=e.clientY;
-      
-      //按住鼠标表示正在滚动状态，暂停自动滚动，取消过渡样式
-      cancelAuto();
-
       document.onmousemove=fn_bar2Mv;
+
     }
     function fn_bar2Mv(event){
       var e= event || window.event;
@@ -908,6 +878,7 @@
       //更新lyricBarDis的值
       lyricBarDis=curPy_bar2+e.clientY-downPy_bar2;
       mv2(lyricBarDis);
+
       //阻止默认行为，能防止鼠标移动的时候选中文字
       e.preventDefault();
     }
@@ -933,121 +904,120 @@
     var audio = document.getElementById("audio");
     var control1=document.getElementById("control1");
     var play=control1.querySelector("[data-action='play/suspend']");
+    var interval_lyric=null;
+    var interval_time=null;
     var firstPlay=true;
     control1.onclick=function(event){
       var e= event || window.event;
       if(e.target.getAttribute("data-action")==="play/suspend"){
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
+          // console.log("---------")
             audio.src=`${songs[list_index].smusic_src}`;
             init(); //初次播放要初始化
+            //缓存进度条
+            pre_progress();
           }
+          // console.log(sumPh,sum2);
+          play_time();
+          autoScorlllyric();
           e.target.className="play suspend";
           audio.play();
-          defaultLoding();
         }else{//播放状态，点击暂停
           e.target.className="play";
           audio.pause();
+          pausePlay();
           firstPlay=false;
         }
       }
     }
 
+    function pausePlay(){
+      if(interval_lyric) clearInterval(interval_lyric);
+      if(interval_time) clearInterval(interval_time);
+    }
 
     var index = 0;
+    var t=0;
     var sumPh=0;
     var sum2=109.5;
-   
+    /*****************************歌词自动滚动  */
     audio.ontimeupdate=function(){
-      autoScorlllyric();
-      play_time();
-      progress();
+      console.log("------------")
     }
-     /*****************************歌词自动滚动  */
-    var isWheel=false;//是否手动的在滚动，手动滚动的时候暂停自动滚动
-    //自动滚动的距离，这个距离是lyricBarDis的临时值，之所以要创建临时值是因为在手动滚动的时候
-    //lyricBarDis的值变了，自动滚动回不到原来的位置，自动滚动通过这个临时的值回到原来的位置
-    var temp_lyricBarDis=0;
     function autoScorlllyric(){
-      //ps[index]&&不能少在3gslow模式下会报undefined的错误
+      if(interval_lyric) clearInterval(interval_lyric);
+      pbox.className="pBox active";
+      bar2.className="active"
+      interval_lyric=setInterval(()=>{
+        //每300毫秒判断一次，当前时间比p的时间大，则滚动
+        //ps[index]&&不能少在3gslow模式下会报undefined的错误
         var dataTime=ps[index]&&ps[index].getAttribute("data-time");
         if(audio.currentTime*1000>=dataTime){
           sumPh+=ps[index].offsetHeight;
           var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
           // console.log(p10,h_offset)
-          if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
-            temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
+          if(sumPh-h_offset>=109.5){
+            lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
             sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
+            mv2(lyricBarDis);
           }
-          //temp_lyricBarDis开始累加了就移动到累加的位置，没有开始累加就移动到0的位置
-          if(!isWheel){//没有滚动则自动滚动，如果鼠标滚动则暂停滚动
-            //添加过渡样式
-            pbox.className="pBox active";
-            bar2.className="active"
-            //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
-            mv2(temp_lyricBarDis);
-          }
-          //p添加字体和字体颜色样式
           if(index>0)ps[index-1].className="";
           ps[index].className="active";
           index++;
         }
+      },300)
     }
  
-    /* ***********************歌曲总时长和当前播放时间和缓存时间 */
+    /* ***********************歌曲总时长和当前播放时间，每秒更新一次，播放结束后清除定时器 */
     function play_time(){
-      //转换时间格式
-      // console.log(Math.floor(audio.duration/60),Math.floor(audio.duration/60||0))
-      var minute=Math.floor(audio.duration/60||0)+"";
-      var second=Math.floor(audio.duration%60||0)+"";
-      minute=minute.length==1?"0"+minute:minute;
-      second=second.length==1?"0"+second:second;
-      var currMinute=Math.floor(audio.currentTime/60||0)+"";
-      var currSecond=Math.floor(audio.currentTime%60||0)+"";
-      currMinute=currMinute.length==1?"0"+currMinute:currMinute;
-      currSecond=currSecond.length==1?"0"+currSecond:currSecond;
-      time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
-    }
-    /* *****************************歌曲播放结束 去掉样式恢复成第一次播放 */
-    audio.onended=function(){
-      play.className="play";
-      firstPlay=true;
+      if(interval_time) clearInterval(interval_time);
+      interval_time=setInterval(()=>{
+        //转换时间格式
+        // console.log(Math.floor(audio.duration/60),Math.floor(audio.duration/60||0))
+        var minute=Math.floor(audio.duration/60||0)+"";
+        var second=Math.floor(audio.duration%60||0)+"";
+        minute=minute.length==1?"0"+minute:minute;
+        second=second.length==1?"0"+second:second;
+        var currMinute=Math.floor(audio.currentTime/60||0)+"";
+        var currSecond=Math.floor(audio.currentTime%60||0)+"";
+        currMinute=currMinute.length==1?"0"+currMinute:currMinute;
+        currSecond=currSecond.length==1?"0"+currSecond:currSecond;
+        time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
+        if(audio.ended){
+          clearInterval(interval_lyric);
+          clearInterval(interval_time);
+          play.className="play";
+          firstPlay=true;
+        }
+      },1000);
     }
     /*************************************进度条  */
     var playbar = document.getElementById("playbar");
     var rdy = document.getElementById("rdy");
     var cur = document.getElementById("cur");
-    var muic_loading=document.getElementById("muic_loading");
-    var bufferPercent=0;
-    var currentTime=0;
-    //一点击播放音乐默认正在加载
-    function defaultLoding(){
-      if(currentTime>=bufferPercent){
-        muic_loading.className="loading active"
-      }else{
-        muic_loading.className="loading"
-      }
-    }
-    /* ********************************缓存进度条和正在播放进度条 */
-    function progress(){
-      var timeRanges = audio.buffered;
-  //等于0报错Uncaught DOMException: Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0).
-  //at setInterval
-      if(timeRanges.length!=0){
-        // 获取已缓存的时间
-        var timeBuffered = timeRanges.end(timeRanges.length - 1);
-        // 获取缓存进度，值为0到1
-        bufferPercent = timeBuffered / audio.duration; 
-        currentTime = audio.currentTime / audio.duration;
-        rdy.style.width=bufferPercent*100+"%";
-        cur.style.width=currentTime*100+"%";
-        //如果播放完毕也加载完毕，那么currentTime和bufferPercent都为1
-        if(currentTime>=bufferPercent&&bufferPercent!=1){
-          muic_loading.className="loading active"
-        }else{
-          muic_loading.className="loading"
+    var interval_pre_progress=null;
+    function pre_progress(){
+      if(interval_pre_progress) clearInterval(interval_pre_progress);
+      interval_pre_progress=setInterval(()=>{
+        var timeRanges = audio.buffered;
+        // 获取以缓存的时间
+        //等于0报错Uncaught DOMException: Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0).
+    //at setInterval
+        if(timeRanges.length!=0){
+          var timeBuffered = timeRanges.end(timeRanges.length - 1);
+          // 获取缓存进度，值为0到1
+          var bufferPercent = timeBuffered / audio.duration; 
+          var currentTime = audio.currentTime / audio.duration;
+          rdy.style.width=bufferPercent*100+"%";
+          cur.style.width=currentTime*100+"%";
+          if(currentTime==1) clearInterval(interval_pre_progress);
         }
-      }
+
+        
+      },1000);
+      
+      
     }
    
   })();
