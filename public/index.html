@@ -499,7 +499,7 @@
     //插入歌曲列表的歌曲数量
     list_num.innerHTML=songs.length;
 
-    var list_index;//播放列表点中的下标；
+    var list_index=0;//播放列表点中的下标；
     var audio = document.getElementById("audio");
     var time=document.getElementById("time");
     var song_info=document.getElementById("song_info");
@@ -550,14 +550,17 @@
       }else if(nName==="I"){
 
       }else{
-        //取消上一轮li的active样式
-        if(_this)_this.className="song_li";
+        
         _this=e.target
         while(_this.nodeName!=='LI'){
           _this=_this.parentNode;
         }
+
+        //取消上一轮li的active样式
+        if(list_index)song_ls[list_index].className="song_li";
         //本轮添加active样式
         _this.className="song_li active";
+        
         list_index=[].indexOf.call(song_ls,_this);
         play.className="play suspend";
 
@@ -573,6 +576,10 @@
     function innerAll(i){
       inner(i);
       innerLyric(i);
+    }
+    function liStyle(i){
+      song_ls[i].className="song_li";
+      song_ls[(i+1)%songs.length].className="song_li active"
     }
     //插入封面，作者，等信息
     function inner(i){
@@ -967,9 +974,15 @@
           firstPlay=false;
           cancelAuto();
         }
-      }
-      if(e.target.getAttribute("data-action")==="next"){
-        list_index=list_index%songs.length+1;
+      }else{
+        song_ls[list_index].className="song_li";
+
+        if(e.target.getAttribute("data-action")==="next")  
+          list_index=(list_index+1)%songs.length;
+        if(e.target.getAttribute("data-action")==="prev")
+          list_index=list_index==0?songs.length-1:list_index-1;
+        
+        song_ls[list_index].className="song_li active"
         init();
         innerAll(list_index);
         audio.play();
