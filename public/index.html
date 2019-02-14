@@ -123,7 +123,7 @@
         <span title="循环" class="loop"></span>
         <span class="add_box">
           <span class="tip">已添加到播放列表</span>
-          <span title="播放列表" class="add">0</span>
+          <span title="播放列表" class="add" id="list_num">0</span>
         </span>
       </div>
     </div>
@@ -421,7 +421,7 @@
     </div>
   </footer>
 
-  <audio id="audio" style="" controls></audio>
+  <audio id="audio"></audio>
 
   <script src="js/index.js"></script>
   <script>
@@ -473,6 +473,7 @@
     
     /*************************************将歌曲列表插入页面*/
     var song_list=document.getElementById("song_list");
+    var list_num =document.getElementById("list_num");
     var html="<ul class='song_ul' id='song_ul'>";
     for(var s of songs){
       html+=`<li class="song_li">
@@ -495,7 +496,11 @@
     }
     html+="</ul>";
     song_list.innerHTML=html;
+    //插入歌曲列表的歌曲数量
+    list_num.innerHTML=songs.length;
+
     var list_index;//播放列表点中的下标；
+    var audio = document.getElementById("audio");
     var time=document.getElementById("time");
     var song_info=document.getElementById("song_info");
     var song_list=document.getElementById("song_list");
@@ -518,7 +523,6 @@
     var bline=document.getElementById("bline");
     var bar1=bline.querySelector("div");
     var bar1H=0;
-    
     var bline2=document.getElementById("bline2");
     var bar2=bline2.querySelector("div");
     var bar2H=0;
@@ -548,28 +552,28 @@
       }else{
         //取消上一轮li的active样式
         if(_this)_this.className="song_li";
-        
         _this=e.target
         while(_this.nodeName!=='LI'){
           _this=_this.parentNode;
         }
-
         //本轮添加active样式
         _this.className="song_li active";
         list_index=[].indexOf.call(song_ls,_this);
-        inner(list_index);
-        innerLyric(list_index);
-
-
-        //播放
-        init();
-        audio.src=`${songs[list_index].smusic_src}`;
-        audio.play();
-        defaultLoding();
         play.className="play suspend";
+
+        //初始化
+        init();  
+        //插入歌曲 歌词 封面
+        innerAll(list_index)
+        //播放
+        audio.play();
       }
     }
-
+    innerAll(0)//默认插入第一首歌
+    function innerAll(i){
+      inner(i);
+      innerLyric(i);
+    }
     //插入封面，作者，等信息
     function inner(i){
       html=`<a href="#" class="song">${songs[i].sname}</a>`
@@ -592,9 +596,13 @@
             <a href="#" ></a>`;
       sm_cover.innerHTML=html;
 
+      //插入歌曲
+      audio.src=`${songs[i].smusic_src}`;
     }
     //插入歌词
+    var isGetLyric=false;
     function innerLyric(i){
+      isGetLyric=false;
       var xhr=new XMLHttpRequest();
       xhr.onreadystatechange=function(){
         if(xhr.readyState==4&&xhr.status==200){
@@ -604,7 +612,7 @@
           ps=xhr.responseText.split('\n');
           //问题：有写歌词是双语，多语版本的，按换行符分割会被划分到不同的行
           //解决：循环ps如果ps[i]和ps[i+1]时间相同则i和i+i行的歌词放到同一个p里面，中间添加br换行
-          for(var i=0,_i=0;i<ps.length-1;i++){
+          for(var i=0;i<ps.length-1;i++){
             //[00:25.210] [00:17] [00:51.59]
             var curTime=ps[i].match(/\[\d{2}\:\d{2}\.?\d{0,3}\]/);
             var nextTime=ps[i+1].match(/\[\d{2}\:\d{2}\.?\d{0,3}\]/);
@@ -621,9 +629,11 @@
             //获取歌词
             var curLrc=ps[i].replace(/\[\d{2}\:\d{2}\.?\d{0,3}\]/,'');
             var nextLrc=ps[i+1].replace(/\[\d{2}\:\d{2}\.?\d{0,3}\]/,'');
+            
             html+=`<p data-time="${curTime||0}">${curLrc}`;
             //当前时间插入数组，获得时间数组，强调if里面的i和for的i是同一个i,所以具备去重复的能力
-            times.push(curTime||0);
+            times.push(curTime);
+            // console.log(curTime,times[0])
             //如果相同，添加一个br,把nextLrc插入同一个p
             if(curTime==nextTime){
               i++;
@@ -632,9 +642,10 @@
               html+='</p>'
             } 
           } 
+          // console.log('---------')
           //插入歌词
           pbox.innerHTML=html;
-          
+          isGetLyric=true;
           //设置滚动条高度
           pBoxH=pbox.offsetHeight;
           //计算bar2的高度
@@ -659,12 +670,13 @@
           var p20=parseInt(getComputedStyle(ps[0]).minHeight)-parseInt(getComputedStyle(ps[0]).fontSize);
           p10=p20/2;//文字距离顶部边框的距离
           // console.log(p10,p20,getComputedStyle(ps[0]).minHeight,getComputedStyle(ps[0]).fontSize)
-
+          
         }
       }
       xhr.open("get",`${songs[i].slyric}`,true);
       xhr.send(null);
     }
+    
     //计算滚动条高度
     function blineH(h_box,h_doc){
       if (h_doc>h_box)
@@ -762,14 +774,15 @@
       return false;
     }
 
-    /* ****************************如果在bar2 blin2按压，在歌词手动滚动下取消滚动直到松开，停止滚动1秒后恢滚动 */
+    /* ****************************如果在bar2 blin2按压，在歌词手动滚动下暂停歌词自动滚动直到松开或停止滚动1秒后恢滚动歌词自动滚动*/
     function cancelAuto(){
       isWheel=true;
       pbox.className="pBox";
       bar2.className=""
-      // console.log("------")
+      if(timeout_isWheel) clearTimeout(timeout_isWheel);
     }
     function getRightAuto(){
+       if(audio.paused) return;//暂停状态不回滚 
        //超过800ms没有滚动视为停止点击恢复isWheel
        if(timeout_isWheel) clearTimeout(timeout_isWheel);
        timeout_isWheel=setTimeout(function(){
@@ -795,6 +808,8 @@
       bar2.style.top=lyricBarDis+"px";
       rdy.style.width=0;
       cur.style.width=0;
+      //默认加载状态样式
+      defaultLoding();
     }
 
 
@@ -828,8 +843,7 @@
     }
 
     /* *******************************给bar1添加mousemove事件，改事件有mousedown添加，mouseup取消 */
-    //鼠标压下去的位置
-    var downY=0;
+    var downY=0; //鼠标压下去的位置
     var curPy=0;//当前的位置
     bar1.onmousedown=function(event){
       var e= event || window.event;
@@ -845,7 +859,7 @@
       //阻止默认行为，能防止鼠标移动的时候选中文字
       e.preventDefault();
     }
-    //移动列表和滚动条
+    //滚动列表和滚动条
     function mv(barDis1){
       //移动距离超过底部，则等于底部
       // bar1H=bar1.offsetHeight;
@@ -861,13 +875,7 @@
       bar1.style.top=barDis1+"px";
       song_ul.style.top=wheelDis+'px';
     }
-    document.onmouseup=function(event){
-      var e= event || window.event;
-      
-      //松开鼠标表示结束手动滚动，允许歌词自动滚动
-      getRightAuto();
-      document.onmousemove=null;
-    }
+    
     //mousemv老是触发html5推拽默认行为，阻止它
     //阻止html5拖拽默认行为（显示禁手）
     bar1.ondragstart=function(event){
@@ -877,7 +885,7 @@
     }
   
   
-  
+    
   /* *******************************给歌词的bline2添加mousedown事件，一旦点击歌词和滚动条滚动到响应位置 */
     bline2.onmousedown=function(event){
       var e= event || window.event;
@@ -911,6 +919,7 @@
       //阻止默认行为，能防止鼠标移动的时候选中文字
       e.preventDefault();
     }
+    //滚动歌词和滚动条
     function mv2(bar2Dis){
       // bar2H=bar2.offsetHeight;
       if(bar2Dis+bar2H>=listH)
@@ -929,8 +938,15 @@
       e.preventDefault();
     }
   
+    /*************************************取消document.onmousemv  */
+    document.onmouseup=function(event){
+      var e= event || window.event;
+      
+      //松开鼠标表示结束手动滚动，允许歌词自动滚动
+      getRightAuto();
+      document.onmousemove=null;
+    }
     /* *************************播放歌曲 */
-    var audio = document.getElementById("audio");
     var control1=document.getElementById("control1");
     var play=control1.querySelector("[data-action='play/suspend']");
     var firstPlay=true;
@@ -939,26 +955,33 @@
       if(e.target.getAttribute("data-action")==="play/suspend"){
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
-            audio.src=`${songs[list_index].smusic_src}`;
+            // audio.src=`${songs[list_index].smusic_src}`;
             init(); //初次播放要初始化
           }
           e.target.className="play suspend";
           audio.play();
-          defaultLoding();
+          getRightAuto()
         }else{//播放状态，点击暂停
           e.target.className="play";
           audio.pause();
           firstPlay=false;
+          cancelAuto();
         }
       }
+      if(e.target.getAttribute("data-action")==="next"){
+        list_index=list_index%songs.length+1;
+        init();
+        innerAll(list_index);
+        audio.play();
+      }
     }
-
-
     var index = 0;
     var sumPh=0;
     var sum2=109.5;
-   
     audio.ontimeupdate=function(){
+      //一旦进入timeupdate事件说明歌曲加载一部分可以播放了
+      //但歌词歌曲是从服务器请求的，请求是异步的，只有在歌词请求下来才开始播放，否则会出错
+      if(!isGetLyric)return;
       autoScorlllyric();
       play_time();
       progress();
@@ -968,7 +991,11 @@
     //自动滚动的距离，这个距离是lyricBarDis的临时值，之所以要创建临时值是因为在手动滚动的时候
     //lyricBarDis的值变了，自动滚动回不到原来的位置，自动滚动通过这个临时的值回到原来的位置
     var temp_lyricBarDis=0;
+    
     function autoScorlllyric(){
+      //问题：歌词是异步请求的，个能歌曲可以播放了歌词还没请求完毕，导致歌词错误但是已经开始播放并自动滚动歌词了
+      //解决：插入歌词添加属性isGetLyric，确保歌词已插入才允许播放
+      // console.log(index,times[index],ps[index].getAttribute("data-time"))
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
         var dataTime=ps[index]&&ps[index].getAttribute("data-time");
         if(audio.currentTime*1000>=dataTime){
@@ -1050,6 +1077,9 @@
       }
     }
    
+
+   /* ******************************声音 */
+
   })();
 
   
