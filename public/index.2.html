@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <link rel="shortcut icon" href="img/favicon.ico">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/footer.css">
@@ -502,7 +501,6 @@
 
     var list_index=0;//播放列表点中的下标；
     var audio = document.getElementById("audio");
-    // audio.loop=true;
     var time=document.getElementById("time");
     var song_info=document.getElementById("song_info");
     var song_list=document.getElementById("song_list");
@@ -553,14 +551,28 @@
 
       }else{
         
-        _this=e.target;
+        _this=e.target
         while(_this.nodeName!=='LI'){
           _this=_this.parentNode;
         }
 
+         //取消上一轮li的active样式
+        if(list_index)song_ls[list_index].className="song_li";
+        //本轮添加active样式
+        _this.className="song_li active";
         
-      
-        playMusic(_this);
+        list_index=[].indexOf.call(song_ls,_this);
+        //插入歌曲 歌词 封面
+        innerAll(list_index)
+         //初始化
+         init(); 
+        /*play.className="play suspend";
+
+        
+        
+        //播放
+        audio.play(); */
+        playMusic(e);
       }
     }
     innerAll(0)//默认插入第一首歌
@@ -812,10 +824,6 @@
     function init(){
       lyricWheelDis=0;//歌词滚动的距离
       lyricBarDis=0;//歌词滚动条滚动的距离
-      pbox.style.top=lyricWheelDis+"px";
-      bar2.style.top=lyricBarDis+"px";
-      rdy.style.width=0;
-      cur.style.width=0;
       index=0;//自动滚动累加的下标
       sumPh=0;//累加的p的高度
       sum2=109.5;//累加的容器的中间位置，初始109.5虽则滚动不懂累加滚动的距离，使之相对于一滚动的距离位置相对静止
@@ -823,11 +831,12 @@
       bufferPercent=0;//缓存时间
       currentTime=0;//当前播放时间
       temp_lyricBarDis=0;
-      old_index=0;//之前的p的下标，用于取消之前的p的样式
-      //插入歌曲 歌词 封面
-      innerAll(list_index)
+      pbox.style.top=lyricWheelDis+"px";
+      bar2.style.top=lyricBarDis+"px";
+      rdy.style.width=0;
+      cur.style.width=0;
       //默认加载状态样式
-      // defaultLoding();
+      defaultLoding();
     }
 
 
@@ -877,7 +886,7 @@
       //阻止默认行为，能防止鼠标移动的时候选中文字
       e.preventDefault();
     }
-    //传入bar移动的距离，自动计算列表的滚动距离，自动滚动列表和滚动条
+    //滚动列表和滚动条
     function mv(barDis1){
       //移动距离超过底部，则等于底部
       // bar1H=bar1.offsetHeight;
@@ -969,32 +978,19 @@
     var play=control1.querySelector("[data-action='play/suspend']");
     var firstPlay=true;
     var isplaying=false;
+    console.log(isplaying)
     control1.onclick=playMusic;
-    function playMusic(eventOrLi){
-      if(eventOrLi instanceof MouseEvent){
-        var e= eventOrLi || window.eventOrLi ;
-      }else{
-        // HTMLLIElement 
-        var elemLi=eventOrLi;
-      }
-      
-      if(elemLi&&elemLi.getAttribute("data-action")==="liPlay"){//点击歌曲列表
-        //取消上一轮li的active样式,不能用e取消，因为上一轮的e不一定是li,还可能是next prev
-        song_ls[list_index].className="song_li";
-        list_index=[].indexOf.call(song_ls,elemLi);//更新list_index
-        //本轮添加active样式
-        elemLi.className="song_li active";
-        init(); 
-        audio.play();
-        isplaying=true;
-      }else if(e.target.getAttribute("data-action")==="play/suspend"){//点击播放/暂停
+    function playMusic(event){
+      var e= event || window.event ;
+      if(e.target.getAttribute("data-action")==="play/suspend"||
+      e.target.getAttribute("data-action")==="liPlay"){
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
             // audio.src=`${songs[list_index].smusic_src}`;
             init(); //初次播放要初始化
+            song_ls[list_index].className="song_li active"
           }
           e.target.className="play suspend";
-          song_ls[list_index].className="song_li active"
           audio.play();
           isplaying=true;
           getRightAuto()
@@ -1006,54 +1002,18 @@
           cancelAuto();
         }
       }else{
+        console.log(audio.paused)
         song_ls[list_index].className="song_li";
-        if(e.target.getAttribute("data-action")==="next"){  //点击下一首
+
+        if(e.target.getAttribute("data-action")==="next")  
           list_index=(list_index+1)%songs.length;
-          //问题：不断点击下一首，播放列表正在播放的歌曲会跑到不可见区域
-          //解决：如果看不见了播放列表向上滚动
-          //注意：点击next后当前的list_index就是正在播放的歌曲list_index+1是为了计算liH的高
-          // console.log(songs.length,list_index)
-          
-          if(list_index==0){
-            wheelDis=0;
-            barDis=0;
-            mv(barDis)
-          }else if(-wheelDis+listH<(list_index+1)*liH){
-            wheelDis=(list_index+1)*liH-listH;
-            barDis=wheelDis*listH/ulH;
-            mv(barDis);
-          }else if(-wheelDis>(list_index)*liH){
-            wheelDis=(list_index)*liH;
-            barDis=wheelDis*listH/ulH;
-            mv(barDis);
-          }
-          //不能放外面,否则li处于box中间也会移动
-          // barDis=wheelDis*listH/ulH;
-          // mv(barDis);
-        }
-        if(e.target.getAttribute("data-action")==="prev"){ //点击上一首
+        if(e.target.getAttribute("data-action")==="prev")
           list_index=list_index==0?songs.length-1:list_index-1;
-           //注意：点击prev后当前的list_index就是正在播放的歌曲
-          if(list_index==songs.length){
-            barDis=listH-bar1H;
-            mv(barDis);
-          }else if(-wheelDis>list_index*liH){
-            wheelDis=list_index*liH;
-            barDis=wheelDis*listH/ulH;
-            mv(barDis);
-          }else if(-wheelDis+listH<(list_index+1)*liH){
-            wheelDis=(list_index+1)*liH-listH;
-            barDis=wheelDis*listH/ulH;
-            mv(barDis);
-          }
-          // barDis=wheelDis*listH/ulH;
-          // mv(barDis); 
-        }
-        // barDis=wheelDis*listH/ulH;
-        // mv(barDis);
-       
+        
         song_ls[list_index].className="song_li active"
         init();
+        innerAll(list_index);
+        console.log(isplaying)
         if(isplaying)
           audio.play();
       }
@@ -1074,15 +1034,13 @@
     //自动滚动的距离，这个距离是lyricBarDis的临时值，之所以要创建临时值是因为在手动滚动的时候
     //lyricBarDis的值变了，自动滚动回不到原来的位置，自动滚动通过这个临时的值回到原来的位置
     var temp_lyricBarDis=0;
-    var old_index=0;
+    
     function autoScorlllyric(){
       //问题：歌词是异步请求的，个能歌曲可以播放了歌词还没请求完毕，导致歌词错误但是已经开始播放并自动滚动歌词了
       //解决：插入歌词添加属性isGetLyric，确保歌词已插入才允许播放
       // console.log(index,times[index],ps[index].getAttribute("data-time"))
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
-     
         var dataTime=ps[index]&&ps[index].getAttribute("data-time");
-        // console.log(index,ps[index],dataTime,audio.currentTime*1000>=dataTime)
         if(audio.currentTime*1000>=dataTime){
           sumPh+=ps[index].offsetHeight;
           var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
@@ -1100,9 +1058,8 @@
             mv2(temp_lyricBarDis);
           }
           //p添加字体和字体颜色样式
-          ps[old_index].className="";
+          if(index>0)ps[index-1].className="";
           ps[index].className="active";
-          old_index=index;
           index++;
         }
     }
@@ -1122,33 +1079,12 @@
       time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
     }
     /* *****************************歌曲播放结束 去掉样式恢复成第一次播放 */
-    var isSingleLoop=false,//单曲循环
-        isRandom=true,//随机
-        isLoop=false;//列表循环
     audio.onended=function(){
-      // play.className="play";
-      // firstPlay=true;
-      if(isSingleLoop){
-        //什么也不用做，直接初始化后play
-      }else if(isRandom){
-        song_ls[list_index].className="song_li";
-        //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
-        list_index=Math.floor(Math.random()*songs.length);
-        song_ls[list_index].className="song_li active";
-      }else if(isLoop){
-        song_ls[list_index].className="song_li";
-        list_index=(list_index+1)%song.length;
-        song_ls[list_index].className="song_li active";
-        
-      }
-      init();
-      audio.play();
-    
-      
+      play.className="play";
+      firstPlay=true;
     }
     /*************************************进度条  */
     var playbar = document.getElementById("playbar");
-    var playbarW=playbar.offsetWidth;
     var rdy = document.getElementById("rdy");
     var cur = document.getElementById("cur");
     var muic_loading=document.getElementById("muic_loading");
@@ -1182,48 +1118,6 @@
         //   muic_loading.className="loading"
         // }
       }
-    }
-    /* ************************点击进度条快进快退 */
-    playbar.onmousedown=function(event){
-      var e = event || window.event;
-      var offsetX=e.clientX-playbar.getBoundingClientRect().left;
-      var stime=songs[list_index].stime.split(':');
-      var m =stime[0]*60;
-      var s =stime[1]*1;
-      stime=m+s;
-      var t=offsetX/playbarW*stime; 
-      sumPh=0;
-      var temp=0;
-      /* for(var idx in times){
-        console.log(idx)
-        if(times[idx]>t*1000){
-          console.log(idx)
-          index=temp=parseInt(idx)-1;
-          break;
-        }else{
-          if(idx>0)
-            sumPh+=ps[idx-1].offsetHeight;
-        }
-      } */
-      
-      for(var idx=0;idx<times.length;idx++){
-        if(times[idx]>t*1000){
-          index=(idx-1);
-          break;
-        }else{
-          if(idx>0)
-            sumPh+=ps[idx-1].offsetHeight;
-            //问题：如果times[idx]比最大的t*1000还小，那么index不能得到赋值
-            //解决：在else加一个判断，给index赋值
-          if(idx==times.length-1&&times[idx]<t*1000){
-            index=idx;
-          }
-        }
-      }
-      //audio一变动就会触发ontimeupdate执行
-      audio.currentTime=t;
-      firstPlay=false;
-      isWheel=false;
     }
    
 
