@@ -1007,22 +1007,25 @@
         }
       }else{
         song_ls[list_index].className="song_li";
+
+          //问题：上一首下一首处于box外面不可见，滚动歌曲列表使当前li可见
+          //解决：根据情况滚动歌曲列表
+          //注意：list_index是next/prev后的li
+          // (list_index+1)*liH计算的是点击后的li的高度
+          // list_index*liH计算的是点击后的上一个li的高度
         if(e.target.getAttribute("data-action")==="next"){  //点击下一首
-          list_index=(list_index+1)%songs.length;
-          //问题：不断点击下一首，播放列表正在播放的歌曲会跑到不可见区域
-          //解决：如果看不见了播放列表向上滚动
-          //注意：点击next后当前的list_index就是正在播放的歌曲list_index+1是为了计算liH的高
+          list_index=(list_index+1)%songs.length;//看这里，说明list_index是next/prev后的li
+         
           // console.log(songs.length,list_index)
-          
-          if(list_index==0){
+          if(list_index==0){//最后一首点击后，即list_index==0的时候
             wheelDis=0;
             barDis=0;
             mv(barDis)
-          }else if(-wheelDis+listH<(list_index+1)*liH){
+          }else if(-wheelDis+listH<(list_index+1)*liH){//高度+卷起高度比点击next后的li低，注意这里list_index+1是为了计算点击后的li的高度
             wheelDis=(list_index+1)*liH-listH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
-          }else if(-wheelDis>(list_index)*liH){
+          }else if(-wheelDis>(list_index)*liH){//高度比点击后的li的上一个li的高
             wheelDis=(list_index)*liH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
@@ -1032,16 +1035,17 @@
           // mv(barDis);
         }
         if(e.target.getAttribute("data-action")==="prev"){ //点击上一首
-          list_index=list_index==0?songs.length-1:list_index-1;
+          list_index=list_index==0?songs.length-1:list_index-1;//看这里，说明list_index是next/prev后的li
+
            //注意：点击prev后当前的list_index就是正在播放的歌曲
-          if(list_index==songs.length){
+          if(list_index==songs.length-1){//点击prev后的list_index等于最后一个时
             barDis=listH-bar1H;
             mv(barDis);
-          }else if(-wheelDis>list_index*liH){
+          }else if(-wheelDis>list_index*liH){//高度比点击后的li的上一个li高
             wheelDis=list_index*liH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
-          }else if(-wheelDis+listH<(list_index+1)*liH){
+          }else if(-wheelDis+listH<(list_index+1)*liH){//高度+卷起高度比点击后的li的高度低
             wheelDis=(list_index+1)*liH-listH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
@@ -1051,7 +1055,7 @@
         }
         // barDis=wheelDis*listH/ulH;
         // mv(barDis);
-       
+        // console.log(list_index)
         song_ls[list_index].className="song_li active"
         init();
         if(isplaying)
