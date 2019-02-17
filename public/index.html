@@ -77,7 +77,7 @@
   
   <div class="player" id="player">
     <div class="bg"></div>
-    <div class="container">
+    <div class="container" id="container">
       <div class="control1" id="control1">
         <a href="javascript:;" class="prev" data-action="prev" title="上一首"></a>
         <a href="javascript:;" class="play" data-action="play/suspend" title="播放/暂停"></a>
@@ -114,10 +114,10 @@
         <span class="" title="分享"></span>
       </div>
       <div class="control4">
-        <div title="音量" class="vol">
-          <div class="bg">
+        <div title="音量" class="vol" id="vol">
+          <div class="bg" id="vol_bg">
             <div>
-              <span class="circle"></span>
+              <span class="circle" id="vol_circle"></span>
             </div>
           </div>
         </div>
@@ -422,7 +422,7 @@
     </div>
   </footer>
 
-  <audio id="audio"></audio>
+  <audio id="audio" controls></audio>
 
   <script src="js/index.js"></script>
   <script>
@@ -599,19 +599,49 @@
     }
 
     audio.onloadstart=function(){
+      // console.log("yyyyyyyyyyyyy")
       muic_loading.className="loading active"
+      console.log("///")
+      fn_bufferProgress();
     }
     //问题：默认"加载中"中的样式在点击下一首上一首中没有取消
     //解决：检测到可以播放了取消"加载中"样式
+    //跳转暂停状态显示
+    //播放加载完成触发
     audio.oncanplay=function(){
+      // console.log("----------------")
       muic_loading.className="loading"
     }
+    //跳转暂停状态不触发
+    //断网不能触发
+    //播放加载完成触发
     audio.onwaiting=function(){
+      // console.log("+++++++++++")
       muic_loading.className="loading active"
     }
-    audio.onplaying=function(){
-      muic_loading.className="loading"
+    // audio.onplaying=function(){
+    //   console.log("///////////")
+    //   muic_loading.className="loading"
+    // }
+    //跳转暂停状态触发
+    //非跳转不能触发，播放加载完成不触发
+    //断网不能触发
+    audio.onseeking=function(){
+      // console.log("ccccccccccccccccccc")
+      muic_loading.className="loading active"
     }
+    // audio.onseeked=function(){
+    //   console.log("bbbbbbbbbbb")
+    //   muic_loading.className="loading"
+    // }
+
+    audio.onerror=function(){
+      console.log("errrrr")
+      muic_loading.className="loading active"
+    }
+
+
+
     //插入歌词
     var isGetLyric=false;
     function innerLyric(i){
@@ -1008,11 +1038,7 @@
       }else{
         song_ls[list_index].className="song_li";
 
-          //问题：上一首下一首处于box外面不可见，滚动歌曲列表使当前li可见
-          //解决：根据情况滚动歌曲列表
-          //注意：list_index是next/prev后的li
-          // (list_index+1)*liH计算的是点击后的li的高度
-          // list_index*liH计算的是点击后的上一个li的高度
+         
         if(e.target.getAttribute("data-action")==="next"){  //点击下一首
           if(isRandom)
             //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
@@ -1021,19 +1047,20 @@
             list_index=(list_index+1)%songs.length;//看这里，说明list_index是next/prev后的li
           // console.log(isRandom,list_index)
           // console.log(songs.length,list_index)
-          if(list_index==0){//最后一首点击后，即list_index==0的时候
-            wheelDis=0;
-            barDis=0;
-            mv(barDis)
-          }else if(-wheelDis+listH<(list_index+1)*liH){//高度+卷起高度比点击next后的li低，注意这里list_index+1是为了计算点击后的li的高度
+          // if(list_index==0){//最后一首点击后，即list_index==0的时候
+          //   wheelDis=0;
+          //   barDis=0;
+          //   mv(barDis)
+          // }
+          /* else if(-wheelDis+listH<(list_index+1)*liH){//高度+卷起高度比点击next后的li低，注意这里list_index+1是为了计算点击后的li的高度
             wheelDis=(list_index+1)*liH-listH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
-          }else if(-wheelDis>(list_index)*liH){//高度比点击后的li的上一个li的高
+          }else if(-wheelDis>list_index*liH){//高度比点击后的li的上一个li的高
             wheelDis=(list_index)*liH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
-          }
+          } */
           //不能放外面,否则li处于box中间也会移动
           // barDis=wheelDis*listH/ulH;
           // mv(barDis);
@@ -1045,10 +1072,11 @@
             list_index=list_index==0?songs.length-1:list_index-1;//看这里，说明list_index是next/prev后的li
 
            //注意：点击prev后当前的list_index就是正在播放的歌曲
-          if(list_index==songs.length-1){//点击prev后的list_index等于最后一个时
-            barDis=listH-bar1H;
-            mv(barDis);
-          }else if(-wheelDis>list_index*liH){//高度比点击后的li的上一个li高
+          // if(list_index==songs.length-1){//点击prev后的list_index等于最后一个时
+          //   barDis=listH-bar1H;
+          //   mv(barDis);
+          // }
+          /* else if(-wheelDis>list_index*liH){//高度比点击后的li的上一个li高
             wheelDis=list_index*liH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
@@ -1056,19 +1084,50 @@
             wheelDis=(list_index+1)*liH-listH;
             barDis=wheelDis*listH/ulH;
             mv(barDis);
-          }
+          } */
           // barDis=wheelDis*listH/ulH;
           // mv(barDis); 
         }
         // barDis=wheelDis*listH/ulH;
         // mv(barDis);
-        // console.log(list_index)
+       
+        scroolToView();
+
         song_ls[list_index].className="song_li active"
         init();
         if(isplaying)
           audio.play();
       }
     }
+    //滚动到视口
+    //问题：上一首下一首处于box外面不可见，滚动歌曲列表使当前li位于box内可见
+    //解决：根据情况滚动歌曲列表
+    //注意：list_index是next/prev后的li
+    // (list_index+1)*liH计算的是点击后的li的高度
+    // list_index*liH计算的是点击后的上一个li的高度
+    function scroolToView(){
+      if(list_index==0){//最后一首点击后，即list_index==0的时候
+          wheelDis=0;
+          barDis=0;
+          mv(barDis)
+      }
+      if(list_index==songs.length-1){//点击prev后的list_index等于最后一个时
+        barDis=listH-bar1H;
+        mv(barDis);
+      }
+
+      if(-wheelDis>list_index*liH){//高度比点击后的li的上一个li高
+        wheelDis=list_index*liH;
+        barDis=wheelDis*listH/ulH;
+        mv(barDis);
+      }else if(-wheelDis+listH<(list_index+1)*liH){//高度+卷起高度比点击后的li的高度低
+        wheelDis=(list_index+1)*liH-listH;
+        barDis=wheelDis*listH/ulH;
+        mv(barDis);
+      }
+    }
+
+
     var index = 0;
     var sumPh=0;
     var sum2=109.5;
@@ -1151,25 +1210,32 @@
     }
     /* ********************************缓存进度条和正在播放进度条 */
     function progress(){
-      var timeRanges = audio.buffered;
-  //等于0报错Uncaught DOMException: Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0).
-  //at setInterval
-      if(timeRanges.length!=0){
-        // 获取已缓存的时间
-        var timeBuffered = timeRanges.end(timeRanges.length - 1);
-        // 获取缓存进度，值为0到1
-        bufferPercent = timeBuffered / audio.duration; 
-        currentTime = audio.currentTime / audio.duration;
-        rdy.style.width=bufferPercent*100+"%";
-        cur.style.width=currentTime*100+"%";
-        //如果播放完毕也加载完毕，那么currentTime和bufferPercent都为1
-        // if(bufferPercent==0||currentTime>bufferPercent){
-        //   muic_loading.className="loading active"
-        // }else{
-        //   muic_loading.className="loading"
-        // }
-      }
+      currentTime = audio.currentTime / audio.duration;
+      cur.style.width=Math.floor(currentTime*100)+"%";
     }
+    var bufferProgress=null;
+    //问题：暂停后缓存进度条不动了
+    //解决：不适用ontimeupdate改动进度条，使用定时器
+    function fn_bufferProgress(){
+      if(bufferProgress!=null)clearInterval(bufferProgress);
+      bufferProgress=setInterval(()=>{
+      var timeRanges = audio.buffered;
+      //等于0报错Uncaught DOMException: Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0).
+  //at setInterval
+        console.log("0000")
+      if(timeRanges.length!=0){
+        console.log("---")
+         // 获取缓存进度，值为0到1
+        bufferPercent = timeRanges.end(0) / audio.duration; 
+        rdy.style.width=Math.floor(bufferPercent*100)+"%";}
+      },300)
+    }
+      
+    audio.oncanplaythrough=function(){
+      console.log("++++")
+      // if(bufferProgress!=null)clearInterval(bufferProgress);
+    }
+
     /* ************************点击进度条快进快退 */
     playbar.onmousedown=function(event){
       var e = event || window.event;
@@ -1208,7 +1274,13 @@
         }
       }
       //audio一变动就会触发ontimeupdate执行
+      // console.log(t)
       audio.currentTime=t;
+      //需要提前改变，不能等timeupdate改变触发，因为虽然值赋值给了currentTime但是
+      //timeupdate并不是马上触发而是等加载到可以播放了才触发
+      cur.style.width=Math.floor(t / audio.duration*100)+"%";
+      var timeRanges = audio.buffered;
+      console.log(timeRanges.start(0),timeRanges.end(0),timeRanges.length)
       firstPlay=false;
       isWheel=false;
     }
@@ -1220,6 +1292,8 @@
     audio.onended=function(){
       // play.className="play";
       // firstPlay=true;
+      if(bufferProgress!=null)clearInterval(bufferProgress);
+
       if(isSingleLoop){
         //什么也不用做，直接初始化后play
       }else if(isRandom){
@@ -1229,10 +1303,11 @@
         song_ls[list_index].className="song_li active";
       }else if(isLoop){
         song_ls[list_index].className="song_li";
-        list_index=(list_index+1)%song.length;
+        list_index=(list_index+1)%songs.length;
         song_ls[list_index].className="song_li active";
       }
       init();
+      scroolToView();
       audio.play();
     }
 
@@ -1261,9 +1336,27 @@
       e.target.setAttribute("data-action",mode);
     }
 
-   
+   /* ******************************音量 */
+   var vol = document.getElementById("vol");
+   var vol_bg=document.getElementById("vol_bg");
+   var vol_circle=document.getElementById("vol_circle");
+   vol.onclick=function(event){
+     var e = event || window.event;
+      if(vol_bg.style.display=="block"){
+        vol_bg.style.display=""
+      }else{
+        vol_bg.style.display="block"
+      }
 
-   /* ******************************声音 */
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+   }
+   container.ondblclick=function(e){
+     console.log("--")
+    e.preventDefault();
+      e.stopPropagation(); return false;
+   }
 
   })();
 
