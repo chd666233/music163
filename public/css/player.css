@@ -233,7 +233,7 @@ a:hover{
   height:25px;
 }
 .player .control4 .vol,
-.player .control4 .loop,
+.player .control4 .mode,
 .player .control4 .add{
   margin-top:11px;
   margin-right:2px;
@@ -278,6 +278,19 @@ a:hover{
 .player .control4 .loop:hover{
   background-position:-33px -344px;
 }
+.player .control4 .random{
+  background-position:-66px -248px;
+}
+.player .control4 .random:hover{
+  background-position:-93px -248px;
+}
+.player .control4 .single{
+  background-position:-66px -344px;
+}
+.player .control4 .single:hover{
+  background-position:-93px -344px;
+}
+
 .player .control4 .add{
   display: inline-block;
   width:38px;

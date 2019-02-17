@@ -121,7 +121,7 @@
             </div>
           </div>
         </div>
-        <span title="循环" class="loop"></span>
+        <span title="循环" class="mode loop" data-action="loop" id="mode"></span>
         <span class="add_box">
           <span class="tip">已添加到播放列表</span>
           <span title="播放列表" class="add" id="list_num">0</span>
@@ -822,7 +822,7 @@
       firstPlay=true;
       bufferPercent=0;//缓存时间
       currentTime=0;//当前播放时间
-      temp_lyricBarDis=0;
+      temp_lyricBarDis=0;//lyricBarDis的临时变量，歌曲滚动距离
       old_index=0;//之前的p的下标，用于取消之前的p的样式
       //插入歌曲 歌词 封面
       innerAll(list_index)
@@ -1014,8 +1014,12 @@
           // (list_index+1)*liH计算的是点击后的li的高度
           // list_index*liH计算的是点击后的上一个li的高度
         if(e.target.getAttribute("data-action")==="next"){  //点击下一首
-          list_index=(list_index+1)%songs.length;//看这里，说明list_index是next/prev后的li
-         
+          if(isRandom)
+            //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
+            list_index=Math.floor(Math.random()*songs.length);
+          else
+            list_index=(list_index+1)%songs.length;//看这里，说明list_index是next/prev后的li
+          // console.log(isRandom,list_index)
           // console.log(songs.length,list_index)
           if(list_index==0){//最后一首点击后，即list_index==0的时候
             wheelDis=0;
@@ -1035,7 +1039,10 @@
           // mv(barDis);
         }
         if(e.target.getAttribute("data-action")==="prev"){ //点击上一首
-          list_index=list_index==0?songs.length-1:list_index-1;//看这里，说明list_index是next/prev后的li
+          if(isRandom)
+            list_index=Math.floor(Math.random()*songs.length);
+          else
+            list_index=list_index==0?songs.length-1:list_index-1;//看这里，说明list_index是next/prev后的li
 
            //注意：点击prev后当前的list_index就是正在播放的歌曲
           if(list_index==songs.length-1){//点击prev后的list_index等于最后一个时
@@ -1125,31 +1132,7 @@
       currSecond=currSecond.length==1?"0"+currSecond:currSecond;
       time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
     }
-    /* *****************************歌曲播放结束 去掉样式恢复成第一次播放 */
-    var isSingleLoop=false,//单曲循环
-        isRandom=true,//随机
-        isLoop=false;//列表循环
-    audio.onended=function(){
-      // play.className="play";
-      // firstPlay=true;
-      if(isSingleLoop){
-        //什么也不用做，直接初始化后play
-      }else if(isRandom){
-        song_ls[list_index].className="song_li";
-        //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
-        list_index=Math.floor(Math.random()*songs.length);
-        song_ls[list_index].className="song_li active";
-      }else if(isLoop){
-        song_ls[list_index].className="song_li";
-        list_index=(list_index+1)%song.length;
-        song_ls[list_index].className="song_li active";
-        
-      }
-      init();
-      audio.play();
-    
-      
-    }
+   
     /*************************************进度条  */
     var playbar = document.getElementById("playbar");
     var playbarW=playbar.offsetWidth;
@@ -1229,6 +1212,55 @@
       firstPlay=false;
       isWheel=false;
     }
+
+     /* *****************************单曲循环、列表循环、随机*/
+     var isSingleLoop=false,//单曲循环
+        isRandom=false,//随机
+        isLoop=true;//列表循环
+    audio.onended=function(){
+      // play.className="play";
+      // firstPlay=true;
+      if(isSingleLoop){
+        //什么也不用做，直接初始化后play
+      }else if(isRandom){
+        song_ls[list_index].className="song_li";
+        //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
+        list_index=Math.floor(Math.random()*songs.length);
+        song_ls[list_index].className="song_li active";
+      }else if(isLoop){
+        song_ls[list_index].className="song_li";
+        list_index=(list_index+1)%song.length;
+        song_ls[list_index].className="song_li active";
+      }
+      init();
+      audio.play();
+    }
+
+    var mode =document.getElementById("mode");
+    mode.onclick=function(event){
+      var e= event ||window.event;
+      var mode = "loop";
+      switch (e.target.getAttribute("data-action")){
+        case "loop":isSingleLoop=false,
+                    isLoop=false,
+                    isRandom=true,
+                    mode="random";
+                    break;
+        case "random":isSingleLoop=true,
+                      isLoop=false,
+                      isRandom=false,
+                      mode="single";
+                      break;
+        case "single":isSingleLoop=false,
+                      isLoop=true,
+                      isRandom=false,
+                      mode="loop";
+                      break;
+      }
+      e.target.className="mode "+mode;
+      e.target.setAttribute("data-action",mode);
+    }
+
    
 
    /* ******************************声音 */
