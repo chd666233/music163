@@ -422,7 +422,7 @@
     </div>
   </footer>
 
-  <audio id="audio" controls></audio>
+  <!-- <audio id="audio" controls></audio> -->
 
   <script src="js/index.js"></script>
   <script>
@@ -501,7 +501,8 @@
     list_num.innerHTML=songs.length;
 
     var list_index=0;//播放列表点中的下标；
-    var audio = document.getElementById("audio");
+    var audios=[new Audio()]
+    var audio = audios[0];
     // audio.loop=true;
     var time=document.getElementById("time");
     var song_info=document.getElementById("song_info");
@@ -557,9 +558,6 @@
         while(_this.nodeName!=='LI'){
           _this=_this.parentNode;
         }
-
-        
-      
         playMusic(_this);
       }
     }
@@ -593,15 +591,18 @@
       html=`<img src="${songs[i].s_sm_cover}" alt="">
             <a href="#" ></a>`;
       sm_cover.innerHTML=html;
-
+      
       //插入歌曲
-      audio.src=`${songs[i].smusic_src}`;
+      //如果歌曲名和将要插入的歌曲名一样，那么不重复插入
+      if(!new RegExp(`${songs[i].smusic_src}`).test(audio.src)){
+        audio.src=`${songs[i].smusic_src}`;
+      }
+        
     }
 
     audio.onloadstart=function(){
       // console.log("yyyyyyyyyyyyy")
       muic_loading.className="loading active"
-      console.log("///")
       fn_bufferProgress();
     }
     //问题：默认"加载中"中的样式在点击下一首上一首中没有取消
@@ -609,8 +610,9 @@
     //跳转暂停状态显示
     //播放加载完成触发
     audio.oncanplay=function(){
-      // console.log("----------------")
+      console.log("----------------")
       muic_loading.className="loading"
+      isNotErr=true;
     }
     //跳转暂停状态不触发
     //断网不能触发
@@ -626,20 +628,57 @@
     //跳转暂停状态触发
     //非跳转不能触发，播放加载完成不触发
     //断网不能触发
+    var timeOutSeek=null;
+    // var isseek=false;
     audio.onseeking=function(){
+      // if(isseek)return;
       // console.log("ccccccccccccccccccc")
       muic_loading.className="loading active"
+      console.log(audio.buffered.length)
+      // audio.play()
+      /* var temp_currentTime=audio.currentTime;
+      var temp_src=audio.src;
+      audios.splice(0,1);
+      audios.push(new Audio())
+      if(timeOutSeek) clearTimeout(timeOutSeek)
+      timeOutSeek=setTimeout(()=>{
+        console.log("000")
+        isseek=true;
+        
+        audio.src=temp_src;
+        audio.play()
+        audio.currentTime=temp_currentTime;
+        // audio.buffered.length=0;
+        if(audio.buffered.length!=0)
+          audio.buffered.end(0)=0;
+          
+        bufferPercent=0;
+        rdy.style.width=Math.floor(bufferPercent*100)+"%";
+        fn_bufferProgress();
+      },80) */
+        
+
     }
     // audio.onseeked=function(){
     //   console.log("bbbbbbbbbbb")
     //   muic_loading.className="loading"
     // }
-
+    
+    audio.onstalled=function(){
+      console.log("////////////")
+      muic_loading.className="loading active";
+      isNotErr=false;
+    }
     audio.onerror=function(){
-      console.log("errrrr")
-      muic_loading.className="loading active"
+      console.log("++++++")
+      muic_loading.className="loading active";
+      isNotErr=false;
     }
 
+
+
+
+  
 
 
     //插入歌词
@@ -827,14 +866,14 @@
       if(timeout_isWheel) clearTimeout(timeout_isWheel);
     }
     function getRightAuto(){
+       if(!isNotErr)return;//错误状态不滚
        if(audio.paused) return;//暂停状态不回滚 
-       //超过800ms没有滚动视为停止点击恢复isWheel
+       //超过800ms没有滚动视为停止点击恢复isWheel,并滚回原来的位置
        if(timeout_isWheel) clearTimeout(timeout_isWheel);
        timeout_isWheel=setTimeout(function(){
         isWheel=false;
         pbox.className="pBox active";
         bar2.className="active"
-        // console.log('++++++++')
         mv2(temp_lyricBarDis);
       },1000);
     }
@@ -1021,7 +1060,7 @@
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
             // audio.src=`${songs[list_index].smusic_src}`;
-            init(); //初次播放要初始化
+            // init(); //初次播放要初始化
           }
           e.target.className="play suspend";
           song_ls[list_index].className="song_li active"
@@ -1031,7 +1070,7 @@
         }else{//播放状态，点击暂停
           e.target.className="play";
           audio.pause();
-          firstPlay=false;
+          // firstPlay=false;
           isplaying=false;
           cancelAuto();
         }
@@ -1140,6 +1179,9 @@
       progress();
     }
      /*****************************歌词自动滚动  */
+     //问题：错误状态如断网，点击快进快退还会滚动歌词，不要滚动
+     //解决:出现错误isNotErr变为false，不能调用mv2
+    var isNotErr=true;
     var isWheel=false;//是否手动的在滚动，手动滚动的时候暂停自动滚动
     //自动滚动的距离，这个距离是lyricBarDis的临时值，之所以要创建临时值是因为在手动滚动的时候
     //lyricBarDis的值变了，自动滚动回不到原来的位置，自动滚动通过这个临时的值回到原来的位置
@@ -1162,7 +1204,7 @@
             sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
           }
           //temp_lyricBarDis开始累加了就移动到累加的位置，没有开始累加就移动到0的位置
-          if(!isWheel){//没有滚动则自动滚动，如果鼠标滚动则暂停滚动
+          if(!isWheel&&isNotErr){//没有滚动则自动滚动，如果鼠标滚动则暂停滚动
             //添加过渡样式
             pbox.className="pBox active";
             bar2.className="active"
@@ -1170,8 +1212,11 @@
             mv2(temp_lyricBarDis);
           }
           //p添加字体和字体颜色样式
-          ps[old_index].className="";
-          ps[index].className="active";
+          if(isNotErr){
+            ps[old_index].className="";
+            ps[index].className="active";
+          }
+          
           old_index=index;
           index++;
         }
@@ -1222,19 +1267,19 @@
       var timeRanges = audio.buffered;
       //等于0报错Uncaught DOMException: Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0).
   //at setInterval
-        console.log("0000")
-      if(timeRanges.length!=0){
-        console.log("---")
-         // 获取缓存进度，值为0到1
-        bufferPercent = timeRanges.end(0) / audio.duration; 
-        rdy.style.width=Math.floor(bufferPercent*100)+"%";}
+        // if(timeRanges.length!=0){
+          // console.log(audio.buffered.end(0))
+          // 获取缓存进度，值为0到1
+          bufferPercent = audio.readyState==4&&timeRanges.end(timeRanges.length-1) / audio.duration; 
+          rdy.style.width=Math.floor(bufferPercent*100)+"%";
+        // }
       },300)
     }
       
-    audio.oncanplaythrough=function(){
-      console.log("++++")
-      // if(bufferProgress!=null)clearInterval(bufferProgress);
-    }
+    // audio.oncanplaythrough=function(){
+    //   console.log("++++")
+    //   // if(bufferProgress!=null)clearInterval(bufferProgress);
+    // }
 
     /* ************************点击进度条快进快退 */
     playbar.onmousedown=function(event){
@@ -1247,6 +1292,7 @@
       var t=offsetX/playbarW*stime; 
       sumPh=0;
       var temp=0;
+      // isseek=false;
       /* for(var idx in times){
         console.log(idx)
         if(times[idx]>t*1000){
@@ -1280,7 +1326,6 @@
       //timeupdate并不是马上触发而是等加载到可以播放了才触发
       cur.style.width=Math.floor(t / audio.duration*100)+"%";
       var timeRanges = audio.buffered;
-      console.log(timeRanges.start(0),timeRanges.end(0),timeRanges.length)
       firstPlay=false;
       isWheel=false;
     }
@@ -1347,16 +1392,8 @@
       }else{
         vol_bg.style.display="block"
       }
-
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
    }
-   container.ondblclick=function(e){
-     console.log("--")
-    e.preventDefault();
-      e.stopPropagation(); return false;
-   }
+ 
 
   })();
 
