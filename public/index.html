@@ -100,7 +100,7 @@
             <div class="playbar" id="playbar">
               <div class="rdy" id="rdy"></div>
               <div class="cur" id="cur">
-                <span class="circle">
+                <span class="circle" id="playbar_circle">
                   <img id="muic_loading" class="loading" src="img/loading1.gif" alt="">
                 </span>
               </div>
@@ -610,7 +610,7 @@
     //跳转暂停状态显示
     //播放加载完成触发
     audio.oncanplay=function(){
-      console.log("----------------")
+      // console.log("----------------")
       muic_loading.className="loading"
       isNotErr=true;
     }
@@ -665,12 +665,12 @@
     // }
     
     audio.onstalled=function(){
-      console.log("////////////")
+      // console.log("////////////")
       muic_loading.className="loading active";
       isNotErr=false;
     }
     audio.onerror=function(){
-      console.log("++++++")
+      // console.log("++++++")
       muic_loading.className="loading active";
       isNotErr=false;
     }
@@ -1028,7 +1028,6 @@
     /*************************************取消document.onmousemv  */
     document.onmouseup=function(event){
       var e= event || window.event;
-      
       //松开鼠标表示结束手动滚动，允许歌词自动滚动
       getRightAuto();
       document.onmousemove=null;
@@ -1242,6 +1241,7 @@
     var playbarW=playbar.offsetWidth;
     var rdy = document.getElementById("rdy");
     var cur = document.getElementById("cur");
+    var playbar_circle=document.getElementById("playbar_circle");
     var muic_loading=document.getElementById("muic_loading");
     var bufferPercent=0;
     var currentTime=0;
@@ -1256,7 +1256,10 @@
     /* ********************************缓存进度条和正在播放进度条 */
     function progress(){
       currentTime = audio.currentTime / audio.duration;
-      cur.style.width=Math.floor(currentTime*100)+"%";
+      //问题：当拖动滚动条指示器的时候这里在同时改变位置，两个位置冲突
+      //解决：当拖动滚动条指示器的时候不允许这里改变
+      if(!isPbarCircle)
+        cur.style.width=Math.ceil(currentTime*100)+"%";
     }
     var bufferProgress=null;
     //问题：暂停后缓存进度条不动了
@@ -1282,16 +1285,23 @@
     // }
 
     /* ************************点击进度条快进快退 */
-    playbar.onmousedown=function(event){
+    playbar.onmousedown=fn_playbar;
+    function fn_playbar(event){
       var e = event || window.event;
+      
+      
       var offsetX=e.clientX-playbar.getBoundingClientRect().left;
+      if(offsetX>playbarW)
+        offsetX=playbarW;
+      //获取歌曲时长
       var stime=songs[list_index].stime.split(':');
       var m =stime[0]*60;
       var s =stime[1]*1;
       stime=m+s;
+      //计算点击位置的时间
       var t=offsetX/playbarW*stime; 
       sumPh=0;
-      var temp=0;
+      // var temp=0;
       // isseek=false;
       /* for(var idx in times){
         console.log(idx)
@@ -1324,11 +1334,47 @@
       audio.currentTime=t;
       //需要提前改变，不能等timeupdate改变触发，因为虽然值赋值给了currentTime但是
       //timeupdate并不是马上触发而是等加载到可以播放了才触发
-      cur.style.width=Math.floor(t / audio.duration*100)+"%";
+      cur.style.width=Math.ceil(t / audio.duration*100)+"%";
+      console.log(Math.ceil(t / audio.duration*100)+"%")
       var timeRanges = audio.buffered;
       firstPlay=false;
       isWheel=false;
     }
+
+    var isPbarCircle=false;
+    playbar_circle.onmousedown=function(){
+      isPbarCircle=true;
+      document.onmousemove=fn_playbarCircleMv;
+    }
+    function fn_playbarCircleMv(event){
+      var e = event || window.event;
+      
+      
+      var offsetX= e.clientX-playbar.getBoundingClientRect().left;
+      
+      var temp=offsetX/playbarW*100;
+      if(offsetX>playbarW)
+        temp=100;
+      cur.style.width=temp+"%";
+      e.preventDefault();
+    }
+    document.addEventListener("mouseup",function(event){
+      if(isPbarCircle){
+        var e = event || window.event;
+        fn_playbar(e);
+
+        isPbarCircle=false;
+      }
+    })
+    playbar_circle.ondragstart=function(event){
+      var e = event || window.event;
+      e.preventDefault();
+    }
+
+
+
+
+
 
      /* *****************************单曲循环、列表循环、随机*/
      var isSingleLoop=false,//单曲循环
