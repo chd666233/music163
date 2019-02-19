@@ -255,14 +255,20 @@ a:hover{
   background:url("../img/playbar.png") no-repeat 0 -503px;
   z-index:1;
 }
-.player .control4 .vol>.bg>div{
+
+.player .control4 .vol>.bg>.click_bg{
   position: absolute;
   bottom:9px;left:14.9px;
   width:4px;
-  height:50px;
-  max-height:82%;
-  min-height:0px;
+  height:93px;
+}
+.player .control4 .vol>.bg>.click_bg>div{
+  position: absolute;
+  bottom:0;
+  width:4px;
   background:url("../img/playbar.png") no-repeat -40px bottom;
+  max-height:93px;
+  min-height:12px;
 }
 .player .control4 .vol>.bg .circle{
   display: block;

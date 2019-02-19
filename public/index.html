@@ -116,9 +116,12 @@
       <div class="control4">
         <div title="音量" class="vol" id="vol">
           <div class="bg" id="vol_bg">
-            <div>
-              <span class="circle" id="vol_circle"></span>
+            <div class="click_bg" id="click_bg">
+              <div>
+                <span class="circle" id="vol_circle"></span>
+              </div>
             </div>
+            
           </div>
         </div>
         <span title="循环" class="mode loop" data-action="loop" id="mode"></span>
@@ -1430,7 +1433,13 @@
    /* ******************************音量 */
    var vol = document.getElementById("vol");
    var vol_bg=document.getElementById("vol_bg");
+   var click_bg=document.getElementById("click_bg");
+   var click_bgH=parseFloat(getComputedStyle(click_bg).height);
+   var vol_div=click_bg.querySelector("div");
    var vol_circle=document.getElementById("vol_circle");
+   //vol_div的高度范围12-93  默认音量
+   audio.volume=localStorage.getItem("volumn")||0.3;
+   vol_div.style.height=audio.volume*(93-12)+12+"px"
    vol.onclick=function(event){
      var e = event || window.event;
       if(vol_bg.style.display=="block"){
@@ -1439,6 +1448,27 @@
         vol_bg.style.display="block"
       }
    }
+   vol_bg.onclick=function(event){
+    var e = event || window.event;
+    e.stopPropagation();
+   }
+   click_bg.onclick=fn_vol;
+   function fn_vol(event){
+    var e = event || window.event;
+    var h=click_bgH-(e.clientY-click_bg.getBoundingClientRect().top);
+    if(h>93) h=93;
+    if(h<12) h=12;
+    vol_div.style.height=h+'px';
+    audio.volume=(h-12)/(93-12);
+    e.preventDefault();
+    e.stopPropagation();
+   }
+
+   vol_circle.onmousedown=function(){
+    document.onmousemove=fn_vol;
+   }
+  //  document.addEventListener("mouseup",)
+
  
 
   })();
