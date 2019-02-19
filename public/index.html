@@ -114,16 +114,14 @@
         <span class="" title="分享"></span>
       </div>
       <div class="control4">
-        <div title="音量" class="vol" id="vol">
-          <div class="bg" id="vol_bg">
+        <div title="音量" class="vol" id="vol"></div>
+        <div class="bg" id="vol_bg">
             <div class="click_bg" id="click_bg">
               <div>
                 <span class="circle" id="vol_circle"></span>
               </div>
             </div>
-            
           </div>
-        </div>
         <span title="循环" class="mode loop" data-action="loop" id="mode"></span>
         <span class="add_box">
           <span class="tip">已添加到播放列表</span>
@@ -1338,7 +1336,7 @@
       //需要提前改变，不能等timeupdate改变触发，因为虽然值赋值给了currentTime但是
       //timeupdate并不是马上触发而是等加载到可以播放了才触发
       cur.style.width=Math.ceil(t / audio.duration*100)+"%";
-      console.log(Math.ceil(t / audio.duration*100)+"%")
+      // console.log(Math.ceil(t / audio.duration*100)+"%")
       var timeRanges = audio.buffered;
       firstPlay=false;
       isWheel=false;
@@ -1448,10 +1446,7 @@
         vol_bg.style.display="block"
       }
    }
-   vol_bg.onclick=function(event){
-    var e = event || window.event;
-    e.stopPropagation();
-   }
+ 
    click_bg.onclick=fn_vol;
    function fn_vol(event){
     var e = event || window.event;
@@ -1460,6 +1455,11 @@
     if(h<12) h=12;
     vol_div.style.height=h+'px';
     audio.volume=(h-12)/(93-12);
+    if(audio.volume==0){
+      vol.className="vol vol0";
+    }else{
+      vol.className="vol";
+    }
     e.preventDefault();
     e.stopPropagation();
    }
@@ -1467,7 +1467,7 @@
    vol_circle.onmousedown=function(){
     document.onmousemove=fn_vol;
    }
-  //  document.addEventListener("mouseup",)
+
 
  
 

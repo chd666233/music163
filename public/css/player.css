@@ -241,28 +241,34 @@ a:hover{
 }
 .player .control4 .vol{
   position: relative;
-  background-position:-2px -248px
+  background-position:-2px -248px;
 }
 .player .control4 .vol:hover{
   background-position:-31px -248px;
 }
-.player .control4 .vol>.bg{
+.player .control4 .vol.vol0{
+  background-position:-104px -69px;
+}
+.player .control4 .vol.vol0:hover{
+  background-position:-126px -69px;
+}
+.player .control4 .bg{
   display: none;
   position: absolute;
-  top:-124px;
+  top:-112px;right:24px;left:auto;
   width:32px;
   height:113px;
   background:url("../img/playbar.png") no-repeat 0 -503px;
   z-index:1;
 }
 
-.player .control4 .vol>.bg>.click_bg{
+.player .control4 .bg>.click_bg{
   position: absolute;
   bottom:9px;left:14.9px;
   width:4px;
   height:93px;
 }
-.player .control4 .vol>.bg>.click_bg>div{
+.player .control4 .bg>.click_bg>div{
   position: absolute;
   bottom:0;
   width:4px;
@@ -270,7 +276,7 @@ a:hover{
   max-height:93px;
   min-height:12px;
 }
-.player .control4 .vol>.bg .circle{
+.player .control4 .bg .circle{
   display: block;
   position: absolute;
   width:18px;
