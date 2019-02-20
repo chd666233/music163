@@ -348,14 +348,23 @@ a:hover{
   display:block;
   width:18px;
   height:18px;
-  background:url("../img/playbar.png") no-repeat -100px -400px;
-  /* background:url("../img/playbar.png") no-repeat -80px -380px; */
+  background:url("../img/playbar.png") no-repeat -100px -380px;
   margin-left:17px;
   margin-top:6px;
+}
+.player .lock a:hover{
+  background-position: -100px -400px;
+}
+.player .lock.unlock a{
+  background-position:-80px -380px;
+}
+.player .lock.unlock a:hover{
+  background-position: -80px -400px;
 }
 
 /* ***************************list 歌曲列表，歌词 */
 .player .list{
+  display:none;
   position: absolute;
   bottom:47px;left:50%;
   transform:translate(-50%);

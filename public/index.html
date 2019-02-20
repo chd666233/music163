@@ -124,7 +124,7 @@
           </div>
         <span title="循环" class="mode loop" data-action="loop" id="mode"></span>
         <span class="add_box">
-          <span class="tip">已添加到播放列表</span>
+          <span class="tip" id="tip">已添加到播放列表</span>
           <span title="播放列表" class="add" id="list_num">0</span>
         </span>
       </div>
@@ -132,7 +132,7 @@
     <div class="lock">
       <a href="javascript:;"></a>
     </div>
-    <div class="list">
+    <div class="list" id="list">
       <div class="head">
         <span class="play_list">播放列表(0)</span>
         <a href="#" class="keep_all">
@@ -145,7 +145,7 @@
           清除
         </a>
         <span class="song_name"><!-- Rolling star --></span>
-        <span class="close"></span>
+        <span class="close" id="btn_close"></span>
       </div>
       <div class="body" id="song_body">
         <!-- <img class="song_cover" src="img/rollingstart-big-cover.jpg"> -->
@@ -510,16 +510,28 @@
     var song_list=document.getElementById("song_list");
     var song_ul=document.getElementById("song_ul");
     var song_li=song_ul.querySelector(".song_li");
-    var ulH=song_ul.offsetHeight;
-    var listH=song_list.offsetHeight;
-    var liH=song_li.offsetHeight;
+    // var ulH=song_ul.offsetHeight;
+    // var listH=song_list.offsetHeight;
+    // var liH=song_li.offsetHeight;
+    // var ulH=parseFloat(getComputedStyle(song_ul).height);
+    // var listH=parseFloat(getComputedStyle(song_list).height);
+    // var liH=parseFloat(getComputedStyle(song_li).height);
+    var ulH=0;
+    var listH=0;
+    var liH=0;
+
     var song_ls=song_ul.getElementsByTagName("LI");
     var song_body=document.getElementById("song_body");
     var sm_cover=document.getElementById("sm_cover");
     var lyric_box=document.getElementById("lyric_box");
     var song_lyric=document.getElementById("song_lyric");
-    var lyr_boxH=lyric_box.offsetHeight;
-    var lyricH=song_lyric.offsetHeight;
+    // var lyr_boxH=lyric_box.offsetHeight;
+    // var lyricH=song_lyric.offsetHeight;
+    // var lyr_boxH=parseFloat(getComputedStyle(lyric_box).height);
+    // var lyricH=parseFloat(getComputedStyle(song_lyric).height);
+    var lyr_boxH=0;
+    var lyricH=0;
+
     var pbox=document.getElementById("pBox");;
     var ps=[];
     var maxPh=0;
@@ -537,13 +549,13 @@
     var lyricWheelDis=0;
     var lyricBarDis=0;
     var p10=0;//歌词到 p 边框的距离
-    //计算bar1的高度
+    /* //计算bar1的高度
     bar1.style.height=blineH(listH,ulH)+"px";
     //获取bar1加边框的高度
     bar1H=parseFloat(getComputedStyle(bar1).height)+parseFloat(getComputedStyle(bar1).borderTopWidth)*2;
     // console.log(bar1H)
     if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
-      bline.className="bline active";
+      bline.className="bline active"; */
     
     /********************************点击歌曲列表中的一条歌曲，在播放器中插入歌曲信息，添加样式，插入歌词，播放音乐*/
     song_ul.onclick=function(event){
@@ -566,6 +578,7 @@
     function innerAll(i){ 
       inner(i);
       innerLyric(i);
+      
     }
     function liStyle(i){
       song_ls[i].className="song_li";
@@ -593,14 +606,14 @@
             <a href="#" ></a>`;
       sm_cover.innerHTML=html;
       
-      //插入歌曲
-      //如果歌曲名和将要插入的歌曲名一样，那么不重复插入
-      if(!new RegExp(`${songs[i].smusic_src}`).test(audio.src)){
-        audio.src=`${songs[i].smusic_src}`;
-      }
+      // //插入歌曲
+      // //如果歌曲名和将要插入的歌曲名一样，那么不重复插入
+      // if(!new RegExp(`${songs[i].smusic_src}`).test(audio.src)){
+      //   audio.src=`${songs[i].smusic_src}`;
+      // }
         
     }
-
+    // audio.preload='none';
     audio.onloadstart=function(){
       // console.log("yyyyyyyyyyyyy")
       muic_loading.className="loading active"
@@ -635,7 +648,7 @@
       // if(isseek)return;
       // console.log("ccccccccccccccccccc")
       muic_loading.className="loading active"
-      console.log(audio.buffered.length)
+      // console.log(audio.buffered.length)
       // audio.play()
       /* var temp_currentTime=audio.currentTime;
       var temp_src=audio.src;
@@ -731,8 +744,10 @@
           pbox.innerHTML=html;
           isGetLyric=true;
           
-          //设置滚动条高度
-          pBoxH=pbox.offsetHeight;
+          /* //设置滚动条高度
+          // pBoxH=pbox.offsetHeight;
+          pBoxH=parseFloat(getComputedStyle(pbox).height); 
+
           //计算bar2的高度
           bar2.style.height=blineH(lyricH,pBoxH)+"px";
           //获取bar2加边框的高度
@@ -740,26 +755,79 @@
           // console.log(bar2H)
           if(lyricH<pBoxH)//如果歌词高度大于盒子高度，显示滚动条
             bline2.className="bline bline-2 active";
-          
+          */
 
 
-          //获取最高的p的高度，作为每次滚动的距离
+           //获取最高的p的高度，作为每次滚动的距离
           ps=pbox.querySelectorAll("p");
-          var psH=[];
+          //问题：播放器添加显示隐藏，一开始处于隐藏状态无法计算高度
+          //解决：点击显示的时候调用计算一次高度
+          //问题：切换歌曲的时候高度不正确
+          //解决：切换歌曲调用init重新计算高度
+          //问题：init放在切换歌曲的reset()后面计算的高度不准确，因为方法之间的执行是非阻塞的，并不等reset执行完毕后再执行init
+          //解决：把init放在reset的innerLyric的后面
+          //问题：歌词无法手动滚动，因为ps的高度无法计算
+          //解决:将init放在ps=pbox.querySelectorAll("p")后面
+          init()
+         /* var psH=[];
           for(var p of ps){
-            psH.push(p.offsetHeight);
+            psH.push(parseFloat(getComputedStyle(p).height));
           }
           maxPh=Math.max(...psH);
+          // console.log(maxPh) */
 
-          //获取文字到 p 边框的距离
+           //获取文字到 p 边框的距离
           var p20=parseInt(getComputedStyle(ps[0]).minHeight)-parseInt(getComputedStyle(ps[0]).fontSize);
-          p10=p20/2;//文字距离顶部边框的距离
+          p10=p20/2;//文字距离顶部边框的距离 
           // console.log(p10,p20,getComputedStyle(ps[0]).minHeight,getComputedStyle(ps[0]).fontSize)
           
         }
       }
       xhr.open("get",`${songs[i].slyric}`,true);
       xhr.send(null);
+    }
+    function init(){
+      ulH=song_ul.offsetHeight;
+      listH=song_list.offsetHeight;
+      liH=song_li.offsetHeight;
+
+      // console.log(ulH,listH,liH,lyr_boxH,lyricH)
+
+      //计算bar1的高度
+      bar1.style.height=blineH(listH,ulH)+"px";
+      //获取bar1加边框的高度
+      bar1H=parseFloat(getComputedStyle(bar1).height)+parseFloat(getComputedStyle(bar1).borderTopWidth)*2;
+      // console.log(bar1H)
+      if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
+        bline.className="bline active";
+
+
+      lyr_boxH=lyric_box.offsetHeight;
+      lyricH=song_lyric.offsetHeight;
+      //设置滚动条高度
+      pBoxH=pbox.offsetHeight;
+      // console.log(pBoxH,parseFloat(getComputedStyle(pbox).height))
+      // pBoxH=parseFloat(getComputedStyle(pbox).height);
+      //计算bar2的高度
+      bar2.style.height=blineH(lyricH,pBoxH)+"px";
+      //获取bar2加边框的高度
+      bar2H=parseFloat(getComputedStyle(bar2).height)+parseFloat(getComputedStyle(bar2).borderTopWidth)*2;
+      // console.log(bar2H)
+      if(lyricH<pBoxH)//如果歌词高度大于盒子高度，显示滚动条
+        bline2.className="bline bline-2 active";
+
+      // //获取最高的p的高度，作为每次滚动的距离
+      // ps=pbox.querySelectorAll("p");
+
+      var psH=[];
+      for(var p of ps){
+        psH.push(p.offsetHeight);
+      }
+      maxPh=Math.max(...psH);
+
+      // //获取文字到 p 边框的距离
+      // var p20=parseInt(getComputedStyle(ps[0]).minHeight)-parseInt(getComputedStyle(ps[0]).fontSize);
+      // p10=p20/2;//文字距离顶部边框的距离
     }
     
     //计算滚动条高度
@@ -879,7 +947,8 @@
       },1000);
     }
     /************************************每次点击一条歌曲都要重置歌词和歌词滚动体的位置到顶部*/
-    function init(){
+   
+    function reset(){
       lyricWheelDis=0;//歌词滚动的距离
       lyricBarDis=0;//歌词滚动条滚动的距离
       pbox.style.top=lyricWheelDis+"px";
@@ -1034,10 +1103,27 @@
       document.onmousemove=null;
     }
     /* *************************播放歌曲 */
+    //问题:如果在innerAll部分插入歌曲，那么未点击播放歌曲就会开始加载
+    //解决：插入歌曲放到播放，切换，点击li的位置插入
+    function innerMusic(){
+        //插入歌曲
+      //如果歌曲名和将要插入的歌曲名一样，那么不重复插入
+      //  if(!new RegExp(`${songs[list_index].smusic_src}`).test(audio.src)){
+      //问题：切换歌曲如果歌曲名相同不能切换而是继续播放
+      //尝试：去掉if
+      //问题:去掉if如果是暂停播放也会重新载入
+      //解决：不能去掉if
+      //解决：添加isPlayorPause如果是暂停播放不进来，如果不是暂停播放不论歌曲名相不相同都进来
+     //如果是暂停播放，不进来,不是暂停播放进来
+      if(!isPlayorPause){
+        audio.src=`${songs[list_index].smusic_src}`;
+      }
+    }
     var control1=document.getElementById("control1");
     var play=control1.querySelector("[data-action='play/suspend']");
     var firstPlay=true;
     var isplaying=false;
+    var isPlayorPause=false;
     control1.onclick=playMusic;
     function playMusic(eventOrLi){
       if(eventOrLi instanceof MouseEvent){
@@ -1053,19 +1139,30 @@
         list_index=[].indexOf.call(song_ls,elemLi);//更新list_index
         //本轮添加active样式
         elemLi.className="song_li active";
-        init(); 
+    
+        
+        innerMusic()
+        reset(); 
+       
         audio.play();
         isplaying=true;
+        isPlayorPause=false;
       }else if(e.target.getAttribute("data-action")==="play/suspend"){//点击播放/暂停
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
             // audio.src=`${songs[list_index].smusic_src}`;
-            // init(); //初次播放要初始化
+            // reset(); //初次播放要初始化
+           
           }
+      
+         
+          innerMusic()
+          // audio.preload='auto';
           e.target.className="play suspend";
           song_ls[list_index].className="song_li active"
           audio.play();
           isplaying=true;
+          
           getRightAuto()
         }else{//播放状态，点击暂停
           e.target.className="play";
@@ -1074,10 +1171,11 @@
           isplaying=false;
           cancelAuto();
         }
+        isPlayorPause=true;
       }else{
         song_ls[list_index].className="song_li";
 
-         
+        isPlayorPause=false;
         if(e.target.getAttribute("data-action")==="next"){  //点击下一首
           if(isRandom)
             //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
@@ -1129,11 +1227,16 @@
         }
         // barDis=wheelDis*listH/ulH;
         // mv(barDis);
-       
-        scroolToView();
+  
+        
+        innerMusic()
+        scrollToView();
 
         song_ls[list_index].className="song_li active"
-        init();
+       
+        reset();
+        
+        
         if(isplaying)
           audio.play();
       }
@@ -1144,7 +1247,12 @@
     //注意：list_index是next/prev后的li
     // (list_index+1)*liH计算的是点击后的li的高度
     // list_index*liH计算的是点击后的上一个li的高度
-    function scroolToView(){
+    function scrollToView(){
+
+      if(list.style.display!="block"){
+        
+      }
+
       if(list_index==0){//最后一首点击后，即list_index==0的时候
           wheelDis=0;
           barDis=0;
@@ -1192,7 +1300,7 @@
       //解决：插入歌词添加属性isGetLyric，确保歌词已插入才允许播放
       // console.log(index,times[index],ps[index].getAttribute("data-time"))
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
-     
+        
         var dataTime=ps[index]&&ps[index].getAttribute("data-time");
         // console.log(index,ps[index],dataTime,audio.currentTime*1000>=dataTime)
         if(audio.currentTime*1000>=dataTime){
@@ -1263,6 +1371,7 @@
         cur.style.width=Math.ceil(currentTime*100)+"%";
     }
     var bufferProgress=null;
+    var isplay=false;
     //问题：暂停后缓存进度条不动了
     //解决：不适用ontimeupdate改动进度条，使用定时器
     function fn_bufferProgress(){
@@ -1398,8 +1507,9 @@
         list_index=(list_index+1)%songs.length;
         song_ls[list_index].className="song_li active";
       }
-      init();
-      scroolToView();
+      reset();
+      scrollToView();
+      innerMusic();
       audio.play();
     }
 
@@ -1466,6 +1576,19 @@
 
    vol_circle.onmousedown=function(){
     document.onmousemove=fn_vol;
+   }
+
+   /* *******************************显示隐藏 */
+   var list = document.getElementById("list");
+   var btn_close=document.getElementById("btn_close");
+   btn_close.onclick=list_num.onclick=function(){
+      if(list.style.display=="block"){
+        list.style.display="none"
+      }else{
+        list.style.display="block"
+
+        init()
+      }
    }
 
 
