@@ -617,8 +617,25 @@
     audio.onloadstart=function(){
       // console.log("yyyyyyyyyyyyy")
       muic_loading.className="loading active"
-      fn_bufferProgress();
+      //问题：没有播放的情况下点击下一首会缓存进度条自动滚动
+      //解决：audio.prelaod="none"
+      //问题：圈圈一直在转，同时无法跳跃播放点
+      //解决：audio.prelaod="none"去掉，实际上在速度上在加载好过不加载。这样圈圈不会一直转，也可以跳跃播放点
+      //问题：缓存进度条自动滚动
+      //解决：在播放的情况下才允许加载
+      //问题:播放过一次后进度条定时器已启动，导致停止播放后点击下一首依然自动滚动缓存进度条
+      //解决：取消定时器
+      if(isplaying)
+        fn_bufferProgress();
+      else
+        if(bufferProgress!=null)clearInterval(bufferProgress);
     }
+    // audio.onprogress=function(){
+    //   console.log("gggg")
+    // }
+    // audio.onloadedmetadata=function(){
+    //   console.log("mmmmmmmmmmm")
+    // }
     //问题：默认"加载中"中的样式在点击下一首上一首中没有取消
     //解决：检测到可以播放了取消"加载中"样式
     //跳转暂停状态显示
@@ -648,6 +665,9 @@
       // if(isseek)return;
       // console.log("ccccccccccccccccccc")
       muic_loading.className="loading active"
+      //问题:从未播放下点击下一首，跳跃播放的，点击播放会重新播放而不是继续播放
+      //解决：把isPlayorPause改为true,就不会重新加载音乐
+      isPlayorPause=true;
       // console.log(audio.buffered.length)
       // audio.play()
       /* var temp_currentTime=audio.currentTime;
@@ -685,7 +705,7 @@
     }
     audio.onerror=function(){
       // console.log("++++++")
-      muic_loading.className="loading active";
+      muic_loading.className="loading";
       isNotErr=false;
     }
 
@@ -963,8 +983,10 @@
       currentTime=0;//当前播放时间
       temp_lyricBarDis=0;//lyricBarDis的临时变量，歌曲滚动距离
       old_index=0;//之前的p的下标，用于取消之前的p的样式
+      // audio.src='';
       //插入歌曲 歌词 封面
       innerAll(list_index)
+      time.innerHTML=`<em>00:00</em> / 00:00`;
       //默认加载状态样式
       // defaultLoding();
     }
@@ -1227,18 +1249,22 @@
         }
         // barDis=wheelDis*listH/ulH;
         // mv(barDis);
-  
-        
-        innerMusic()
+          
+
         scrollToView();
 
-        song_ls[list_index].className="song_li active"
-       
+        song_ls[list_index].className="song_li active";
+  
+        innerMusic();
         reset();
         
         
-        if(isplaying)
+        
+        if(isplaying){
+          
           audio.play();
+        }
+          
       }
     }
     //滚动到视口
@@ -1248,9 +1274,14 @@
     // (list_index+1)*liH计算的是点击后的li的高度
     // list_index*liH计算的是点击后的上一个li的高度
     function scrollToView(){
-
+    //问题：隐藏状态移动listH bar1H为0,滚动导致错误
+    //解决：隐藏状态ruturn
+    //问题：隐藏状态如果切换歌曲不能滚动到可视区域
+    //解决：一点击打开播放器就调用scrollToView，listH bar1H不为0了，可以滚动到指定位置。
       if(list.style.display!="block"){
-        
+        // console.log(listH,bar1H)
+        // console.log(bar1.offsetHeight,song_list.offsetHeight)
+        return;
       }
 
       if(list_index==0){//最后一首点击后，即list_index==0的时候
@@ -1296,13 +1327,15 @@
     var temp_lyricBarDis=0;
     var old_index=0;
     function autoScorlllyric(){
+      //问题：在播放器隐藏的情况下高度为0，滚动会发送错误
+      if(list.style.display!="block") return;
       //问题：歌词是异步请求的，个能歌曲可以播放了歌词还没请求完毕，导致歌词错误但是已经开始播放并自动滚动歌词了
       //解决：插入歌词添加属性isGetLyric，确保歌词已插入才允许播放
       // console.log(index,times[index],ps[index].getAttribute("data-time"))
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
         
         var dataTime=ps[index]&&ps[index].getAttribute("data-time");
-        // console.log(index,ps[index],dataTime,audio.currentTime*1000>=dataTime)
+
         if(audio.currentTime*1000>=dataTime){
           sumPh+=ps[index].offsetHeight;
           var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
@@ -1439,6 +1472,7 @@
           }
         }
       }
+     
       //audio一变动就会触发ontimeupdate执行
       // console.log(t)
       audio.currentTime=t;
@@ -1583,11 +1617,20 @@
    var btn_close=document.getElementById("btn_close");
    btn_close.onclick=list_num.onclick=function(){
       if(list.style.display=="block"){
-        list.style.display="none"
+        list.style.display="none";
       }else{
-        list.style.display="block"
-
-        init()
+        list.style.display="block";
+        init();
+        scrollToView();
+        //问题：播发器隐藏的情况直接跳跃播放点，打开后歌词不自动滚动到目标位置
+        //解决：打开后就调用autoScorlllyric()
+        //问题：sumPh在跳跃播放点的时候用到了ps的高度，在播放器隐藏的情况下为0，导致sumPh为0，导致
+        //autoScrolllyric失效
+        //解决：打开后立刻重新计算sumPh
+        for(var i=1;i<=index;i++){
+          sumPh+=ps[i-1].offsetHeight;
+        }
+        autoScorlllyric()
       }
    }
 
