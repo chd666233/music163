@@ -476,14 +476,6 @@
     /*************************************将歌曲列表插入页面*/
     var song_list=document.getElementById("song_list");
     var list_num =document.getElementById("list_num");
-    var song_info=document.getElementById("song_info");
-    var song_body=document.getElementById("song_body");
-    var sm_cover=document.getElementById("sm_cover");
-    var time=document.getElementById("time");
-    var audio = new Audio();
-    var isGetLyric=false;//插入歌词
-    var list_index=0;//播放列表点中的下标；//songs_index
-    var p10=0;//歌词到 p 边框的距离
     var html="";
     function innerSongList(){
     
@@ -512,9 +504,95 @@
       //插入歌曲列表的歌曲数量
       list_num.innerHTML=songs.length;
     }
+    
+    innerSongList();
+    var list_index=0;//播放列表点中的下标；
+    // var audios=[new Audio()]
+    // var audio = audios[0];
+    var audio = new Audio();
+    // audio.loop=true;
+    var time=document.getElementById("time");
+    var song_info=document.getElementById("song_info");
+    var song_list=document.getElementById("song_list");
+    var song_ul=document.getElementById("song_ul");
+    var song_li=song_ul.querySelector(".song_li");
+    // var ulH=song_ul.offsetHeight;
+    // var listH=song_list.offsetHeight;
+    // var liH=song_li.offsetHeight;
+    // var ulH=parseFloat(getComputedStyle(song_ul).height);
+    // var listH=parseFloat(getComputedStyle(song_list).height);
+    // var liH=parseFloat(getComputedStyle(song_li).height);
+    var ulH=0;
+    var listH=0;
+    var liH=0;
+
+    var song_ls=song_ul.getElementsByTagName("LI");
+    var song_body=document.getElementById("song_body");
+    var sm_cover=document.getElementById("sm_cover");
+    var lyric_box=document.getElementById("lyric_box");
+    var song_lyric=document.getElementById("song_lyric");
+    // var lyr_boxH=lyric_box.offsetHeight;
+    // var lyricH=song_lyric.offsetHeight;
+    // var lyr_boxH=parseFloat(getComputedStyle(lyric_box).height);
+    // var lyricH=parseFloat(getComputedStyle(song_lyric).height);
+    var lyr_boxH=0;
+    var lyricH=0;
+
+    var pbox=document.getElementById("pBox");;
+    var ps=[];
+    var maxPh=0;
+    var pBoxH=0;
+    var bline=document.getElementById("bline");
+    var bar1=bline.querySelector("div");
+    var bar1H=0;
+    var bline2=document.getElementById("bline2");
+    var bar2=bline2.querySelector("div");
+    var bar2H=0;
+    var _this=null;
+    var times=[];
+    var wheelDis=0;
+    var barDis=0;
+    var lyricWheelDis=0;
+    var lyricBarDis=0;
+    var p10=0;//歌词到 p 边框的距离
+    /* //计算bar1的高度
+    bar1.style.height=blineH(listH,ulH)+"px";
+    //获取bar1加边框的高度
+    bar1H=parseFloat(getComputedStyle(bar1).height)+parseFloat(getComputedStyle(bar1).borderTopWidth)*2;
+    // console.log(bar1H)
+    if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
+      bline.className="bline active"; */
+    
+    /********************************点击歌曲列表中的一条歌曲，在播放器中插入歌曲信息，添加样式，插入歌词，播放音乐*/
+    song_ul.onclick=function(event){
+      var e=event || window.event;
+      var nName=e.target.nodeName;
+      if(nName==="A"){
+        return
+      }else if(nName==="I"){
+
+      }else{
+        
+        _this=e.target;
+        while(_this.nodeName!=='LI'){
+          _this=_this.parentNode;
+        }
+        playMusic(_this);
+      }
+    }
+    innerAll(0)//默认插入第一首歌
+    function innerAll(i){ 
+      
+      inner(i);
+      innerLyric(i);
+      
+    }
+    function liStyle(i){
+      song_ls[i].className="song_li";
+      song_ls[(i+1)%songs.length].className="song_li active"
+    }
     //插入封面，作者，等信息
     function inner(i){
-      console.log(i)
       html=`<a href="#" class="song">${songs[i].sname}</a>`
       html+=songs[i].smv!=="javascript:;"?`<a href="${songs[i].smv}" class="mv"></a>`:'';
       html+=`<a href="#" class="artist" id="artist">${songs[i].sart}</a>`;
@@ -542,9 +620,113 @@
       // }
         
     }
+    // audio.preload='none';
+    audio.onloadstart=function(){
+      // console.log("yyyyyyyyyyyyy")
+      muic_loading.className="loading active"
+      //问题：没有播放的情况下点击下一首会缓存进度条自动滚动
+      //解决：audio.prelaod="none"
+      //问题：圈圈一直在转，同时无法跳跃播放点
+      //解决：audio.prelaod="none"去掉，实际上在速度上在加载好过不加载。这样圈圈不会一直转，也可以跳跃播放点
+      //问题：缓存进度条自动滚动
+      //解决：在播放的情况下才允许缓存进度条滚动，给人没有加载的假象
+      //问题:播放过一次后进度条定时器已启动，导致停止播放后点击下一首依然自动滚动缓存进度条
+      //解决：取消定时器
+      if(isplaying)
+        fn_bufferProgress();
+      else
+        if(bufferProgress!=null)clearInterval(bufferProgress);
+    }
+    // audio.onprogress=function(){
+    //   console.log("gggg")
+    // }
+    // audio.onloadedmetadata=function(){
+    //   console.log("mmmmmmmmmmm")
+    // }
+    //问题：默认"加载中"中的样式在点击下一首上一首中没有取消
+    //解决：检测到可以播放了取消"加载中"样式
+    //跳转暂停状态显示
+    //播放加载完成触发
+    audio.oncanplay=function(){
+      // console.log("----------------")
+      muic_loading.className="loading"
+      isNotErr=true;
+    }
+    //跳转暂停状态不触发
+    //断网不能触发
+    //播放加载完成触发
+    audio.onwaiting=function(){
+      // console.log("+++++++++++")
+      muic_loading.className="loading active"
+    }
+    // audio.onplaying=function(){
+    //   console.log("///////////")
+    //   muic_loading.className="loading"
+    // }
+    //跳转暂停状态触发
+    //非跳转不能触发，播放加载完成不触发
+    //断网不能触发
+    var timeOutSeek=null;
+    // var isseek=false;
+    audio.onseeking=function(){
+      // if(isseek)return;
+      // console.log("ccccccccccccccccccc")
+      muic_loading.className="loading active"
+      //问题:从未播放下点击下一首，跳跃播放的，点击播放会重新播放而不是继续播放
+      //解决：把isPlayorPause改为true,就不会重新加载音乐
+      isPlayorPause=true;
+      // console.log(audio.buffered.length)
+      // audio.play()
+      /* var temp_currentTime=audio.currentTime;
+      var temp_src=audio.src;
+      audios.splice(0,1);
+      audios.push(new Audio())
+      if(timeOutSeek) clearTimeout(timeOutSeek)
+      timeOutSeek=setTimeout(()=>{
+        console.log("000")
+        isseek=true;
+        
+        audio.src=temp_src;
+        audio.play()
+        audio.currentTime=temp_currentTime;
+        // audio.buffered.length=0;
+        if(audio.buffered.length!=0)
+          audio.buffered.end(0)=0;
+          
+        bufferPercent=0;
+        rdy.style.width=Math.floor(bufferPercent*100)+"%";
+        fn_bufferProgress();
+      },80) */
+        
+
+    }
+    // audio.onseeked=function(){
+    //   console.log("bbbbbbbbbbb")
+    //   muic_loading.className="loading"
+    // }
+    
+    audio.onstalled=function(){
+      // console.log("////////////")
+      muic_loading.className="loading active";
+      isNotErr=false;
+    }
+    audio.onerror=function(){
+      // console.log("++++++")
+      muic_loading.className="loading";
+      isNotErr=false;
+    }
+
+
+
+
+  
+
+
     //插入歌词
+    var isGetLyric=false;
     function innerLyric(i){
       isGetLyric=false;
+      
       var xhr=new XMLHttpRequest();
       xhr.onreadystatechange=function(){
         if(xhr.readyState==4&&xhr.status==200){
@@ -613,7 +795,7 @@
           //解决：把init放在reset的innerLyric的后面
           //问题：歌词无法手动滚动，因为ps的高度无法计算
           //解决:将init放在ps=pbox.querySelectorAll("p")后面
-          getDomH()
+          init()
          /* var psH=[];
           for(var p of ps){
             psH.push(parseFloat(getComputedStyle(p).height));
@@ -631,89 +813,12 @@
       xhr.open("get",`${songs[i].slyric}`,true);
       xhr.send(null);
     }
-    //问题:如果在innerAll部分插入歌曲，那么未点击播放歌曲就会开始加载
-    //解决：插入歌曲放到播放，切换，点击li的位置插入
-    function innerMusic(){
-        //插入歌曲
-      //如果歌曲名和将要插入的歌曲名一样，那么不重复插入
-      //  if(!new RegExp(`${songs[list_index].smusic_src}`).test(audio.src)){
-      //问题：切换歌曲如果歌曲名相同不能切换而是继续播放
-      //尝试：去掉if
-      //问题:去掉if如果是暂停播放也会重新载入
-      //解决：不能去掉if
-      //解决：添加isPlayorPause如果是暂停播放不进来，如果不是暂停播放不论歌曲名相不相同都进来
-     //如果是暂停播放，不进来,不是暂停播放进来
-      if(!isPlayorPause){
-        audio.src=`${songs[list_index].smusic_src}`;
-      }
-    }
-     /* ***********************歌曲总时长和当前播放时间 */
-    function inner_musLength(){
-      //转换时间格式
-      // console.log(Math.floor(audio.duration/60),Math.floor(audio.duration/60||0))
-      var minute=Math.floor(audio.duration/60||0)+"";
-      var second=Math.floor(audio.duration%60||0)+"";
-      minute=minute.length==1?"0"+minute:minute;
-      second=second.length==1?"0"+second:second;
-      var currMinute=Math.floor(audio.currentTime/60||0)+"";
-      var currSecond=Math.floor(audio.currentTime%60||0)+"";
-      currMinute=currMinute.length==1?"0"+currMinute:currMinute;
-      currSecond=currSecond.length==1?"0"+currSecond:currSecond;
-      time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
-    }
-    function innerAll(i){ 
-      innerSongList();
-      inner(i);
-      innerLyric(i);
-      innerMusic(i)
-    }
-    innerAll(list_index)//默认插入第一首歌
-    
-    
-    
-
-    var song_list=document.getElementById("song_list");
-    var song_ul=document.getElementById("song_ul");
-    var song_li=song_ul.querySelector(".song_li");
-    var ulH=0;
-    var listH=0;
-    var liH=0;
-    var song_ls=song_ul.getElementsByTagName("LI");
-    var lyric_box=document.getElementById("lyric_box");
-    var song_lyric=document.getElementById("song_lyric");
-    var lyr_boxH=0;
-    var lyricH=0;
-    var pbox=document.getElementById("pBox");;
-    var ps=[];
-    var maxPh=0;
-    var pBoxH=0;
-    var bline=document.getElementById("bline");
-    var bar1=bline.querySelector("div");
-    var bar1H=0;
-    var bline2=document.getElementById("bline2");
-    var bar2=bline2.querySelector("div");
-    var bar2H=0;
-    var _this=null;
-    var times=[];
-    var wheelDis=0;
-    var barDis=0;
-    var lyricWheelDis=0;
-    var lyricBarDis=0;
- /* //计算bar1的高度
-    bar1.style.height=blineH(listH,ulH)+"px";
-    //获取bar1加边框的高度
-    bar1H=parseFloat(getComputedStyle(bar1).height)+parseFloat(getComputedStyle(bar1).borderTopWidth)*2;
-    // console.log(bar1H)
-    if(ulH>listH)//如果歌曲列表的总高度大于盒子的高度，则显示滚动条
-      bline.className="bline active"; */
-
-
-    function getDomH(){
+    function init(){
       ulH=song_ul.offsetHeight;
       listH=song_list.offsetHeight;
       liH=song_li.offsetHeight;
 
-      console.log(ulH,listH,liH,lyr_boxH,lyricH)
+      // console.log(ulH,listH,liH,lyr_boxH,lyricH)
 
       //计算bar1的高度
       bar1.style.height=blineH(listH,ulH)+"px";
@@ -729,7 +834,6 @@
       //设置滚动条高度
       pBoxH=pbox.offsetHeight;
       // console.log(pBoxH,parseFloat(getComputedStyle(pbox).height))
-      console.log(lyr_boxH,lyricH,pBoxH)
       // pBoxH=parseFloat(getComputedStyle(pbox).height);
       //计算bar2的高度
       bar2.style.height=blineH(lyricH,pBoxH)+"px";
@@ -758,32 +862,7 @@
       if (h_doc>h_box)
         return h_box*h_box/h_doc;
     }
-    
    
-    
-    /********************************点击歌曲列表中的一条歌曲，在播放器中插入歌曲信息，添加样式，插入歌词，播放音乐*/
-    song_list.onclick=function(event){
-      var e=event || window.event;
-      var nName=e.target.nodeName;
-      if(nName==="A"){
-        return
-      }else if(nName==="I"){
-
-      }else{
-        
-        _this=e.target;
-        while(_this.nodeName!=='LI'){
-          _this=_this.parentNode;
-        }
-        playMusic(_this);
-      }
-    }
-    function liStyle(i){
-      song_ls[i].className="song_li";
-      song_ls[(i+1)%songs.length].className="song_li active"
-    }
-    
-    
 
     /*************************************给歌曲列表添加滚动事件*/
     var isMacWebkit = (navigator.userAgent.indexOf("Macintosh")!==-1&&
@@ -913,7 +992,6 @@
       old_index=0;//之前的p的下标，用于取消之前的p的样式
       // audio.src='';
       //插入歌曲 歌词 封面
-      console.log(list_index)
       innerAll(list_index)
       time.innerHTML=`<em>00:00</em> / 00:00`;
       //默认加载状态样式
@@ -1054,7 +1132,22 @@
       document.onmousemove=null;
     }
     /* *************************播放歌曲 */
-    
+    //问题:如果在innerAll部分插入歌曲，那么未点击播放歌曲就会开始加载
+    //解决：插入歌曲放到播放，切换，点击li的位置插入
+    function innerMusic(){
+        //插入歌曲
+      //如果歌曲名和将要插入的歌曲名一样，那么不重复插入
+      //  if(!new RegExp(`${songs[list_index].smusic_src}`).test(audio.src)){
+      //问题：切换歌曲如果歌曲名相同不能切换而是继续播放
+      //尝试：去掉if
+      //问题:去掉if如果是暂停播放也会重新载入
+      //解决：不能去掉if
+      //解决：添加isPlayorPause如果是暂停播放不进来，如果不是暂停播放不论歌曲名相不相同都进来
+     //如果是暂停播放，不进来,不是暂停播放进来
+      if(!isPlayorPause){
+        audio.src=`${songs[list_index].smusic_src}`;
+      }
+    }
     var control1=document.getElementById("control1");
     var play=control1.querySelector("[data-action='play/suspend']");
     var firstPlay=true;
@@ -1068,7 +1161,7 @@
         // HTMLLIElement 
         var elemLi=eventOrLi;
       }
-      console.log(elemLi)
+      
       if(elemLi&&elemLi.getAttribute("data-action")==="liPlay"){//点击歌曲列表
         //取消上一轮li的active样式,不能用e取消，因为上一轮的e不一定是li,还可能是next prev
         song_ls[list_index].className="song_li";
@@ -1076,8 +1169,9 @@
         //本轮添加active样式
         elemLi.className="song_li active";
     
-        console.log(list_index)
-        reset();
+        
+        innerMusic()
+        reset(); 
        
         audio.play();
         isplaying=true;
@@ -1087,8 +1181,11 @@
           if(firstPlay){ //初次播放
             // audio.src=`${songs[list_index].smusic_src}`;
             // reset(); //初次播放要初始化
+           
           }
-          // innerMusic()
+      
+         
+          innerMusic()
           // audio.preload='auto';
           e.target.className="play suspend";
           song_ls[list_index].className="song_li active"
@@ -1160,114 +1257,23 @@
         // barDis=wheelDis*listH/ulH;
         // mv(barDis);
           
-        scrollToView();
-        song_ls[list_index].className="song_li active";
 
+        scrollToView();
+
+        song_ls[list_index].className="song_li active";
+  
+        innerMusic();
         reset();
-        if(isplaying){  
+        
+        
+        
+        if(isplaying){
+          
           audio.play();
         }
           
       }
     }
-
-     // audio.preload='none';
-     audio.onloadstart=function(){
-      // console.log("yyyyyyyyyyyyy")
-      muic_loading.className="loading active"
-      //问题：没有播放的情况下点击下一首会缓存进度条自动滚动
-      //解决：audio.prelaod="none"
-      //问题：圈圈一直在转，同时无法跳跃播放点
-      //解决：audio.prelaod="none"去掉，实际上在速度上在加载好过不加载。这样圈圈不会一直转，也可以跳跃播放点
-      //问题：缓存进度条自动滚动
-      //解决：在播放的情况下才允许缓存进度条滚动，给人没有加载的假象
-      //问题:播放过一次后进度条定时器已启动，导致停止播放后点击下一首依然自动滚动缓存进度条
-      //解决：取消定时器
-      if(isplaying)
-        fn_bufferProgress();
-      else
-        if(bufferProgress!=null)clearInterval(bufferProgress);
-    }
-    // audio.onprogress=function(){
-    //   console.log("gggg")
-    // }
-    // audio.onloadedmetadata=function(){
-    //   console.log("mmmmmmmmmmm")
-    // }
-    //问题：默认"加载中"中的样式在点击下一首上一首中没有取消
-    //解决：检测到可以播放了取消"加载中"样式
-    //跳转暂停状态显示
-    //播放加载完成触发
-    audio.oncanplay=function(){
-      // console.log("----------------")
-      muic_loading.className="loading"
-      inner_musLength();
-      isNotErr=true;
-    }
-    //跳转暂停状态不触发
-    //断网不能触发
-    //播放加载完成触发
-    audio.onwaiting=function(){
-      // console.log("+++++++++++")
-      muic_loading.className="loading active"
-    }
-    // audio.onplaying=function(){
-    //   console.log("///////////")
-    //   muic_loading.className="loading"
-    // }
-    //跳转暂停状态触发
-    //非跳转不能触发，播放加载完成不触发
-    //断网不能触发
-    var timeOutSeek=null;
-    // var isseek=false;
-    audio.onseeking=function(){
-      // if(isseek)return;
-      // console.log("ccccccccccccccccccc")
-      muic_loading.className="loading active"
-      //问题:从未播放下点击下一首，跳跃播放的，点击播放会重新播放而不是继续播放
-      //解决：把isPlayorPause改为true,就不会重新加载音乐
-      isPlayorPause=true;
-      // console.log(audio.buffered.length)
-      // audio.play()
-      /* var temp_currentTime=audio.currentTime;
-      var temp_src=audio.src;
-      audios.splice(0,1);
-      audios.push(new Audio())
-      if(timeOutSeek) clearTimeout(timeOutSeek)
-      timeOutSeek=setTimeout(()=>{
-        console.log("000")
-        isseek=true;
-        
-        audio.src=temp_src;
-        audio.play()
-        audio.currentTime=temp_currentTime;
-        // audio.buffered.length=0;
-        if(audio.buffered.length!=0)
-          audio.buffered.end(0)=0;
-          
-        bufferPercent=0;
-        rdy.style.width=Math.floor(bufferPercent*100)+"%";
-        fn_bufferProgress();
-      },80) */
-        
-
-    }
-    // audio.onseeked=function(){
-    //   console.log("bbbbbbbbbbb")
-    //   muic_loading.className="loading"
-    // }
-    
-    audio.onstalled=function(){
-      // console.log("////////////")
-      muic_loading.className="loading active";
-      isNotErr=false;
-    }
-    audio.onerror=function(){
-      // console.log("++++++")
-      muic_loading.className="loading";
-      isNotErr=false;
-    }
-
     //滚动到视口
     //问题：上一首下一首处于box外面不可见，滚动歌曲列表使当前li位于box内可见
     //解决：根据情况滚动歌曲列表
@@ -1315,7 +1321,7 @@
       //但歌词歌曲是从服务器请求的，请求是异步的，只有在歌词请求下来才开始播放，否则会出错
       if(!isGetLyric)return;
       autoScorlllyric();
-      // inner_musLength();
+      play_time();
       progress();
     }
      /*****************************歌词自动滚动  */
@@ -1364,7 +1370,20 @@
         }
     }
  
-   
+    /* ***********************歌曲总时长和当前播放时间和缓存时间 */
+    function play_time(){
+      //转换时间格式
+      // console.log(Math.floor(audio.duration/60),Math.floor(audio.duration/60||0))
+      var minute=Math.floor(audio.duration/60||0)+"";
+      var second=Math.floor(audio.duration%60||0)+"";
+      minute=minute.length==1?"0"+minute:minute;
+      second=second.length==1?"0"+second:second;
+      var currMinute=Math.floor(audio.currentTime/60||0)+"";
+      var currSecond=Math.floor(audio.currentTime%60||0)+"";
+      currMinute=currMinute.length==1?"0"+currMinute:currMinute;
+      currSecond=currSecond.length==1?"0"+currSecond:currSecond;
+      time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
+    }
    
     /*************************************进度条  */
     var playbar = document.getElementById("playbar");
@@ -1504,6 +1523,10 @@
     }
 
 
+
+
+
+
      /* *****************************单曲循环、列表循环、随机*/
      var isSingleLoop=false,//单曲循环
         isRandom=false,//随机
@@ -1530,6 +1553,7 @@
       scrollToView();
       innerMusic();
       audio.play();
+      
     }
 
     var mode =document.getElementById("mode");
@@ -1605,18 +1629,16 @@
         list.style.display="none";
       }else{
         list.style.display="block";
-        getDomH();
+        init();
         scrollToView();
         //问题：播发器隐藏的情况直接跳跃播放点，打开后歌词不自动滚动到目标位置
         //解决：打开后就调用autoScorlllyric()
         //问题：sumPh在跳跃播放点的时候用到了ps的高度，在播放器隐藏的情况下为0，导致sumPh为0，导致
         //autoScrolllyric失效
         //解决：打开后立刻重新计算sumPh
-        sumPh=0;
         for(var i=1;i<=index;i++){
           sumPh+=ps[i-1].offsetHeight;
         }
-        console.log(sumPh,index)
         autoScorlllyric()
       }
    }
