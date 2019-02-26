@@ -449,7 +449,7 @@
       new song(2,"music/2.mp3","东西（Cover：林俊呈）","你的叽叽","02:43","javascript:;","javascript:;","lrc/东西（Cover：林俊呈） - 你的叽叽.lrc","img/sm_cover_dx.jpg","img/bg_coverdx.jpg"),
       new song(3,"music/3.mp3","直觉","李学仕","02:40","javascript:;","javascript:;","lrc/李学仕 - 直觉.lrc","img/sm_cover_zj.jpg","img/bg_coverzj.jpg"),
       new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),
-      new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
+      /* new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
       new song(2,"music/2.mp3","东西（Cover：林俊呈）","你的叽叽","02:43","javascript:;","javascript:;","lrc/东西（Cover：林俊呈） - 你的叽叽.lrc","img/sm_cover_dx.jpg","img/bg_coverdx.jpg"),
       new song(3,"music/3.mp3","直觉","李学仕","02:40","javascript:;","javascript:;","lrc/李学仕 - 直觉.lrc","img/sm_cover_zj.jpg","img/bg_coverzj.jpg"),
       new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
@@ -470,7 +470,7 @@
       new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
       new song(2,"music/2.mp3","东西（Cover：林俊呈）","你的叽叽","02:43","javascript:;","javascript:;","lrc/东西（Cover：林俊呈） - 你的叽叽.lrc","img/sm_cover_dx.jpg","img/bg_coverdx.jpg"),
       new song(3,"music/3.mp3","直觉","李学仕","02:40","javascript:;","javascript:;","lrc/李学仕 - 直觉.lrc","img/sm_cover_zj.jpg","img/bg_coverzj.jpg"),
-      new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),
+      new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"), */
     ];
     
     /*************************************将歌曲列表插入页面*/
@@ -514,7 +514,6 @@
     }
     //插入封面，作者，等信息
     function inner(i){
-      console.log(i)
       html=`<a href="#" class="song">${songs[i].sname}</a>`
       html+=songs[i].smv!=="javascript:;"?`<a href="${songs[i].smv}" class="mv"></a>`:'';
       html+=`<a href="#" class="artist" id="artist">${songs[i].sart}</a>`;
@@ -673,9 +672,12 @@
       innerLyric(i);
       innerMusic(i)
     }
+    if(songs.length<1){
+      return;
+    }
+      
+    
     innerAll(list_index)//默认插入第一首歌
-    
-    
     var song_list=document.getElementById("song_list");
     var song_ul=document.getElementById("song_ul");
     var song_li=song_ul.querySelector(".song_li");
@@ -717,7 +719,7 @@
       listH=song_list.offsetHeight;
       liH=song_li.offsetHeight;
 
-      console.log(ulH,listH,liH,lyr_boxH,lyricH)
+      // console.log(ulH,listH,liH,lyr_boxH,lyricH)
 
       //计算bar1的高度
       bar1.style.height=blineH(listH,ulH)+"px";
@@ -733,7 +735,7 @@
       //设置滚动条高度
       pBoxH=pbox.offsetHeight;
       // console.log(pBoxH,parseFloat(getComputedStyle(pbox).height))
-      console.log(lyr_boxH,lyricH,pBoxH)
+      // console.log(lyr_boxH,lyricH,pBoxH)
       // pBoxH=parseFloat(getComputedStyle(pbox).height);
       //计算bar2的高度
       bar2.style.height=blineH(lyricH,pBoxH)+"px";
@@ -916,6 +918,7 @@
       temp_lyricBarDis=0;//lyricBarDis的临时变量，歌曲滚动距离
       old_index=0;//之前的p的下标，用于取消之前的p的样式
       // audio.src='';
+      isPlayorPause=false;
       //插入歌曲 歌词 封面
       innerAll(list_index)
       time.innerHTML=`<em>00:00</em> / 00:00`;
@@ -1080,12 +1083,12 @@
         //本轮添加active样式
         elemLi.className="song_li active";
     
-      
+        // isPlayorPause=false;
         reset();
-       
+        
         audio.play();
         isplaying=true;
-        isPlayorPause=false;
+        
       }else if(e.target.getAttribute("data-action")==="play/suspend"){//点击播放/暂停
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
@@ -1111,7 +1114,7 @@
       }else{
         song_ls[list_index].className="song_li";
 
-        isPlayorPause=false;
+        // isPlayorPause=false;
         if(e.target.getAttribute("data-action")==="next"){  //点击下一首
           if(isRandom)
             //需要向下取整，歌曲如果有10条，取值0-9,向上取整能取到10
@@ -1319,7 +1322,7 @@
       //但歌词歌曲是从服务器请求的，请求是异步的，只有在歌词请求下来才开始播放，否则会出错
       if(!isGetLyric)return;
       autoScorlllyric();
-      // inner_musLength();
+      inner_musLength();
       progress();
     }
      /*****************************歌词自动滚动  */
@@ -1333,38 +1336,54 @@
     var old_index=0;
     function autoScorlllyric(){
       //问题：在播放器隐藏的情况下高度为0，滚动会发送错误
-      if(list.style.display!="block") return;
+      //解决：隐藏状态直接返回，不执行
+      // if(list.style.display!="block") return;
       //问题：歌词是异步请求的，个能歌曲可以播放了歌词还没请求完毕，导致歌词错误但是已经开始播放并自动滚动歌词了
       //解决：插入歌词添加属性isGetLyric，确保歌词已插入才允许播放
       // console.log(index,times[index],ps[index].getAttribute("data-time"))
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
         
         var dataTime=ps[index]&&ps[index].getAttribute("data-time");
-
-        if(audio.currentTime*1000>=dataTime){
-          sumPh+=ps[index].offsetHeight;
-          var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
-          // console.log(p10,h_offset)
-          if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
-            temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
-            sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
+        //问题：播放器一显示，歌词位置不对，需要等currentTime改变才调整一次
+        //解决:添加isBlock，一打开播放器马上调整一次歌词位置
+        var b=audio.currentTime*1000>=dataTime
+        if(b||isBlock){
+          isBlock=false;
+          //问题：如果隐藏状态直接返回，在隐藏状态index没有累加，导致显示播放器时index下标不对
+          //解决：让index在隐藏状态也能正常累加
+          if(list.style.display!=""||list.style.display!="none"){
+            if(index>=ps.length) index=ps.length-1;
+            sumPh+=ps[index].offsetHeight;
+            var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
+            // console.log(p10,h_offset)
+            if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
+              temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
+              sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
+            }
+            //temp_lyricBarDis开始累加了就移动到累加的位置，没有开始累加就移动到0的位置
+            if(!isWheel&&isNotErr){//没有滚动则自动滚动，如果鼠标滚动则暂停滚动
+              //添加过渡样式
+              pbox.className="pBox active";
+              bar2.className="active"
+              //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
+              mv2(temp_lyricBarDis);
+            }
+            if(b){
+              //p添加字体和字体颜色样式
+              if(isNotErr){
+                ps[old_index].className="";
+                ps[index].className="active";
+              }
+              
+              old_index=index;
+            }
+            
           }
-          //temp_lyricBarDis开始累加了就移动到累加的位置，没有开始累加就移动到0的位置
-          if(!isWheel&&isNotErr){//没有滚动则自动滚动，如果鼠标滚动则暂停滚动
-            //添加过渡样式
-            pbox.className="pBox active";
-            bar2.className="active"
-            //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
-            mv2(temp_lyricBarDis);
-          }
-          //p添加字体和字体颜色样式
-          if(isNotErr){
-            ps[old_index].className="";
-            ps[index].className="active";
-          }
+         
+          if(b)
+            index++;
           
-          old_index=index;
-          index++;
+            
         }
     }
  
@@ -1603,6 +1622,7 @@
    /* *******************************显示隐藏 */
    var list = document.getElementById("list");
    var btn_close=document.getElementById("btn_close");
+   var isBlock=false;
    btn_close.onclick=list_num.onclick=function(){
       if(list.style.display=="block"){
         list.style.display="none";
@@ -1616,10 +1636,10 @@
         //autoScrolllyric失效
         //解决：打开后立刻重新计算sumPh
         sumPh=0;
-        for(var i=1;i<=index;i++){
+        for(var i=1;i<=index-1;i++){
           sumPh+=ps[i-1].offsetHeight;
         }
-        console.log(sumPh,index)
+        isBlock=true;
         autoScorlllyric()
       }
    }
