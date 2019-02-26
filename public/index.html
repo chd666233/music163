@@ -662,7 +662,13 @@
       time.innerHTML=`<em>${currMinute}:${currSecond}</em> \/ ${minute}:${second}`;
     }
     function innerAll(i){ 
-      innerSongList();
+      //问题：歌曲列表每次点击li prv next play/pause都更新，导致歌曲列表更新，导致一些问题
+      //解决：点击li prv next play/pause不更新歌曲列表
+      if(!isControl){
+        innerSongList();
+        isControl=false;
+      }
+        
       inner(i);
       innerLyric(i);
       innerMusic(i)
@@ -670,8 +676,6 @@
     innerAll(list_index)//默认插入第一首歌
     
     
-    
-
     var song_list=document.getElementById("song_list");
     var song_ul=document.getElementById("song_ul");
     var song_li=song_ul.querySelector(".song_li");
@@ -913,7 +917,6 @@
       old_index=0;//之前的p的下标，用于取消之前的p的样式
       // audio.src='';
       //插入歌曲 歌词 封面
-      console.log(list_index)
       innerAll(list_index)
       time.innerHTML=`<em>00:00</em> / 00:00`;
       //默认加载状态样式
@@ -1057,9 +1060,10 @@
     
     var control1=document.getElementById("control1");
     var play=control1.querySelector("[data-action='play/suspend']");
-    var firstPlay=true;
-    var isplaying=false;
-    var isPlayorPause=false;
+    var firstPlay=true;//第一次播放
+    var isplaying=false;//正砸播放中
+    var isPlayorPause=false;//是否点击暂停或播放
+    var isControl=false;//是否控制播放（li, 上一首，下一周，暂停播放都属于控制播放，控制播放歌曲列表不要更新
     control1.onclick=playMusic;
     function playMusic(eventOrLi){
       if(eventOrLi instanceof MouseEvent){
@@ -1068,7 +1072,7 @@
         // HTMLLIElement 
         var elemLi=eventOrLi;
       }
-      console.log(elemLi)
+      isControl=true;
       if(elemLi&&elemLi.getAttribute("data-action")==="liPlay"){//点击歌曲列表
         //取消上一轮li的active样式,不能用e取消，因为上一轮的e不一定是li,还可能是next prev
         song_ls[list_index].className="song_li";
@@ -1076,7 +1080,7 @@
         //本轮添加active样式
         elemLi.className="song_li active";
     
-        console.log(list_index)
+      
         reset();
        
         audio.play();
@@ -1528,7 +1532,6 @@
       isPlayorPause=false;
       reset();
       scrollToView();
-      innerMusic();
       audio.play();
     }
 
