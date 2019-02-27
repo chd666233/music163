@@ -1089,9 +1089,6 @@
         audio.play();
         isplaying=true;
         
-        fn_bufferProgress();
-       
-        
       }else if(e.target.getAttribute("data-action")==="play/suspend"){//点击播放/暂停
         if(audio.paused){//暂停状态，点击播放
           if(firstPlay){ //初次播放
@@ -1105,8 +1102,6 @@
           audio.play();
           isplaying=true;
           
-          fn_bufferProgress();
-     
           getRightAuto()
         }else{//播放状态，点击暂停
           e.target.className="play";
@@ -1176,20 +1171,15 @@
         song_ls[list_index].className="song_li active";
 
         reset();
-        
         if(isplaying){  
           audio.play();
-          fn_bufferProgress();
-        }else{
-          if(bufferProgress!=null)clearInterval(bufferProgress);
         }
           
       }
     }
 
- 
-    // audio.preload='none';
-    audio.onloadstart=function(){
+     // audio.preload='none';
+     audio.onloadstart=function(){
       // console.log("yyyyyyyyyyyyy")
       muic_loading.className="loading active"
       //问题：没有播放的情况下点击下一首会缓存进度条自动滚动
@@ -1200,10 +1190,10 @@
       //解决：在播放的情况下才允许缓存进度条滚动，给人没有加载的假象
       //问题:播放过一次后进度条定时器已启动，导致停止播放后点击下一首依然自动滚动缓存进度条
       //解决：取消定时器
-      // if(isplaying)
-      //   fn_bufferProgress();
-      // else
-      //   if(bufferProgress!=null)clearInterval(bufferProgress);
+      if(isplaying)
+        fn_bufferProgress();
+      else
+        if(bufferProgress!=null)clearInterval(bufferProgress);
     }
     // audio.onprogress=function(){
     //   console.log("gggg")
@@ -1353,13 +1343,12 @@
       // console.log(index,times[index],ps[index].getAttribute("data-time"))
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
         
-        // var dataTime=ps[index]&&ps[index].getAttribute("data-time");
-        if(!isplaying)return;
-        var dataTime=times[index];
+        var dataTime=ps[index]&&ps[index].getAttribute("data-time");
         //问题：播放器一显示，歌词位置不对，需要等currentTime改变才调整一次
         //解决:添加isBlock，一打开播放器马上调整一次歌词位置
-        
-        if(audio.currentTime*1000>=dataTime){
+        var b=audio.currentTime*1000>=dataTime
+        if(b||isBlock){
+          isBlock=false;
           //问题：如果隐藏状态直接返回，在隐藏状态index没有累加，导致显示播放器时index下标不对
           //解决：让index在隐藏状态也能正常累加
           if(list.style.display!=""||list.style.display!="none"){
@@ -1379,49 +1368,25 @@
               //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
               mv2(temp_lyricBarDis);
             }
-      
-            //p添加字体和字体颜色样式
-            if(isNotErr){
-              ps[old_index].className="";
-              ps[index].className="active";
-            } 
-            old_index=index;
-          }else{
-            ps[index].className="";
+            if(b){
+              //p添加字体和字体颜色样式
+              if(isNotErr){
+                ps[old_index].className="";
+                ps[index].className="active";
+              }
+              
+              old_index=index;
+            }
+            
           }
          
-          index++;
-        }
-
-        
-       /*  if(!isplaying)return;
-        var dataTime=times[index];
-        if(audio.currentTime*1000>=dataTime){
-          sumPh+=ps[index].offsetHeight;
-          var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
-          if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
-            temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
-            sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
-          }
-
-          ps[old_index].className="";
-          ps[index].className="active";
-          pbox.className="pBox active";
-          bar2.className="active"
+          if(b)
+            index++;
           
-          old_index=index;
-          index++;
-          if(index>=ps.length) index=ps.length-1;
+            
         }
-        
-        //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
-        mv2(temp_lyricBarDis); */
-        
-        
-       
     }
-
-    
+ 
    
    
     /*************************************进度条  */
@@ -1661,7 +1626,6 @@
    btn_close.onclick=list_num.onclick=function(){
       if(list.style.display=="block"){
         list.style.display="none";
-        ps[index-1].className="";
       }else{
         list.style.display="block";
         getDomH();
@@ -1672,21 +1636,11 @@
         //autoScrolllyric失效
         //解决：打开后立刻重新计算sumPh
         sumPh=0;
-        for(var i=1;i<=index;i++){
+        for(var i=1;i<=index-1;i++){
           sumPh+=ps[i-1].offsetHeight;
-          var h_offset=ps[i-1].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
-          if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
-            temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
-            sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
-          }
         }
-        ps[old_index-1].className="";
-        ps[index-1].className="active";
-        pbox.className="pBox";
-        bar2.className=""
-        mv2(temp_lyricBarDis);
-
-        
+        isBlock=true;
+        autoScorlllyric()
       }
    }
 
