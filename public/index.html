@@ -449,7 +449,7 @@
       new song(2,"music/2.mp3","东西（Cover：林俊呈）","你的叽叽","02:43","javascript:;","javascript:;","lrc/东西（Cover：林俊呈） - 你的叽叽.lrc","img/sm_cover_dx.jpg","img/bg_coverdx.jpg"),
       new song(3,"music/3.mp3","直觉","李学仕","02:40","javascript:;","javascript:;","lrc/李学仕 - 直觉.lrc","img/sm_cover_zj.jpg","img/bg_coverzj.jpg"),
       new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),
-      /* new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
+      new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
       new song(2,"music/2.mp3","东西（Cover：林俊呈）","你的叽叽","02:43","javascript:;","javascript:;","lrc/东西（Cover：林俊呈） - 你的叽叽.lrc","img/sm_cover_dx.jpg","img/bg_coverdx.jpg"),
       new song(3,"music/3.mp3","直觉","李学仕","02:40","javascript:;","javascript:;","lrc/李学仕 - 直觉.lrc","img/sm_cover_zj.jpg","img/bg_coverzj.jpg"),
       new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
@@ -470,7 +470,7 @@
       new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"),new song(1,"music/1.mp3","Rolling star","YUI","03:10","javascript:;","javascript:;","lrc/Rolling star.lrc","img/sm_cover_rolling.jpg","img/bg_coverrolling.jpg"),
       new song(2,"music/2.mp3","东西（Cover：林俊呈）","你的叽叽","02:43","javascript:;","javascript:;","lrc/东西（Cover：林俊呈） - 你的叽叽.lrc","img/sm_cover_dx.jpg","img/bg_coverdx.jpg"),
       new song(3,"music/3.mp3","直觉","李学仕","02:40","javascript:;","javascript:;","lrc/李学仕 - 直觉.lrc","img/sm_cover_zj.jpg","img/bg_coverzj.jpg"),
-      new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"), */
+      new song(4,"music/4.mp3","그 남자의 거짓말（那个男人的谎言）","泰仁","03:22","javascript:;","javascript:;","lrc/그 남자의 거짓말 - 泰仁.lrc","img/sm_cover_hy.jpg","img/bg_coverhy.jpg"), 
     ];
     
     /*************************************将歌曲列表插入页面*/
@@ -810,23 +810,26 @@
       
 
       if(deltaY<=-30){//向下滚
-        wheelDis-=liH;//计算移动的距离
-        barDis=-wheelDis*listH/ulH; //计算滚动条移动的距离 
-        if(Math.abs(wheelDis)>=ulH-listH){
-          wheelDis=-(ulH-listH)
-          barDis=listH-bar1.offsetHeight;
-        }
+        // wheelDis-=liH;//计算移动的距离
+        // barDis=-wheelDis*listH/ulH; //计算滚动条移动的距离 
+        // if(Math.abs(wheelDis)>=ulH-listH){
+        //   wheelDis=-(ulH-listH)
+        //   barDis=listH-bar1.offsetHeight;
+        // }
+        barDis+=liH*listH/ulH;
+        
       }else{//向上滚动
-        wheelDis+=liH;
-        barDis=-wheelDis*listH/ulH; 
-        if(wheelDis>=0){
-          wheelDis=0;
-          barDis=0;
-        } 
+        // wheelDis+=liH;
+        // barDis=-wheelDis*listH/ulH; 
+        // if(wheelDis>=0){
+        //   wheelDis=0;
+        //   barDis=0;
+        // } 
+        barDis-=liH*listH/ulH;
       }
-      song_ul.style.top=wheelDis+'px';
-      bar1.style.top=barDis+'px';
-
+      // song_ul.style.top=wheelDis+'px';
+      // bar1.style.top=barDis+'px';
+      mv(barDis)
 
       
       if(e.preventDefault) e.preventDefault();//阻止默认
@@ -856,23 +859,26 @@
       getRightAuto();
 
       if(deltaY<=-30){//向下滚
-        lyricWheelDis-=maxPh;//计算歌词滚动距离
-        lyricBarDis=-lyricWheelDis*listH/pBoxH;//计算滚动条滚动距离
-        if(Math.abs(lyricWheelDis)>=pBoxH-lyricH){
-          lyricWheelDis=-(pBoxH-lyricH);
-          lyricBarDis=listH-bar2.offsetHeight;
-        }
+        // lyricWheelDis-=maxPh;//计算歌词滚动距离
+        // lyricBarDis=-lyricWheelDis*listH/pBoxH;//计算滚动条滚动距离
+        lyricBarDis+=maxPh*listH/pBoxH
+        // if(Math.abs(lyricWheelDis)>=pBoxH-lyricH){
+        //   lyricWheelDis=-(pBoxH-lyricH);
+        //   lyricBarDis=listH-bar2.offsetHeight;
+        // }
       }else{
-        lyricWheelDis+=maxPh;
-        lyricBarDis=-lyricWheelDis*listH/pBoxH;
-        if(lyricWheelDis>=0){
-          lyricWheelDis=0;
-          lyricBarDis=0;
-        }
+        // lyricWheelDis+=maxPh;
+        // lyricBarDis=-lyricWheelDis*listH/pBoxH;
+        lyricBarDis-=maxPh*listH/pBoxH
+        // if(lyricWheelDis>=0){
+        //   lyricWheelDis=0;
+        //   lyricBarDis=0;
+        // }
       }
       //计算完毕执行滚动
-      pbox.style.top=lyricWheelDis+"px";
-      bar2.style.top=lyricBarDis+"px";
+      // pbox.style.top=lyricWheelDis+"px";
+      // bar2.style.top=lyricBarDis+"px";
+      mv2(lyricBarDis)
 
       if(e.preventDefault) e.preventDefault();//阻止默认
       if(e.stopPropagation) e.stopPropagation();//阻止冒泡
@@ -882,12 +888,14 @@
     }
 
     /* ****************************如果在bar2 blin2按压，在歌词手动滚动下暂停歌词自动滚动直到松开或停止滚动1秒后恢滚动歌词自动滚动*/
+    //取消自动滚动
     function cancelAuto(){
       isWheel=true;
       pbox.className="pBox";
       bar2.className=""
       if(timeout_isWheel) clearTimeout(timeout_isWheel);
     }
+    //继续自动滚动
     function getRightAuto(){
        if(!isNotErr)return;//错误状态不滚
        if(audio.paused) return;//暂停状态不回滚 
@@ -896,7 +904,8 @@
        timeout_isWheel=setTimeout(function(){
         isWheel=false;
         pbox.className="pBox active";
-        bar2.className="active"
+        bar2.className="active";
+        lyricBarDis= temp_lyricBarDis
         mv2(temp_lyricBarDis);
       },1000);
     }
@@ -1305,22 +1314,24 @@
       if(list_index==0){//最后一首点击后，即list_index==0的时候
           wheelDis=0;
           barDis=0;
-          mv(barDis)
+          // mv(barDis)
       }
       if(list_index==songs.length-1){//点击prev后的list_index等于最后一个时
         barDis=listH-bar1H;
-        mv(barDis);
+        // mv(barDis);
       }
 
       if(-wheelDis>list_index*liH){//高度比点击后的li的上一个li高
         wheelDis=list_index*liH;
         barDis=wheelDis*listH/ulH;
-        mv(barDis);
+        // mv(barDis);
       }else if(-wheelDis+listH<(list_index+1)*liH){//高度+卷起高度比点击后的li的高度低
         wheelDis=(list_index+1)*liH-listH;
         barDis=wheelDis*listH/ulH;
-        mv(barDis);
+        // mv(barDis);
       }
+      mv(barDis);
+
     }
 
 
@@ -1354,12 +1365,12 @@
       //ps[index]&&不能少在3gslow模式下会报undefined的错误
         
         // var dataTime=ps[index]&&ps[index].getAttribute("data-time");
-        if(!isplaying)return;
-        var dataTime=times[index];
+        // if(!isplaying)return;
+        // var dataTime=times[index];
         //问题：播放器一显示，歌词位置不对，需要等currentTime改变才调整一次
         //解决:添加isBlock，一打开播放器马上调整一次歌词位置
         
-        if(audio.currentTime*1000>=dataTime){
+        /* if(audio.currentTime*1000>=dataTime){
           //问题：如果隐藏状态直接返回，在隐藏状态index没有累加，导致显示播放器时index下标不对
           //解决：让index在隐藏状态也能正常累加
           if(list.style.display!=""||list.style.display!="none"){
@@ -1391,37 +1402,39 @@
           }
          
           index++;
-        }
+        } */
 
         
-       /*  if(!isplaying)return;
-        var dataTime=times[index];
-        if(audio.currentTime*1000>=dataTime){
-          sumPh+=ps[index].offsetHeight;
-          var h_offset=ps[index].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
-          if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
-            temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
-            sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
+        if(!isplaying)return;
+        if(list.style.display!=""||list.style.display!="none"){
+          var dataTime=times[index];
+          if(audio.currentTime*1000>=dataTime){
+            getOffsetH(index);
+            ps[old_index].className="";
+            ps[index].className="active";
+            pbox.className="pBox active";
+            bar2.className="active"
           }
-
-          ps[old_index].className="";
-          ps[index].className="active";
-          pbox.className="pBox active";
-          bar2.className="active"
-          
+          //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
+          mv2(temp_lyricBarDis);
+        }
+        if(audio.currentTime*1000>=dataTime){
           old_index=index;
           index++;
           if(index>=ps.length) index=ps.length-1;
         }
-        
-        //temp_lyricBarDis传入mv2后重新计算bar2的位置，这样歌词和滚动条都会回到原来的位置
-        mv2(temp_lyricBarDis); */
-        
-        
        
     }
 
-    
+    function getOffsetH(i){
+      sumPh+=ps[i].offsetHeight;
+      var h_offset=ps[i].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
+      if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
+        temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
+        sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
+      }
+    }
+
    
    
     /*************************************进度条  */
@@ -1586,6 +1599,7 @@
       isPlayorPause=false;
       reset();
       scrollToView();
+      fn_bufferProgress()
       audio.play();
     }
 
@@ -1641,6 +1655,7 @@
     if(h<12) h=12;
     vol_div.style.height=h+'px';
     audio.volume=(h-12)/(93-12);
+    localStorage.setItem("volumn",audio.volume);
     if(audio.volume==0){
       vol.className="vol vol0";
     }else{
@@ -1661,9 +1676,9 @@
    btn_close.onclick=list_num.onclick=function(){
       if(list.style.display=="block"){
         list.style.display="none";
-        ps[index-1].className="";
       }else{
         list.style.display="block";
+        ps[index-1]&&(ps[index-1].className="");
         getDomH();
         scrollToView();
         //问题：播发器隐藏的情况直接跳跃播放点，打开后歌词不自动滚动到目标位置
@@ -1673,15 +1688,10 @@
         //解决：打开后立刻重新计算sumPh
         sumPh=0;
         for(var i=1;i<=index;i++){
-          sumPh+=ps[i-1].offsetHeight;
-          var h_offset=ps[i-1].offsetHeight-p10//这个p10是文字距离p顶部边框的距离
-          if(sumPh-h_offset>=109.5){//109.5是容器一半的高度
-            temp_lyricBarDis+=(sumPh-h_offset-sum2)*listH/pBoxH;//sumPh-h_offset-sum2为滚动距离
-            sum2+=sumPh-h_offset-sum2;//滚动距离累加到sum2
-          }
+          getOffsetH(i-1);
         }
-        ps[old_index-1].className="";
-        ps[index-1].className="active";
+        ps[old_index-1]&&(ps[old_index-1].className="");
+        ps[index-1]&&(ps[index-1].className="active");
         pbox.className="pBox";
         bar2.className=""
         mv2(temp_lyricBarDis);
